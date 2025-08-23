@@ -6,17 +6,22 @@ namespace DriveNow.Application.Features.CQRS.Handlers.AboutHandlers.AboutWriteHa
 {
     public class UpdateAboutCommandHandler(IRepository<About> _repository)
     {
-        public async Task Handle(UpdateAboutCommand command)
+        public async Task<About> Handle(UpdateAboutCommand command)
         {
             var values = await _repository.GetByIdAsync(command.AboutId);
-            if (values != null)
-            {
-                values.Title = command.Title;
-                values.Description = command.Description;
-                values.ImageUrl = command.ImageUrl;
-                await _repository.UpdateAsync(values);
-            }
-        }
 
+            if (values == null)
+            {
+
+                return null;
+            }
+
+            values.Title = command.Title;
+            values.Description = command.Description;
+            values.ImageUrl = command.ImageUrl;
+
+
+            return await _repository.UpdateAsync(values);
+        }
     }
 }

@@ -26,7 +26,6 @@ namespace DriveNow.WebAPI.Controllers
         public async Task<IActionResult> GetAboutById(Guid id)
         {
             var query = new GetAboutByIdQuery(id);
-
             var result = await _getAboutByIdQueryHandler.Handle(query);
 
             if (result == null)
@@ -44,14 +43,19 @@ namespace DriveNow.WebAPI.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-            await _createAboutCommandHandler.Handle(command);
-            return Ok("About me information added.");
+
+
+            var createdAbout = await _createAboutCommandHandler.Handle(command);
+
+            return CreatedAtAction(
+                nameof(GetAboutById),
+                new { id = createdAbout.AboutId },
+                createdAbout);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveAbout(Guid id)
         {
-
             await _removeAboutCommandHandler.Handle(new RemoveAboutCommand(id));
             return NoContent();
         }
@@ -63,9 +67,18 @@ namespace DriveNow.WebAPI.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-            await _updateAboutCommandHandler.Handle(command);
-            return Ok("About me information updated.");
-        }
 
+  
+            var updatedAbout = await _updateAboutCommandHandler.Handle(command);
+
+  
+            if (updatedAbout == null)
+            {
+                return NotFound();
+            }
+
+     
+            return Ok(updatedAbout);
+        }
     }
 }

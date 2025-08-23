@@ -1,5 +1,7 @@
 using DriveNow.Application.Features.CQRS.Handlers.AboutHandlers.AboutReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.AboutHandlers.AboutWriteHandlers;
+using DriveNow.Application.Features.CQRS.Handlers.BannerHandlers.BannerReadHandlers;
+using DriveNow.Application.Features.CQRS.Handlers.BannerHandlers.BannerWriteHandlers;
 using DriveNow.Application.Interfaces;
 using DriveNow.Persistance.Context;
 using DriveNow.Persistance.Repositories;
@@ -20,6 +22,12 @@ builder.Services.AddScoped<GetAboutByIdQueryHandler>();
 builder.Services.AddScoped<CreateAboutCommandHandler>();
 builder.Services.AddScoped<RemoveAboutCommandHandler>();
 builder.Services.AddScoped<UpdateAboutCommandHandler>();
+
+builder.Services.AddScoped<GetBannerQueryHandler>();
+builder.Services.AddScoped<GetBannerByIdQueryHandler>();
+builder.Services.AddScoped<CreateBannerCommandHandler>();
+builder.Services.AddScoped<RemoveBannerCommandHandler>();
+builder.Services.AddScoped<UpdateBannerCommandHandler>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
