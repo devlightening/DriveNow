@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DriveNow.Domain.Enums
+namespace DriveNow.Application.Enums
 {
     public enum FuelType
     {
