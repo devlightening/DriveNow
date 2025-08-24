@@ -1,4 +1,6 @@
-﻿namespace DriveNow.Application.Interfaces
+﻿using DriveNow.Domain.Entities;
+
+namespace DriveNow.Application.Interfaces
 {
     public interface IRepository<T> where T : class
     {
@@ -11,5 +13,7 @@
         Task<T> UpdateAsync(T entity);
 
         Task RemoveAsync(T entity);
+
+     
     }
 }

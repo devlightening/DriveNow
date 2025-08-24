@@ -1,9 +1,11 @@
 ﻿using DriveNow.Application.Interfaces;
+using DriveNow.Domain.Entities;
 using DriveNow.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace DriveNow.Persistance.Repositories
 {
+
     public class Repository<T>(DriveNowContext _context) : IRepository<T> where T : class
     {
         public async Task<List<T>> GetAllAsync()

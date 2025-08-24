@@ -11,8 +11,10 @@ using DriveNow.Application.Features.CQRS.Handlers.CategoryHandlers.CategoryWrite
 using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactWriteHandlers;
 using DriveNow.Application.Interfaces;
+using DriveNow.Application.Interfaces.CarInterfaces;
 using DriveNow.Persistance.Context;
 using DriveNow.Persistance.Repositories;
+using DriveNow.Persistance.Repositories.CarRepositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,7 @@ builder.Services.AddDbContext<DriveNowContext>(opt =>
 
 // `IRepository<T>` için jenerik kayýt
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<ICarResository, CarResository>();
 
 // Handler'larý MediatR ile deðil, tek tek kaydederek devam ediyoruz.
 builder.Services.AddScoped<GetAboutQueryHandler>();
@@ -49,6 +52,8 @@ builder.Services.AddScoped<GetCarByIdQueryHandler>();
 builder.Services.AddScoped<CreateCarCommandHandler>();
 builder.Services.AddScoped<RemoveCarCommandHandler>();
 builder.Services.AddScoped<UpdateCarCommandHandler>();
+builder.Services.AddScoped<GetCarWithBrandQueryHandler>();
+builder.Services.AddScoped<GetCarsByBrandQueryHandler>();
 
 builder.Services.AddScoped<GetCategoryQueryHandler>();
 builder.Services.AddScoped<GetCategoryByIdQueryHandler>();
