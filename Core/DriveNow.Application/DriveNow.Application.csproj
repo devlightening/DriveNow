@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Features\CQRS\Results\ContactResults\GetContactQueryResult.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DriveNow.Domain\DriveNow.Domain.csproj" />
   </ItemGroup>
 

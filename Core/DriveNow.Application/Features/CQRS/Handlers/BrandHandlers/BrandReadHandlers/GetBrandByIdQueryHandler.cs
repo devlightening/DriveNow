@@ -10,15 +10,13 @@ namespace DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandReadHan
         public async Task<GetBrandByIdQueryResult> Handle(GetBrandByIdQuery query)
         {
             var value = await _repository.GetByIdAsync(query.BrandId);
+
             if (value == null)
             {
                 return null;
             }
-            return new GetBrandByIdQueryResult
-            {
-                BrandId = value.BrandId,
-                BrandName = value.BrandName
-            };
+
+            return new GetBrandByIdQueryResult(value.BrandId, value.BrandName);
         }
     }
 }

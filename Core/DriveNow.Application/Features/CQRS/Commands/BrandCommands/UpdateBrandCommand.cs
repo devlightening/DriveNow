@@ -10,5 +10,10 @@ namespace DriveNow.Application.Features.CQRS.Commands.BrandCommands
     {
         public Guid BrandId { get; set; }
         public string BrandName { get; set; }
+        public UpdateBrandCommand(Guid brandId, string brandName)
+        {
+            BrandId = brandId;
+            BrandName = brandName;
+        }
     }
 }

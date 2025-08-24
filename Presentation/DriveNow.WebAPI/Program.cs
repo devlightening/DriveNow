@@ -6,6 +6,10 @@ using DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandReadHandler
 using DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandWriteHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarWriteHandlers;
+using DriveNow.Application.Features.CQRS.Handlers.CategoryHandlers.CategoryReadHandlers;
+using DriveNow.Application.Features.CQRS.Handlers.CategoryHandlers.CategoryWriteHandlers;
+using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactReadHandlers;
+using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactWriteHandlers;
 using DriveNow.Application.Interfaces;
 using DriveNow.Persistance.Context;
 using DriveNow.Persistance.Repositories;
@@ -17,7 +21,8 @@ builder.Services.AddDbContext<DriveNowContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-// `IRepository<T>` için jenerik kaydý ekliyoruz. Bu, tüm repository'ler için geçerli olacak.
+
+// `IRepository<T>` için jenerik kayýt
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Handler'larý MediatR ile deðil, tek tek kaydederek devam ediyoruz.
@@ -44,6 +49,19 @@ builder.Services.AddScoped<GetCarByIdQueryHandler>();
 builder.Services.AddScoped<CreateCarCommandHandler>();
 builder.Services.AddScoped<RemoveCarCommandHandler>();
 builder.Services.AddScoped<UpdateCarCommandHandler>();
+
+builder.Services.AddScoped<GetCategoryQueryHandler>();
+builder.Services.AddScoped<GetCategoryByIdQueryHandler>();
+builder.Services.AddScoped<CreateCategoryCommandHandler>();
+builder.Services.AddScoped<RemoveCategoryCommandHandler>();
+builder.Services.AddScoped<UpdateCategoryCommandHandler>();
+
+
+builder.Services.AddScoped<GetContactQueryHandler>();
+builder.Services.AddScoped<GetContactByIdQueryHandler>();
+builder.Services.AddScoped<CreateContactCommandHandler>();
+builder.Services.AddScoped<RemoveContactCommandHandler>();
+builder.Services.AddScoped<UpdateContactCommandHandler>();
 
 
 

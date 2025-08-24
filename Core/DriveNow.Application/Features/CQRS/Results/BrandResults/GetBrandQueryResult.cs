@@ -11,5 +11,10 @@ namespace DriveNow.Application.Features.CQRS.Results.BrandResults
         public Guid BrandId { get; set; }
         public string BrandName { get; set; }
 
+        public GetBrandQueryResult(Guid brandId, string brandName)
+        {
+            BrandId = brandId;
+            BrandName = brandName;
+        }
     }
 }

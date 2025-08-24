@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.CQRS.Commands.BrandCommands
 {
     public class CreateBrandCommand
     {
-        public string BrandName { get; set; }
+        public string BrandName { get; }
+
+        public CreateBrandCommand(string brandName)
+        {
+            BrandName = brandName;
+        }
     }
 }

@@ -11,21 +11,20 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandler
         {
             var values = await _repository.GetAllAsync();
 
-            return values.Select(x => new GetCarQueryResult
-            {
-                CarId = x.CarId,
-                BrandId = x.BrandId,
-                Model = x.Model,
-                Kilometer = x.Kilometer,
-                Seat = x.Seat,
-                Luggage = x.Luggage,
-                CoverImageUrl = x.CoverImageUrl,
-                BigImageUrl = x.BigImageUrl,
-                Transmission = x.Transmission,
-                CarType = x.CarType,
-                FuelType = x.FuelType,
-                DriveType = x.DriveType
-            }).ToList();
+            return values.Select(x => new GetCarQueryResult(
+                x.CarId,
+                x.BrandId,
+                x.Model,
+                x.Kilometer,
+                x.Seat,
+                x.Luggage,
+                x.CoverImageUrl,
+                x.BigImageUrl,
+                x.Transmission,
+                x.CarType,
+                x.FuelType,
+                x.DriveType
+            )).ToList();
         }
     }
 }

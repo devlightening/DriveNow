@@ -2,6 +2,7 @@
 using DriveNow.Application.Features.CQRS.Results.AboutResults;
 using DriveNow.Application.Interfaces;
 using DriveNow.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.CQRS.Handlers.AboutHandlers.AboutReadHandlers
 {
@@ -11,20 +12,17 @@ namespace DriveNow.Application.Features.CQRS.Handlers.AboutHandlers.AboutReadHan
         {
             var value = await _repository.GetByIdAsync(query.AboutId);
 
-     
             if (value == null)
             {
-         
                 return null;
             }
 
-            return new GetAboutByIdQueryResult
-            {
-                AboutId = value.AboutId,
-                Title = value.Title,
-                Description = value.Description,
-                ImageUrl = value.ImageUrl
-            };
+            return new GetAboutByIdQueryResult(
+                value.AboutId,
+                value.Title,
+                value.Description,
+                value.ImageUrl
+            );
         }
     }
 }

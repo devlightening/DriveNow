@@ -2,31 +2,28 @@
 using DriveNow.Application.Features.CQRS.Results.BannerResults;
 using DriveNow.Application.Interfaces;
 using DriveNow.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.CQRS.Handlers.BannerHandlers.BannerReadHandlers
 {
-    public class GetBannerByIdQueryHandler (IRepository<Banner> _repository)
+    public class GetBannerByIdQueryHandler(IRepository<Banner> _repository)
     {
         public async Task<GetBannerByIdQueryResult> Handle(GetBannerByIdQuery query)
         {
             var value = await _repository.GetByIdAsync(query.BannerId);
 
-
             if (value == null)
             {
-
                 return null;
             }
 
-            return new GetBannerByIdQueryResult
-            {
-                BannerId = value.BannerId,
-                Title = value.Title,
-                Description = value.Description,
-                VideoDescription = value.VideoDescription,
-                VideoUrl = value.VideoUrl
-
-            };
+            return new GetBannerByIdQueryResult(
+                value.BannerId,
+                value.Title,
+                value.Description,
+                value.VideoDescription,
+                value.VideoUrl
+            );
         }
     }
 }

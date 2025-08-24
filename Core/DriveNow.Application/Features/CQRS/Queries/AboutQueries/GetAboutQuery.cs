@@ -12,5 +12,19 @@ namespace DriveNow.Application.Features.CQRS.Queries.AboutQueries
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+
+        public GetAboutQuery(Guid aboutId, string title, string description, string imageUrl)
+        {
+            AboutId = aboutId;
+            Title = title;
+            Description = description;
+            ImageUrl = imageUrl;
+        }
+
+        public GetAboutQuery()
+        {
+        }
     }
+
+
 }

@@ -2,6 +2,9 @@
 using DriveNow.Application.Features.CQRS.Results.BrandResults;
 using DriveNow.Application.Interfaces;
 using DriveNow.Domain.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandReadHandlers
 {
@@ -10,11 +13,8 @@ namespace DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandReadHan
         public async Task<List<GetBrandQueryResult>> Handle(GetBrandQuery query)
         {
             var values = await repository.GetAllAsync();
-            return values.Select(x => new GetBrandQueryResult
-            {
-                BrandId = x.BrandId,
-                BrandName = x.BrandName
-            }).ToList();
+
+            return values.Select(x => new GetBrandQueryResult(x.BrandId, x.BrandName)).ToList();
         }
     }
 }

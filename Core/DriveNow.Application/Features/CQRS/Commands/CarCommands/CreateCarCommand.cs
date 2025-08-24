@@ -1,4 +1,5 @@
 ﻿using DriveNow.Domain.Enums;
+using System;
 
 namespace DriveNow.Application.Features.CQRS.Commands.CarCommands
 {
@@ -15,5 +16,20 @@ namespace DriveNow.Application.Features.CQRS.Commands.CarCommands
         public CarType CarType { get; set; }
         public FuelType FuelType { get; set; }
         public DriveTypes DriveType { get; set; }
+
+        public CreateCarCommand(Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType)
+        {
+            BrandId = brandId;
+            Model = model;
+            Kilometer = kilometer;
+            Seat = seat;
+            Luggage = luggage;
+            CoverImageUrl = coverImageUrl;
+            BigImageUrl = bigImageUrl;
+            Transmission = transmission;
+            CarType = carType;
+            FuelType = fuelType;
+            DriveType = driveType;
+        }
     }
 }

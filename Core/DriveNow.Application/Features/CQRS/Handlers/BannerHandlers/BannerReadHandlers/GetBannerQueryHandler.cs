@@ -2,6 +2,9 @@
 using DriveNow.Application.Features.CQRS.Results.BannerResults;
 using DriveNow.Application.Interfaces;
 using DriveNow.Domain.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.CQRS.Handlers.BannerHandlers.BannerReadHandlers
 {
@@ -11,14 +14,13 @@ namespace DriveNow.Application.Features.CQRS.Handlers.BannerHandlers.BannerReadH
         {
             var values = await _repository.GetAllAsync();
 
-            return values.Select(x => new GetBannerQueryResult
-            {
-                BannerId = x.BannerId,
-                Title = x.Title,
-                Description = x.Description,
-                VideoDescription = x.VideoDescription,
-                VideoUrl = x.VideoUrl
-            }).ToList();
+            return values.Select(x => new GetBannerQueryResult(
+                x.BannerId,
+                x.Title,
+                x.Description,
+                x.VideoDescription,
+                x.VideoUrl
+            )).ToList();
         }
     }
 }

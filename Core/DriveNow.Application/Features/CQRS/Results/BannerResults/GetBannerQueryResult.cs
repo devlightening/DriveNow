@@ -13,5 +13,14 @@ namespace DriveNow.Application.Features.CQRS.Results.BannerResults
         public string Description { get; set; }
         public string VideoDescription { get; set; }
         public string VideoUrl { get; set; }
+
+        public GetBannerQueryResult(Guid bannerId, string title, string description, string videoDescription, string videoUrl)
+        {
+            BannerId = bannerId;
+            Title = title;
+            Description = description;
+            VideoDescription = videoDescription;
+            VideoUrl = videoUrl;
+        }
     }
 }
