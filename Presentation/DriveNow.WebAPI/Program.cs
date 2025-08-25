@@ -12,6 +12,7 @@ using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactReadHan
 using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactWriteHandlers;
 using DriveNow.Application.Interfaces;
 using DriveNow.Application.Interfaces.CarInterfaces;
+using DriveNow.Application.Services;
 using DriveNow.Persistance.Context;
 using DriveNow.Persistance.Repositories;
 using DriveNow.Persistance.Repositories.CarRepositories;
@@ -28,7 +29,7 @@ builder.Services.AddDbContext<DriveNowContext>(opt =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICarResository, CarResository>();
 
-// Handler'larý MediatR ile deðil, tek tek kaydederek devam ediyoruz.
+// Handler'larý  tek tek kaydederek devam ediyoruz.
 builder.Services.AddScoped<GetAboutQueryHandler>();
 builder.Services.AddScoped<GetAboutByIdQueryHandler>();
 builder.Services.AddScoped<CreateAboutCommandHandler>();
@@ -68,8 +69,11 @@ builder.Services.AddScoped<CreateContactCommandHandler>();
 builder.Services.AddScoped<RemoveContactCommandHandler>();
 builder.Services.AddScoped<UpdateContactCommandHandler>();
 
+// mediatR kayýt
+builder.Services.AddApplicationServices(builder.Configuration);
 
 
+ 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
