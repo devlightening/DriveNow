@@ -7,15 +7,9 @@ namespace DriveNow.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FeaturesController : ControllerBase
+    public class FeaturesController(IMediator _mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public FeaturesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
+        
         [HttpGet]
         public async Task<IActionResult> FeatureList()
         {
