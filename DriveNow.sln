@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveNow.Application", "Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveNow.WebUI", "Frontends\DriveNow.WebUI\DriveNow.WebUI.csproj", "{AA80DAF3-E0EF-4866-864E-1465831F9E83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveNow.Dtos", "Frontends\DriveNow.Dtos\DriveNow.Dtos.csproj", "{DEB3B0DC-1B02-4D38-B02D-E2D0C97D039B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{AA80DAF3-E0EF-4866-864E-1465831F9E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA80DAF3-E0EF-4866-864E-1465831F9E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA80DAF3-E0EF-4866-864E-1465831F9E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEB3B0DC-1B02-4D38-B02D-E2D0C97D039B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEB3B0DC-1B02-4D38-B02D-E2D0C97D039B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEB3B0DC-1B02-4D38-B02D-E2D0C97D039B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEB3B0DC-1B02-4D38-B02D-E2D0C97D039B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{B86DD979-B398-42BC-9CF1-037B2B97A630} = {9C7BB17D-70D4-406F-92C4-5053087065D5}
 		{0175DC77-9134-4C9D-9651-2075E401C7C5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{AA80DAF3-E0EF-4866-864E-1465831F9E83} = {0D0E09A3-CB87-4E05-BE40-84DEEC53FA47}
+		{DEB3B0DC-1B02-4D38-B02D-E2D0C97D039B} = {0D0E09A3-CB87-4E05-BE40-84DEEC53FA47}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07B207A3-0E6E-43BD-9AD9-7F749D221F22}
