@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.Mediator.Commands.PricingCommands
 {
-    public class RemovePricingCommand:IRequest
+    public class RemovePricingCommand:IRequest<Unit>
     {
-        public Guid PricingId { get; set; }
-
         public RemovePricingCommand(Guid pricingId)
         {
             PricingId = pricingId;
         }
+
+        public Guid PricingId { get; set; }
+
     }
 }

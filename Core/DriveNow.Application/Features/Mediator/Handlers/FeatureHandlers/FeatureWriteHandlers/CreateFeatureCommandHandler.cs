@@ -5,9 +5,9 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.FeatureWriteHandlers
 {
-    public class CreateFeatureCommandHandler(IRepository<Feature> _repository) : IRequestHandler<CreateFeatureCommand>
+    public class CreateFeatureCommandHandler(IRepository<Feature> _repository) : IRequestHandler<CreateFeatureCommand, Unit>
     {
-        public async Task Handle(CreateFeatureCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateFeatureCommand request, CancellationToken cancellationToken)
         {
             var feature = new Feature
             {
@@ -15,6 +15,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.Featur
             };
 
             await _repository.CreateAsync(feature);
+            return Unit.Value;
         }
     }
 }

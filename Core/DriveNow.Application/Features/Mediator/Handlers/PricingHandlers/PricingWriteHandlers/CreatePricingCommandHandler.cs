@@ -5,15 +5,16 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.PricingHandlers.PricingWriteHandlers
 {
-    public class CreatePricingCommandHandler(IRepository<Pricing> _repository) : IRequestHandler<CreatePricingCommand>
+    public class CreatePricingCommandHandler(IRepository<Pricing> _repository) : IRequestHandler<CreatePricingCommand,Unit>
     {
-        public async Task Handle(CreatePricingCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreatePricingCommand request, CancellationToken cancellationToken)
         {
             var value = new Pricing
             {
                 PricingName= request.PricingName
             };
             await _repository.CreateAsync(value);
+            return Unit.Value;
         }
     }
 }

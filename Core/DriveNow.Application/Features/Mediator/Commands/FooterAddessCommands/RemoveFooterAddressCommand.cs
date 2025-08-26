@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.Mediator.Commands.FooterAddessCommands
 {
-    public class RemoveFooterAddressCommand : IRequest
+    public class RemoveFooterAddressCommand : IRequest<Unit>
     {
-        public Guid FooterAddressId { get; set; }
         public RemoveFooterAddressCommand(Guid footerAddressId)
         {
             FooterAddressId = footerAddressId;
         }
+
+        public Guid FooterAddressId { get; set; }
+
 
     }
 }

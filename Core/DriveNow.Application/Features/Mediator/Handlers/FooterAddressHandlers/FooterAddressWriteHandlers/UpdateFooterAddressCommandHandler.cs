@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.FooterAddressHandlers.FooterAddressWriteHandlers
 {
-    public class UpdateFooterAddressCommandHandler(IRepository<FooterAddress> _repository) : IRequestHandler<UpdateFooterAddressCommand>
+    public class UpdateFooterAddressCommandHandler(IRepository<FooterAddress> _repository) : IRequestHandler<UpdateFooterAddressCommand,Unit>
     {
-        public async Task Handle(UpdateFooterAddressCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateFooterAddressCommand request, CancellationToken cancellationToken)
         {
            
             var footerAddress = await _repository.GetByIdAsync(request.FooterAddressId);
@@ -24,6 +24,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FooterAddressHandlers.
 
                 await _repository.UpdateAsync(footerAddress);
             }
+            return Unit.Value;
         }
     }
 }

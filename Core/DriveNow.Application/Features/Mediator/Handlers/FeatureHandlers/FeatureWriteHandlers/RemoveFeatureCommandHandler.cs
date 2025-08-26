@@ -5,9 +5,9 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.FeatureWriteHandlers
 {
-    internal class RemoveFeatureCommandHandler(IRepository<Feature> _repository) : IRequestHandler<RemoveFeatureCommand>
+    internal class RemoveFeatureCommandHandler(IRepository<Feature> _repository) : IRequestHandler<RemoveFeatureCommand, Unit>
     {
-        public async Task Handle(RemoveFeatureCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemoveFeatureCommand request, CancellationToken cancellationToken)
         {
             var value = await _repository.GetByIdAsync(request.FeatureId);
 
@@ -15,6 +15,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.Featur
             {
                 await _repository.RemoveAsync(value);
             }
+            return Unit.Value;
         }
     }
 }

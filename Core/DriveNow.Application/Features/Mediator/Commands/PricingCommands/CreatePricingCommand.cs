@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.Mediator.Commands.PricingCommands
 {
-    public class CreatePricingCommand : IRequest
+    public class CreatePricingCommand : IRequest<Unit>
     {
-        public CreatePricingCommand( string pricingName)
-        {
-            PricingName = pricingName;
-        }
+
         public string PricingName { get; set; }
 
 

@@ -5,17 +5,18 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.PricingHandlers.PricingWriteHandlers
 {
-    public class RemovePricingCommandHandler(IRepository<Pricing> _repository) : IRequestHandler<RemovePricingCommand>
+    public class RemovePricingCommandHandler(IRepository<Pricing> _repository) : IRequestHandler<RemovePricingCommand, Unit>
     {
-        public async Task Handle(RemovePricingCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemovePricingCommand request, CancellationToken cancellationToken)
         {
             var value = await _repository.GetByIdAsync(request.PricingId);
             if (value != null)
             {
-               await _repository.RemoveAsync(value);    
+                await _repository.RemoveAsync(value);
 
             }
-            
+            return Unit.Value;  
+
         }
     }
 }

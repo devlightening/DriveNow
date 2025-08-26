@@ -5,9 +5,9 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.PricingHandlers.PricingWriteHandlers
 {
-    public class UpdatePricingCommandHandler(IRepository<Pricing> _repository) : IRequestHandler<UpdatePricingCommand>
+    public class UpdatePricingCommandHandler(IRepository<Pricing> _repository) : IRequestHandler<UpdatePricingCommand,Unit>
     {
-        public async Task Handle(UpdatePricingCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdatePricingCommand request, CancellationToken cancellationToken)
         {
             var value = await _repository.GetByIdAsync(request.PricingId);
             if(value == null)
@@ -16,6 +16,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.PricingHandlers.Pricin
             }
             value.PricingName= request.PricingName;
             await _repository.UpdateAsync(value);
+            return Unit.Value;
            
         }
     }

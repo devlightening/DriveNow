@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.Mediator.Commands.FeatureCommands
 {
-    public class UpdateFeatureCommand : IRequest
+    public class UpdateFeatureCommand : IRequest<Unit>
     {
         public Guid FeatureId { get; set; }
         public string FeatureName { get; set; }
-        public UpdateFeatureCommand(Guid featureId, string featureName)
-        {
-            FeatureId = featureId;
-            FeatureName = featureName;
-        }
+
     }
 }

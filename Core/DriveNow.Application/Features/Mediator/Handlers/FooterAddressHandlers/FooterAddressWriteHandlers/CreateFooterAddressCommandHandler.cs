@@ -5,9 +5,9 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.FooterAddressHandlers.FooterAddressWriteHandlers
 {
-    public class CreateFooterAddressCommandHandler(IRepository<FooterAddress> _repository) : IRequestHandler<CreateFooterAddressCommand>
+    public class CreateFooterAddressCommandHandler(IRepository<FooterAddress> _repository) : IRequestHandler<CreateFooterAddressCommand,Unit>
     {
-        public async Task Handle(CreateFooterAddressCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateFooterAddressCommand request, CancellationToken cancellationToken)
         {
             var footerAddress = new FooterAddress
             {
@@ -17,6 +17,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FooterAddressHandlers.
                 Email = request.Email
             };
              await _repository.CreateAsync(footerAddress);
+            return Unit.Value;
 
         }
     }

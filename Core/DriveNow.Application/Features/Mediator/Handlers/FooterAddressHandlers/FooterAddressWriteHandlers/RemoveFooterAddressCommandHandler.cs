@@ -5,9 +5,9 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.FooterAddressHandlers.FooterAddressWriteHandlers
 {
-    public class RemoveFooterAddressCommandHandler(IRepository<FooterAddress> _repository) : IRequestHandler<RemoveFooterAddressCommand>
+    public class RemoveFooterAddressCommandHandler(IRepository<FooterAddress> _repository) : IRequestHandler<RemoveFooterAddressCommand,Unit>
     {
-        public async Task Handle(RemoveFooterAddressCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemoveFooterAddressCommand request, CancellationToken cancellationToken)
         {
             var footerAddress = await _repository.GetByIdAsync(request.FooterAddressId);
 
@@ -16,6 +16,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FooterAddressHandlers.
 
                 await _repository.RemoveAsync(footerAddress);
             }
+            return Unit.Value;
 
         }
     }

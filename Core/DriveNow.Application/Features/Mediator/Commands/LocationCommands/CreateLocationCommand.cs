@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.Mediator.Commands.LocationCommands
 {
-    public class CreateLocationCommand : IRequest
+    public class CreateLocationCommand : IRequest<Unit>
     {
         public string LocationName { get; set; }
-        public CreateLocationCommand(string locationName)
-        {
-            LocationName = locationName;
-        }
-
 
     }
 }

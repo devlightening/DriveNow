@@ -5,9 +5,9 @@ using MediatR;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.LocationHandlers.LocationWriteHandlers
 {
-    public class UpdateLocationCommandHandler(IRepository<Location> _repository) : IRequestHandler<UpdateLocationCommand>
+    public class UpdateLocationCommandHandler(IRepository<Location> _repository) : IRequestHandler<UpdateLocationCommand,Unit>
     {
-        public async Task Handle(UpdateLocationCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateLocationCommand request, CancellationToken cancellationToken)
         {
             var location = await _repository.GetByIdAsync(request.LocationId);
             if (location == null)
@@ -16,6 +16,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.LocationHandlers.Locat
             }
             location.LocationName = request.LocationName;
             await _repository.UpdateAsync(location);
+            return Unit.Value;
         }
     }
 }
