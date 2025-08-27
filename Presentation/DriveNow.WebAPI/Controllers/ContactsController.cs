@@ -9,29 +9,28 @@ namespace DriveNow.WebAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class ContactsController(
-        CreateContactCommandHandler createContactCommandHandler,
-        UpdateContactCommandHandler updateContactCommandHandler,
-        RemoveContactCommandHandler removeContactCommandHandler,
+        GetContactQueryHandler getContactQueryHandler,
         GetContactByIdQueryHandler getContactByIdQueryHandler,
-        GetContactQueryHandler getContactQueryHandler) : ControllerBase
+        CreateContactCommandHandler createContactCommandHandler,
+        RemoveContactCommandHandler removeContactCommandHandler,
+        UpdateContactCommandHandler updateContactCommandHandler) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetContactList()
+        public async Task<IActionResult> ContactList()
         {
-            var result = await getContactQueryHandler.Handle(new GetContactQuery());
-            return Ok(result);
+            var values = await getContactQueryHandler.Handle(new GetContactQuery());
+            return Ok(values);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactById(Guid id)
         {
-            var result = await getContactByIdQueryHandler.Handle(new GetContactByIdQuery(id));
-
-            if (result == null)
+            var value = await getContactByIdQueryHandler.Handle(new GetContactByIdQuery(id));
+            if (value == null)
             {
                 return NotFound();
             }
-            return Ok(result);
+            return Ok(value);
         }
 
         [HttpPost]
@@ -42,18 +41,15 @@ namespace DriveNow.WebAPI.Controllers
                 return BadRequest("Invalid data.");
             }
 
-            var createdContact = await createContactCommandHandler.Handle(command);
-            return CreatedAtAction(
-                nameof(GetContactById),
-                new { id = createdContact.ContactId },
-                createdContact);
+            await createContactCommandHandler.Handle(command);
+            return Ok("Contact information added successfully.");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveContact(Guid id)
         {
             await removeContactCommandHandler.Handle(new RemoveContactCommand(id));
-            return NoContent();
+            return Ok("Contact information deleted successfully.");
         }
 
         [HttpPut]
@@ -64,14 +60,8 @@ namespace DriveNow.WebAPI.Controllers
                 return BadRequest("Invalid data.");
             }
 
-            var updatedContact = await updateContactCommandHandler.Handle(command);
-
-            if (updatedContact == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(updatedContact);
+            await updateContactCommandHandler.Handle(command);
+            return Ok("Contact information updated successfully.");
         }
     }
 }

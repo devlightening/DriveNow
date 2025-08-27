@@ -20,7 +20,7 @@ namespace DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactWri
                 ContactPhone = command.ContactPhone,
                 ContactMessage = command.ContactMessage,
                 ContactSubject = command.ContactSubject,
-                SendDate = DateTime.UtcNow,
+                SendDate = command.SendDate,
 
             };
             return await _repository.CreateAsync(contact);

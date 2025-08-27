@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DriveNow.Application.Features.CQRS.Commands.ContactCommands
+﻿namespace DriveNow.Application.Features.CQRS.Commands.ContactCommands
 {
     public class CreateContactCommand
     {
@@ -20,5 +18,7 @@ namespace DriveNow.Application.Features.CQRS.Commands.ContactCommands
             ContactMessage = contactMessage;
             SendDate = sendDate;
         }
+
+        public CreateContactCommand() { }
     }
 }
