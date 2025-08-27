@@ -8,7 +8,7 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandler
 {
     public class GetCarsWithBrandQueryHandler(ICarRepository _repository)
     {
-        public async  Task<List<GetCarWithBrandQueryResult>> Handle()
+        public async Task<List<GetCarWithBrandQueryResult>> Handle()
         {
             var values = await _repository.GetCarsListWithBrands();
             return values.Select(x => new GetCarWithBrandQueryResult(
@@ -24,7 +24,8 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandler
                 x.Transmission,
                 x.CarType,
                 x.FuelType,
-                x.DriveType
+                x.DriveType,
+                x.ModelYear
             )).ToList();
         }
     }

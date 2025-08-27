@@ -26,6 +26,7 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarWriteHandle
             car.CarType = command.CarType;
             car.FuelType = command.FuelType;
             car.DriveType = command.DriveType;
+            car.ModelYear = command.ModelYear;
 
             return await _repository.UpdateAsync(car);
         }

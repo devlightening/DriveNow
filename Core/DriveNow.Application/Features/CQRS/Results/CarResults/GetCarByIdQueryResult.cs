@@ -4,20 +4,7 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
 {
     public class GetCarByIdQueryResult
     {
-        public Guid CarId { get; set; }
-        public Guid BrandId { get; set; }
-        public string Model { get; set; }
-        public decimal Kilometer { get; set; }
-        public byte Seat { get; set; }
-        public int Luggage { get; set; }
-        public string CoverImageUrl { get; set; }
-        public string BigImageUrl { get; set; }
-        public TransmissionType Transmission { get; set; }
-        public CarType CarType { get; set; }
-        public FuelType FuelType { get; set; }
-        public DriveTypes DriveType { get; set; }
-
-        public GetCarByIdQueryResult(Guid carId, Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType)
+        public GetCarByIdQueryResult(Guid carId, Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType, int modelYear)
         {
             CarId = carId;
             BrandId = brandId;
@@ -31,7 +18,25 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
             CarType = carType;
             FuelType = fuelType;
             DriveType = driveType;
+            ModelYear = modelYear;
         }
+
+        public Guid CarId { get; set; }
+        public Guid BrandId { get; set; }
+        public string Model { get; set; }
+        public decimal Kilometer { get; set; }
+        public byte Seat { get; set; }
+        public int Luggage { get; set; }
+        public string CoverImageUrl { get; set; }
+        public string BigImageUrl { get; set; }
+        public TransmissionType Transmission { get; set; }
+        public CarType CarType { get; set; }
+        public FuelType FuelType { get; set; }
+        public DriveTypes DriveType { get; set; }
+        public int ModelYear { get; set; }
+
+
+        
 
 
     }

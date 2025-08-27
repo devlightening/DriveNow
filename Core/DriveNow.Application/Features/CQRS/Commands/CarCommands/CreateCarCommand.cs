@@ -16,8 +16,9 @@ namespace DriveNow.Application.Features.CQRS.Commands.CarCommands
         public CarType CarType { get; set; }
         public FuelType FuelType { get; set; }
         public DriveTypes DriveType { get; set; }
+        public int ModelYear { get; set; }
 
-        public CreateCarCommand(Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType)
+        public CreateCarCommand(Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType,int modelYear)
         {
             BrandId = brandId;
             Model = model;
@@ -30,6 +31,7 @@ namespace DriveNow.Application.Features.CQRS.Commands.CarCommands
             CarType = carType;
             FuelType = fuelType;
             DriveType = driveType;
+            ModelYear = modelYear;
         }
     }
 }

@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Domain.Entities
 {
-    public class Category
+    public class Author
     {
-        public Guid CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public Guid AuthorId { get; set; }
+        public string AuthorName { get; set; }
+        public string ImageUrl { get; set; } 
+        public string Description { get; set; }
 
         public List<Blog> Blogs { get; set; }
 

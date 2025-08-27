@@ -4,6 +4,7 @@ using DriveNow.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DriveNow.Persistance.Migrations
 {
     [DbContext(typeof(DriveNowContext))]
-    partial class DriveNowContextModelSnapshot : ModelSnapshot
+    [Migration("20250827211331_mig_2_car_fixed")]
+    partial class mig_2_car_fixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,29 +48,6 @@ namespace DriveNow.Persistance.Migrations
                     b.ToTable("Abouts");
                 });
 
-            modelBuilder.Entity("DriveNow.Domain.Entities.Author", b =>
-                {
-                    b.Property<Guid>("AuthorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AuthorName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AuthorId");
-
-                    b.ToTable("Authors");
-                });
-
             modelBuilder.Entity("DriveNow.Domain.Entities.Banner", b =>
                 {
                     b.Property<Guid>("BannerId")
@@ -93,38 +73,6 @@ namespace DriveNow.Persistance.Migrations
                     b.HasKey("BannerId");
 
                     b.ToTable("Banners");
-                });
-
-            modelBuilder.Entity("DriveNow.Domain.Entities.Blog", b =>
-                {
-                    b.Property<Guid>("BlogId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CoverImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BlogId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("DriveNow.Domain.Entities.Brand", b =>
@@ -456,25 +404,6 @@ namespace DriveNow.Persistance.Migrations
                     b.ToTable("Testimonials");
                 });
 
-            modelBuilder.Entity("DriveNow.Domain.Entities.Blog", b =>
-                {
-                    b.HasOne("DriveNow.Domain.Entities.Author", "Author")
-                        .WithMany("Blogs")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DriveNow.Domain.Entities.Category", "Category")
-                        .WithMany("Blogs")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("DriveNow.Domain.Entities.Car", b =>
                 {
                     b.HasOne("DriveNow.Domain.Entities.Brand", "Brand")
@@ -535,11 +464,6 @@ namespace DriveNow.Persistance.Migrations
                     b.Navigation("Pricing");
                 });
 
-            modelBuilder.Entity("DriveNow.Domain.Entities.Author", b =>
-                {
-                    b.Navigation("Blogs");
-                });
-
             modelBuilder.Entity("DriveNow.Domain.Entities.Brand", b =>
                 {
                     b.Navigation("Cars");
@@ -552,11 +476,6 @@ namespace DriveNow.Persistance.Migrations
                     b.Navigation("CarFeatures");
 
                     b.Navigation("CarPricings");
-                });
-
-            modelBuilder.Entity("DriveNow.Domain.Entities.Category", b =>
-                {
-                    b.Navigation("Blogs");
                 });
 
             modelBuilder.Entity("DriveNow.Domain.Entities.Feature", b =>

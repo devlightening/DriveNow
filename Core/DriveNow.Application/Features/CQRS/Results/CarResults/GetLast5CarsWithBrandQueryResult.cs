@@ -22,10 +22,11 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
         public CarType CarType { get; set; }
         public FuelType FuelType { get; set; }
         public DriveTypes DriveType { get; set; }
+        public int ModelYear { get; set; }
 
         public GetLast5CarsWithBrandQueryResult(Guid carId, Guid brandId, string brandName, string model, decimal kilometer, byte seat,
                                           int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission,
-                                          CarType carType, FuelType fuelType, DriveTypes driveType)
+                                          CarType carType, FuelType fuelType, DriveTypes driveType, int modelYear)
         {
             CarId = carId;
             BrandId = brandId;
@@ -40,6 +41,7 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
             CarType = carType;
             FuelType = fuelType;
             DriveType = driveType;
+            ModelYear = modelYear;
 
 
         }

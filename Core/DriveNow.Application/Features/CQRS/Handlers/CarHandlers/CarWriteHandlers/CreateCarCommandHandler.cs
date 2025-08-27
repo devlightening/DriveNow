@@ -20,7 +20,9 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarWriteHandle
                 Transmission = command.Transmission,
                 CarType = command.CarType,
                 FuelType = command.FuelType,
-                DriveType = command.DriveType
+                DriveType = command.DriveType,
+                ModelYear=command.ModelYear
+
             };
 
             return await _repository.CreateAsync(car);
