@@ -1,0 +1,31 @@
+﻿using DriveNow.Application.Features.CQRS.Results.CarResults;
+using DriveNow.Application.Interfaces.CarInterfaces;
+using DriveNow.Domain.Entities;
+using DriveNow.Domain.Enums;
+using System.Linq;
+
+namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers
+{
+    public class GetCarsWithBrandQueryHandler(ICarResository _repository)
+    {
+        public List<GetCarWithBrandQueryResult> Handle()
+        {
+            var values = _repository.GetLast5CarsWithBrands();
+            return values.Select(x => new GetCarWithBrandQueryResult(
+                x.CarId,
+                x.BrandId,
+                x.Brand.BrandName,
+                x.Model,
+                x.Kilometer,
+                x.Seat,
+                x.Luggage,
+                x.CoverImageUrl,
+                x.BigImageUrl,
+                x.Transmission,
+                x.CarType,
+                x.FuelType,
+                x.DriveType
+            )).ToList();
+        }
+    }
+}

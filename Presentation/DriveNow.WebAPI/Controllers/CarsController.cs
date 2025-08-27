@@ -3,6 +3,8 @@ using DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarWriteHandlers;
 using DriveNow.Application.Features.CQRS.Queries.CarQueries;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace DriveNow.WebAPI.Controllers
 {
@@ -15,7 +17,9 @@ namespace DriveNow.WebAPI.Controllers
         GetCarByIdQueryHandler _getCarByIdQueryHandler,
         GetCarQueryHandler _getCarQueryHandler,
         GetCarWithBrandQueryHandler _getCarWithBrandQueryHandler,
-        GetCarsByBrandQueryHandler _getCarsByBrandQueryHandler) : ControllerBase
+        GetCarsByBrandQueryHandler _getCarsByBrandQueryHandler,
+        GetLast5CarsWithBrandQueryHandler _getLast5CarsWithBrandQueryHandler) : ControllerBase
+
     {
         [HttpGet]
         public async Task<IActionResult> CarList()
@@ -91,6 +95,13 @@ namespace DriveNow.WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetCarWithBrand")]
+        public IActionResult GetCarWithBrand()
+        {
+            var values = _getCarsByBrandQueryHandler.Handle();
+            return Ok(values);
+        }
+
         [HttpGet("GetCarsByBrand/{brandId}")]
         public async Task<IActionResult> GetCarsByBrand(Guid brandId)
         {
@@ -103,6 +114,14 @@ namespace DriveNow.WebAPI.Controllers
             }
 
             return Ok(result);
+        }
+
+
+        [HttpGet("GetLast5CarsWithBrandQueryHandler")]
+        public IActionResult GetLast5CarsWithBrandQueryHandler()
+        {
+            var values = _getLast5CarsWithBrandQueryHandler.Handle();
+            return Ok(values);
         }
     }
 }
