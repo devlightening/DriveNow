@@ -27,7 +27,7 @@ builder.Services.AddDbContext<DriveNowContext>(opt =>
 
 // `IRepository<T>` için jenerik kayýt
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<ICarResository, CarResository>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
 
 // Handler'larý  tek tek kaydederek devam ediyoruz.
 builder.Services.AddScoped<GetAboutQueryHandler>();
@@ -55,6 +55,9 @@ builder.Services.AddScoped<RemoveCarCommandHandler>();
 builder.Services.AddScoped<UpdateCarCommandHandler>();
 builder.Services.AddScoped<GetCarWithBrandQueryHandler>();
 builder.Services.AddScoped<GetCarsByBrandQueryHandler>();
+builder.Services.AddScoped<GetLast5CarsWithBrandQueryHandler>();
+builder.Services.AddScoped<GetCarsWithBrandQueryHandler>();    
+
 
 builder.Services.AddScoped<GetCategoryQueryHandler>();
 builder.Services.AddScoped<GetCategoryByIdQueryHandler>();

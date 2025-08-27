@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Application.Interfaces.CarInterfaces
 {
-    public interface ICarResository
+    public interface ICarRepository
     {
         Task<List<Car>> GetCarListWithBrandsAsync();
         Task<Car> GetCarWithBrandAsync(Guid id);
         Task<List<Car>> GetCarsByBrandIdAsync(Guid brandId);
-        List<Car> GetCarsListWithBrands();
-        List<Car> GetLast5CarsWithBrands();
+        Task<List<Car>> GetCarsListWithBrands();
+        Task<List<Car>> GetLast5CarsWithBrands();
         int GetCarCount();
     }
 }

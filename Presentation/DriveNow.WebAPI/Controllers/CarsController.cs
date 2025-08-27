@@ -2,6 +2,7 @@
 using DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarWriteHandlers;
 using DriveNow.Application.Features.CQRS.Queries.CarQueries;
+using DriveNow.Application.Features.CQRS.Results.CarResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -17,7 +18,6 @@ namespace DriveNow.WebAPI.Controllers
         GetCarByIdQueryHandler _getCarByIdQueryHandler,
         GetCarQueryHandler _getCarQueryHandler,
         GetCarWithBrandQueryHandler _getCarWithBrandQueryHandler,
-        GetCarsByBrandQueryHandler _getCarsByBrandQueryHandler,
         GetLast5CarsWithBrandQueryHandler _getLast5CarsWithBrandQueryHandler) : ControllerBase
 
     {
@@ -81,46 +81,21 @@ namespace DriveNow.WebAPI.Controllers
             return Ok(updatedCar);
         }
 
-        [HttpGet("GetCarWithBrand/{id}")]
-        public async Task<IActionResult> GetCarWithBrand(Guid id)
-        {
-            var query = new GetCarWithBrandQuery(id);
-            var result = await _getCarWithBrandQueryHandler.Handle(query);
 
-            if (result == null)
-            {
-                return NotFound($"Car with ID {id} not found.");
-            }
-
-            return Ok(result);
-        }
-
+       
         [HttpGet("GetCarWithBrand")]
-        public IActionResult GetCarWithBrand()
+        public async Task<IActionResult> GetCarWithBrand()
         {
-            var values = _getCarsByBrandQueryHandler.Handle();
-            return Ok(values);
+            // Parametre göndermeden çağırın
+            var value = await _getCarWithBrandQueryHandler.Handle();
+            return Ok(value);
         }
 
-        [HttpGet("GetCarsByBrand/{brandId}")]
-        public async Task<IActionResult> GetCarsByBrand(Guid brandId)
+        [HttpGet("GetLast5CarsWithBrands")]
+        public async Task<IActionResult> GetLast5CarsWithBrands()
         {
-            var query = new GetCarsByBrandQuery(brandId);
-            var result = await _getCarsByBrandQueryHandler.Handle(query);
-
-            if (result == null || !result.Any())
-            {
-                return NotFound($"No cars found for brand ID {brandId}.");
-            }
-
-            return Ok(result);
-        }
-
-
-        [HttpGet("GetLast5CarsWithBrandQueryHandler")]
-        public IActionResult GetLast5CarsWithBrandQueryHandler()
-        {
-            var values = _getLast5CarsWithBrandQueryHandler.Handle();
+            // Parametre göndermeden çağırın
+            var values = await _getLast5CarsWithBrandQueryHandler.Handle();
             return Ok(values);
         }
     }

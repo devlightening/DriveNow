@@ -2,14 +2,15 @@
 using DriveNow.Application.Interfaces.CarInterfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers
 {
-    public class GetLast5CarsWithBrandQueryHandler(ICarResository _repository)
+    public class GetLast5CarsWithBrandQueryHandler(ICarRepository _repository)
     {
-        public List<GetCarWithBrandQueryResult> Handle()
+        public async Task<List<GetCarWithBrandQueryResult>> Handle()
         {
-            var values = _repository.GetLast5CarsWithBrands();
+            var values =await  _repository.GetLast5CarsWithBrands();
             return values.Select(x => new GetCarWithBrandQueryResult(
                 x.CarId,
                 x.BrandId,

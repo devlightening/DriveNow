@@ -6,21 +6,21 @@ using DriveNow.Domain.Entities;
 
 namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers
 {
-    public class GetCarsByBrandQueryHandler(ICarResository _repository)
+    public class GetCarsByBrandQueryHandler(ICarRepository _repository)
     {
-        public async Task<List<GetCarWithBrandQueryResult>> Handle(GetCarsByBrandQuery request)
+        public async Task<List<GetCarWithBrandQueryResult>> Handle()
         {
-   
-            var cars = await _repository.GetCarsByBrandIdAsync(request.BrandId);
 
- 
-            if (cars == null)
+            var values = await _repository.GetCarsListWithBrands();
+
+
+            if (values == null)
             {
                 return new List<GetCarWithBrandQueryResult>();
             }
 
-            // Araç listesini DTO listesine dönüştür.
-            return cars.Select(car => new GetCarWithBrandQueryResult(
+           
+            return values.Select(car => new GetCarWithBrandQueryResult(
                 car.CarId,
                 car.BrandId,
                 car.Brand?.BrandName,

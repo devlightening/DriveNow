@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers
 {
-    public class GetCarsWithBrandQueryHandler(ICarResository _repository)
+    public class GetCarsWithBrandQueryHandler(ICarRepository _repository)
     {
-        public List<GetCarWithBrandQueryResult> Handle()
+        public async  Task<List<GetCarWithBrandQueryResult>> Handle()
         {
-            var values = _repository.GetLast5CarsWithBrands();
+            var values = await _repository.GetCarsListWithBrands();
             return values.Select(x => new GetCarWithBrandQueryResult(
                 x.CarId,
                 x.BrandId,

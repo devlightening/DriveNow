@@ -2,15 +2,10 @@
 using DriveNow.Domain.Entities;
 using DriveNow.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DriveNow.Persistance.Repositories.CarRepositories
 {
-    public class CarResository(DriveNowContext _context) : ICarResository
+    public class CarRepository(DriveNowContext _context) : ICarRepository
     {
       
         public async Task<Car> GetCarWithBrandAsync(Guid id)
@@ -43,12 +38,12 @@ namespace DriveNow.Persistance.Repositories.CarRepositories
             return value;
         }
 
-        public List<Car> GetCarsListWithBrands()
+        public async Task<List<Car>> GetCarsListWithBrands()
         {
-            var values = _context.Cars.Include(x => x.Brand).ToList();
+            var values =  _context.Cars.Include(x => x.Brand).ToList();
             return values;
         }
-        public List<Car> GetLast5CarsWithBrands()
+        public async Task<List<Car>> GetLast5CarsWithBrands()
         {
             var values = _context.Cars.Include(x => x.Brand).OrderByDescending(x => x.CarId).Take(5).ToList();
             return values;
