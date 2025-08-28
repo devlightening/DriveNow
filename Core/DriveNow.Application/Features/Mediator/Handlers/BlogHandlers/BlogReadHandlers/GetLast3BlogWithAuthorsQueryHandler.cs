@@ -1,14 +1,7 @@
 ﻿using DriveNow.Application.Features.Mediator.Queries.BlogQueries;
 using DriveNow.Application.Features.Mediator.Results.BlogResults;
-using DriveNow.Application.Interfaces;
 using DriveNow.Application.Interfaces.BlogInterfaces;
-using DriveNow.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.BlogHandlers.BlogReadHandlers
 {

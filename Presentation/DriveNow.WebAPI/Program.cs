@@ -11,10 +11,12 @@ using DriveNow.Application.Features.CQRS.Handlers.CategoryHandlers.CategoryWrite
 using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactWriteHandlers;
 using DriveNow.Application.Interfaces;
+using DriveNow.Application.Interfaces.BlogInterfaces;
 using DriveNow.Application.Interfaces.CarInterfaces;
 using DriveNow.Application.Services;
 using DriveNow.Persistance.Context;
 using DriveNow.Persistance.Repositories;
+using DriveNow.Persistance.Repositories.BlogRepositories;
 using DriveNow.Persistance.Repositories.CarRepositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,7 @@ builder.Services.AddDbContext<DriveNowContext>(opt =>
 // `IRepository<T>` için jenerik kayýt
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 
 // Handler'larý  tek tek kaydederek devam ediyoruz.
 builder.Services.AddScoped<GetAboutQueryHandler>();

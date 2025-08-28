@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DriveNow.Dtos.BlogDtos
 {
-    internal class ResultBlogDto
+    public class ResultBlogDto
     {
     }
 }
