@@ -9,7 +9,8 @@ namespace DriveNow.WebUI.Controllers
     {
         public IActionResult Index()
         {
-
+            ViewBag.v1 = "Services";
+            ViewBag.v2 = "Our Services";
             return View();
 
         }
