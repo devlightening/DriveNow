@@ -18,7 +18,8 @@ namespace DriveNow.WebAPI.Controllers
         GetCarByIdQueryHandler _getCarByIdQueryHandler,
         GetCarQueryHandler _getCarQueryHandler,
         GetCarWithBrandQueryHandler _getCarWithBrandQueryHandler,
-        GetLast5CarsWithBrandQueryHandler _getLast5CarsWithBrandQueryHandler) : ControllerBase
+        GetLast5CarsWithBrandQueryHandler _getLast5CarsWithBrandQueryHandler,
+        GetCarWithPricingQueryHandler _getCarWithPricingQueryHandler) : ControllerBase
 
     {
         [HttpGet]
@@ -86,7 +87,7 @@ namespace DriveNow.WebAPI.Controllers
         [HttpGet("GetCarWithBrand")]
         public async Task<IActionResult> GetCarWithBrand()
         {
-            // Parametre göndermeden çağırın
+            
             var value = await _getCarWithBrandQueryHandler.Handle();
             return Ok(value);
         }
@@ -94,8 +95,16 @@ namespace DriveNow.WebAPI.Controllers
         [HttpGet("GetLast5CarsWithBrands")]
         public async Task<IActionResult> GetLast5CarsWithBrands()
         {
-            // Parametre göndermeden çağırın
+         
             var values = await _getLast5CarsWithBrandQueryHandler.Handle();
+            return Ok(values);
+        }
+
+        [HttpGet("GetCarWithPricingList")]
+        public async Task<IActionResult> GetCarWithPricingList()
+        {
+            
+            var values = await _getCarWithPricingQueryHandler.Handle();
             return Ok(values);
         }
     }

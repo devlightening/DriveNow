@@ -60,6 +60,7 @@ builder.Services.AddScoped<GetCarWithBrandQueryHandler>();
 builder.Services.AddScoped<GetCarsByBrandQueryHandler>();
 builder.Services.AddScoped<GetLast5CarsWithBrandQueryHandler>();
 builder.Services.AddScoped<GetCarsWithBrandQueryHandler>();    
+builder.Services.AddScoped<GetCarWithPricingQueryHandler>();    
 
 
 builder.Services.AddScoped<GetCategoryQueryHandler>();
