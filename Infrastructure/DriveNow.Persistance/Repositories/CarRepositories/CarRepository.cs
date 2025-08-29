@@ -48,15 +48,6 @@ namespace DriveNow.Persistance.Repositories.CarRepositories
             var values = _context.Cars.Include(x => x.Brand).OrderByDescending(x => x.CarId).Take(5).ToList();
             return values;
         }
-  public async Task<List<Car>> GetCarsWithPricings()
-        {
-            var values = await _context.Cars
-                .Include(x => x.Brand)
-                .Include(y => y.CarPricings)
-                .ThenInclude(z => z.Pricing)
-                .ToListAsync();
-            return values;
-        }
       
     }
 }

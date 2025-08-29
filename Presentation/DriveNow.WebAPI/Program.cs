@@ -13,10 +13,12 @@ using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactWriteHa
 using DriveNow.Application.Interfaces;
 using DriveNow.Application.Interfaces.BlogInterfaces;
 using DriveNow.Application.Interfaces.CarInterfaces;
+using DriveNow.Application.Interfaces.CarPricingInterfaces;
 using DriveNow.Application.Services;
 using DriveNow.Persistance.Context;
 using DriveNow.Persistance.Repositories;
 using DriveNow.Persistance.Repositories.BlogRepositories;
+using DriveNow.Persistance.Repositories.CarPricingRepositories;
 using DriveNow.Persistance.Repositories.CarRepositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +33,7 @@ builder.Services.AddDbContext<DriveNowContext>(opt =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+builder.Services.AddScoped<ICarPricingRepository, CarPricingRepository>();
 
 // Handler'larý  tek tek kaydederek devam ediyoruz.
 builder.Services.AddScoped<GetAboutQueryHandler>();
@@ -60,7 +63,6 @@ builder.Services.AddScoped<GetCarWithBrandQueryHandler>();
 builder.Services.AddScoped<GetCarsByBrandQueryHandler>();
 builder.Services.AddScoped<GetLast5CarsWithBrandQueryHandler>();
 builder.Services.AddScoped<GetCarsWithBrandQueryHandler>();    
-builder.Services.AddScoped<GetCarWithPricingQueryHandler>();    
 
 
 builder.Services.AddScoped<GetCategoryQueryHandler>();
