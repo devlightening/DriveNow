@@ -27,6 +27,8 @@ namespace DriveNow.WebUI.Controllers
 
         public  async Task<IActionResult> BlogDetail(Guid id)
         {
+            ViewBag.v1 = "Blogs";
+            ViewBag.v2 = "Blog Details and Comments";
             return View();
         
         }
