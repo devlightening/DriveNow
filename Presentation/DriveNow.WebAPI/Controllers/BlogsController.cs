@@ -62,5 +62,14 @@ namespace DriveNow.WebAPI.Controllers
             var values = await _mediator.Send(new GetLast3BlogWithAuthorsQuery());
             return Ok(values);
         }
+
+        [HttpGet("GetAllBlogsWithAuthorList")]
+        public async Task<IActionResult> GetAllBlogsWithAuthorList()
+        {
+            var values = await _mediator.Send(new GetAllBlogsWithAuthorQuery());
+            return Ok(values);
+        }
+
+
     }
 }

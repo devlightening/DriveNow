@@ -14,12 +14,16 @@ namespace DriveNow.Persistance.Repositories.CarPricingRepositories
     {
         public async Task<List<CarPricing>> GetCarPricingWithCars()
         {
-         
+            
+            Guid dailyPricingId = Guid.Parse("b752e876-15fc-401e-a099-d8fa58890ee2");
+
             var values = await _context.CarPricings
                                        .Include(cp => cp.Car)
                                        .ThenInclude(c => c.Brand)
                                        .Include(cp => cp.Pricing)
-                                       .ToListAsync();
+                                       .Where(cp => cp.PricingId == dailyPricingId)
+                                       .ToListAsync(); 
+
             return values;
         }
     }
