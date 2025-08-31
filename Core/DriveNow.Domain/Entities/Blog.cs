@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace DriveNow.Domain.Entities
 {
@@ -17,7 +13,7 @@ namespace DriveNow.Domain.Entities
         public DateTime CreatedDate { get; set; }
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }
-
+        public ICollection<CloudTagByBlog> CloudTagByBlogs { get; set; }
 
 
     }

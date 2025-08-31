@@ -30,6 +30,7 @@ namespace DriveNow.Persistance.Context
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Paragraph> Paragraphs { get; set; }
+        public DbSet<CloudTagByBlog> CloudTagByBlogs { get; set; }
 
         
     }
