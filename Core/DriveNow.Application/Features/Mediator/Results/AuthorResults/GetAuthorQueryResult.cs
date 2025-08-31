@@ -20,5 +20,6 @@ namespace DriveNow.Application.Features.Mediator.Results.AuthorResults
         public string AuthorName { get; set; }
         public string ImageUrl { get; set; }
         public string Description { get; set; }
+
     }
 }
