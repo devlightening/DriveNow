@@ -1,0 +1,54 @@
+﻿
+@model List<ResultBlogSideBarParagraphBoxDto>
+
+<div class="sidebar-box ftco-animate">
+    <div id="dynamic-paragraph-content">
+    </div>
+</div>
+
+<script>
+     // Default.cshtml dosyasındaki script
+    document.addEventListener("DOMContentLoaded", function () {
+        const paragraphContainer = document.getElementById('dynamic-paragraph-content');
+        const paragraphs = @Html.Raw(Json.Serialize(Model));
+        let currentIndex = 0;
+
+        function displayParagraph(index) {
+            if (!paragraphs || paragraphs.length === 0) {
+                paragraphContainer.innerHTML = "<p>No content available.</p>";
+                return;
+            }
+
+            const currentParagraph = paragraphs[index];
+
+            // Tarih formatlama kontrolü
+            let formattedDate = 'Tarih bilgisi yok';
+            if (currentParagraph.legendDate) {
+                // API'den gelen string formatını Date nesnesine çeviriyoruz
+                const date = new Date(currentParagraph.legendDate);
+                if (!isNaN(date)) {
+                    // toLocaleDateString() ile daha okunabilir bir format elde ediyoruz.
+                    formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
+            }
+
+            // Resim URL'si kontrolü
+            const coverImageUrl = currentParagraph.coverImageUrl || 'placeholder.jpg'; // Geçerli bir yedek resim yolu girin
+
+            // HTML içeriğini oluşturma
+            paragraphContainer.innerHTML = `
+                <h3>${currentParagraph.legendName}</h3>
+                <p>${currentParagraph.description}</p>
+                <p>Date of Death: ${formattedDate}</p>
+                <img src="${coverImageUrl}" alt="${currentParagraph.legendName}" style="width:100%; height:auto;" />
+            `;
+        }
+
+        displayParagraph(currentIndex);
+
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % paragraphs.length;
+            displayParagraph(currentIndex);
+        }, 10000);
+    });
+</script>
