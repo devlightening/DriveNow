@@ -1,36 +1,73 @@
-﻿<div class="sidebar-box ftco-animate">
+﻿@model List<ResultBlogDto>
+
+<style>
+    .blog-carousel-wrapper {
+        height: 480px;
+        overflow: hidden;
+    }
+
+    .blog-carousel-content {
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.8s ease-in-out;
+    }
+
+    .blog-item {
+        margin-bottom: 20px;
+        flex-shrink: 0;
+        height: 140px;
+    }
+
+    .blog-img {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+</style>
+
+<div class="sidebar-box ftco-animate">
     <h3>Recent Blog</h3>
-    <div class="block-21 mb-4 d-flex">
-        <a class="blog-img mr-4" style="background-image: url(images/image_1.jpg);"></a>
-        <div class="text">
-            <h3 class="heading"><a href="#">Why Lead Generation is Key for Business Growth</a></h3>
-            <div class="meta">
-                <div><a href="#"><span class="icon-calendar"></span>Oct. 29, 2019</a></div>
-                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-            </div>
-        </div>
-    </div>
-    <div class="block-21 mb-4 d-flex">
-        <a class="blog-img mr-4" style="background-image: url(images/image_2.jpg);"></a>
-        <div class="text">
-            <h3 class="heading"><a href="#">Why Lead Generation is Key for Business Growth</a></h3>
-            <div class="meta">
-                <div><a href="#"><span class="icon-calendar"></span>Oct. 29, 2019</a></div>
-                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-            </div>
-        </div>
-    </div>
-    <div class="block-21 mb-4 d-flex">
-        <a class="blog-img mr-4" style="background-image: url(images/image_3.jpg);"></a>
-        <div class="text">
-            <h3 class="heading"><a href="#">Why Lead Generation is Key for Business Growth</a></h3>
-            <div class="meta">
-                <div><a href="#"><span class="icon-calendar"></span>Oct. 29, 2019</a></div>
-                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-            </div>
+    <div class="blog-carousel-wrapper">
+        <div class="blog-carousel-content">
+            @foreach (var item in Model)
+            {
+                <div class="blog-item block-21 d-flex">
+                    <a class="blog-img mr-4" style="background-image: url(@item.CoverImageUrl);"></a>
+                    <div class="text">
+                        <h3 class="heading"><a href="#">@item.Title</a></h3>
+                        <div class="meta">
+                            <div><a href="#"><span class="icon-calendar"></span>@item.CreatedDate.ToShortDateString()</a></div>
+                            <div><a href="#"><span class="icon-person"></span> @item.AuthorName</a></div>
+                            <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+                        </div>
+                    </div>
+                </div>
+            }ç
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const wrapper = document.querySelector('.blog-carousel-wrapper');
+        const content = document.querySelector('.blog-carousel-content');
+        const blogItems = document.querySelectorAll('.blog-item');
+        const totalItems = blogItems.length;
+        const itemsPerSlide = 3;
+        const itemHeight = blogItems[0] ? blogItems[0].offsetHeight + 20 : 160;
+
+        if (totalItems > itemsPerSlide) {
+            let currentIndex = 0;
+            setInterval(function() {
+                currentIndex = (currentIndex + 1);
+
+                if (currentIndex >= totalItems - (itemsPerSlide - 1)) {
+                    currentIndex = 0;
+                }
+
+                const translateYValue = -currentIndex * itemHeight;
+                content.style.transform = `translateY(${translateYValue}px)`;
+            }, 10000);
+        }
+    });
+</script>

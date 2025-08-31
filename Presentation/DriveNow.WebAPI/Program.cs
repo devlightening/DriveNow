@@ -11,6 +11,7 @@ using DriveNow.Application.Features.CQRS.Handlers.CategoryHandlers.CategoryWrite
 using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.ContactHadnlers.ContactWriteHandlers;
 using DriveNow.Application.Interfaces;
+using DriveNow.Application.Interfaces.BlogContentInterfaces;
 using DriveNow.Application.Interfaces.BlogInterfaces;
 using DriveNow.Application.Interfaces.CarInterfaces;
 using DriveNow.Application.Interfaces.CarPricingInterfaces;
@@ -18,6 +19,7 @@ using DriveNow.Application.Interfaces.CloudTagByBlogInterfaces;
 using DriveNow.Application.Services;
 using DriveNow.Persistance.Context;
 using DriveNow.Persistance.Repositories;
+using DriveNow.Persistance.Repositories.BlogContentRepositories;
 using DriveNow.Persistance.Repositories.BlogRepositories;
 using DriveNow.Persistance.Repositories.CarPricingRepositories;
 using DriveNow.Persistance.Repositories.CarRepositories;
@@ -37,6 +39,7 @@ builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 builder.Services.AddScoped<ICarPricingRepository, CarPricingRepository>();
 builder.Services.AddScoped<ICloudTagByBlogRepository, CloudTagByBlogRepository>();
+builder.Services.AddScoped<IBlogContentRepository, BlogContentRepository>();
 
 // Handler'larý  tek tek kaydederek devam ediyoruz.
 builder.Services.AddScoped<GetAboutQueryHandler>();

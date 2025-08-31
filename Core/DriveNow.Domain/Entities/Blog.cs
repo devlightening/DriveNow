@@ -14,7 +14,7 @@ namespace DriveNow.Domain.Entities
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }
         public ICollection<CloudTagByBlog> CloudTagByBlogs { get; set; }
-
+        public ICollection<BlogContent> BlogContents { get; set; }
 
     }
 }

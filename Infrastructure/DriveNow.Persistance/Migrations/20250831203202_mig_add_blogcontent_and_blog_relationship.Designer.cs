@@ -4,6 +4,7 @@ using DriveNow.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DriveNow.Persistance.Migrations
 {
     [DbContext(typeof(DriveNowContext))]
-    partial class DriveNowContextModelSnapshot : ModelSnapshot
+    [Migration("20250831203202_mig_add_blogcontent_and_blog_relationship")]
+    partial class mig_add_blogcontent_and_blog_relationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
