@@ -37,15 +37,12 @@ namespace DriveNow.WebUI.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                // Not: "GetBlogByIdQueryResult" adını kullanarak API'den gelen veriyi
-                // uygun DTO'ya dönüştürüyoruz.
+               
                 var values = JsonConvert.DeserializeObject<GetBlogByIdQueryResultDto>(jsonData);
 
-                // Veriyi doğrudan View'e model olarak gönderiyoruz.
+               
                 return View(values);
             }
-
-            // İstek başarısız olursa veya veri bulunamazsa 404 Not Found döndür.
             return NotFound();
 
         }

@@ -33,7 +33,18 @@ namespace DriveNow.Persistance.Context
         public DbSet<CloudTagByBlog> CloudTagByBlogs { get; set; }
         public DbSet<BlogContent> BlogContents { get; set; }
         public DbSet<BlogCloudTagByBlog> BlogCloudTagByBlogs { get; set; }
+        public DbSet<TagCloud> TagClouds { get; set; }
 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BlogCloudTagByBlog>()

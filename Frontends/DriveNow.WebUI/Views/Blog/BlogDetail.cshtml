@@ -20,7 +20,10 @@
                 @await Component.InvokeAsync("_BlogDetailSideBarSearchBoxCompenentPartial")
                 @await Component.InvokeAsync("_BlogDetailSideBarCategoryListBoxCompenentPartial")
                 @await Component.InvokeAsync("_BlogDetailSideBarRecentBlogsCompenentPartial")
-                @await Component.InvokeAsync("_BlogDetailTagCloudCompenentPartial")
+
+                @* Hatanın kaynağı burası: "id" yerine "blogId" parametresini kullanın *@
+                @await Component.InvokeAsync("_BlogDetailTagCloudCompenentPartial", new { blogId = Model.BlogId })
+
                 @await Component.InvokeAsync("_ParagraphBlogDetailSideBarCompenentPartial")
             </div>
         </div>
