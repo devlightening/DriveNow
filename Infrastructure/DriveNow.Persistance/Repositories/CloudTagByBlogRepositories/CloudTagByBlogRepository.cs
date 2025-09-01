@@ -16,13 +16,13 @@ namespace DriveNow.Persistance.Repositories.CloudTagByBlogRepositories
 
         public async Task<List<CloudTagByBlog>> GetTagsByBlogIdAsync(Guid blogId)
         {
-           
-            var blogWithTags = await _context.Blogs
-                .Include(b => b.CloudTagByBlogs)
-                .FirstOrDefaultAsync(b => b.BlogId == blogId);
+            var tags = await _context.BlogCloudTagByBlogs // Ara tablo üzerinden sorgulayın
+                .Include(bt => bt.CloudTagByBlog) // Ara tablo üzerinden etiket entity'sine erişin
+                .Where(bt => bt.BlogId == blogId) // Belirli blog ID'sine göre filtreleyin
+                .Select(bt => bt.CloudTagByBlog) // Sadece etiketleri seçin
+                .ToListAsync();
 
-            
-            return blogWithTags?.CloudTagByBlogs.ToList() ?? new List<CloudTagByBlog>();
+            return tags;
         }
     }
 }

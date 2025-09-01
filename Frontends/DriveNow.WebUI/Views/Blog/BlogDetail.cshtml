@@ -1,35 +1,28 @@
-﻿
+﻿@model GetBlogByIdQueryResultDto
+
 @{
     ViewData["Title"] = "BlogDetail";
     Layout = "~/Views/UILayout/Index.cshtml";
-    //BlogDetail Index
 }
 
 <section class="ftco-section ftco-degree-bg">
     <div class="container">
         <div class="row">
 
-            @await Component.InvokeAsync("_BlogDetailMainCompenentPartial")
+            @* Blog ana içeriğini çağırırken BlogId'yi parametre olarak gönderiyoruz *@
+            @await Component.InvokeAsync("_BlogDetailMainCompenentPartial", new { id = Model.BlogId })
 
             <div class="col-md-4 sidebar ftco-animate">
 
+                @* Etiketleri çağırırken BlogId'yi doğrudan ana modelden alıp gönderiyoruz *@
+                @await Component.InvokeAsync("_BlogDetailCloudTagByBlogCompenentPartial", new { blogId = Model.BlogId })
+
                 @await Component.InvokeAsync("_BlogDetailSideBarSearchBoxCompenentPartial")
-
-
                 @await Component.InvokeAsync("_BlogDetailSideBarCategoryListBoxCompenentPartial")
-
-
                 @await Component.InvokeAsync("_BlogDetailSideBarRecentBlogsCompenentPartial")
-
-
                 @await Component.InvokeAsync("_BlogDetailTagCloudCompenentPartial")
-
                 @await Component.InvokeAsync("_ParagraphBlogDetailSideBarCompenentPartial")
-
-
             </div>
-
         </div>
     </div>
-</section> <!-- .section --> 
-
+</section>
