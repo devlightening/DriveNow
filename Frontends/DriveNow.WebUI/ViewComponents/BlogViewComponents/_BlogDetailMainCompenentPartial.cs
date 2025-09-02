@@ -9,13 +9,16 @@ namespace DriveNow.WebUI.ViewComponents.BlogViewComponents
         public async Task<IViewComponentResult> InvokeAsync(Guid id)
         {
             var client = _httpClientFactory.CreateClient();
+
+
             var responseMessage = await client.GetAsync($"https://localhost:7031/api/BlogContents/GetBlogContentsByBlogId/{id}");
 
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
                 var values = JsonConvert.DeserializeObject<List<ResultBlogContentByBlogIdDto>>(jsonData);
-                return View(values);
+
+                return View(values ?? new List<ResultBlogContentByBlogIdDto>());
             }
 
             return View(new List<ResultBlogContentByBlogIdDto>());

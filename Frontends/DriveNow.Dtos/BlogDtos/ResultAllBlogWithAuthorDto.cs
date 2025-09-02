@@ -18,5 +18,6 @@ namespace DriveNow.Dtos.BlogDtos
         public DateTime CreatedDate { get; set; }
         public Guid CategoryId { get; set; }
 
+
     }
 }

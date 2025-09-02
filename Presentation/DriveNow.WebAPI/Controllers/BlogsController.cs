@@ -71,5 +71,12 @@ namespace DriveNow.WebAPI.Controllers
         }
 
 
+        [HttpGet("GetBlogByAuthorId/{authorId}")]
+        public async Task<IActionResult> GetBlogByAuthorId(Guid authorId)
+        {
+            var values = await _mediator.Send(new GetBlogByAuthorIdQuery(authorId));
+            return Ok(values);
+        }
+
     }
 }

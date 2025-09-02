@@ -12,7 +12,7 @@ namespace DriveNow.WebUI.ViewComponents.CloudTagByBlogViewComponents
         public async Task<IViewComponentResult> InvokeAsync(Guid blogId) 
         {
             HttpClient client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:7031/api/CloudTagByBlogs/GetByBlogId/{blogId}"); // Doğru endpoint'i çağırın
+            var responseMessage = await client.GetAsync($"https://localhost:7031/api/CloudTagByBlogs/GetByBlogId/{blogId}"); 
 
             if (responseMessage.IsSuccessStatusCode)
             {

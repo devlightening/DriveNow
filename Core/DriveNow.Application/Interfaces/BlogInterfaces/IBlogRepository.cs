@@ -7,6 +7,7 @@ namespace DriveNow.Application.Interfaces.BlogInterfaces
     {
         public Task<List<Blog>> GetLast3BlogWithAuthors();
         public Task<List<Blog>> GetAllBlogWithAuthors();
+        public List<Blog> GetBlogByAuthorId(Guid id);
 
     }
 }

@@ -9,23 +9,30 @@
     <div class="container">
         <div class="row">
 
-            @* Blog ana içeriğini çağırırken BlogId'yi parametre olarak gönderiyoruz *@
-            @await Component.InvokeAsync("_BlogDetailMainCompenentPartial", new { id = Model.BlogId })
+            <div class="col-md-8 ftco-animate">
+                @* 1. Blog ana içeriğini çağırın *@
+                @await Component.InvokeAsync("_BlogDetailMainCompenentPartial", new { id = Model.BlogId })
+
+                <div class="pt-5 mt-5">
+                    <h3 class="mb-5">Author</h3>
+                    @await Component.InvokeAsync("_BlogDetailAuthorAboutCompenentPartial", new { blogId = Model.BlogId })
+
+                    <h3 class="mb-5">Comments</h3>
+                    @await Component.InvokeAsync("_CommentListByBlogCompenentPartial", new { blogId = Model.BlogId })
+                    @await Component.InvokeAsync("_AddCommentCompenentPartial", new { blogId = Model.BlogId })
+                </div>
+            </div>
 
             <div class="col-md-4 sidebar ftco-animate">
-
-                @* Etiketleri çağırırken BlogId'yi doğrudan ana modelden alıp gönderiyoruz *@
+                @* 3. Sidebar bileşenlerini çağırın *@
                 @await Component.InvokeAsync("_BlogDetailCloudTagByBlogCompenentPartial", new { blogId = Model.BlogId })
-
                 @await Component.InvokeAsync("_BlogDetailSideBarSearchBoxCompenentPartial")
                 @await Component.InvokeAsync("_BlogDetailSideBarCategoryListBoxCompenentPartial")
                 @await Component.InvokeAsync("_BlogDetailSideBarRecentBlogsCompenentPartial")
-
-                @* Hatanın kaynağı burası: "id" yerine "blogId" parametresini kullanın *@
                 @await Component.InvokeAsync("_BlogDetailTagCloudCompenentPartial", new { blogId = Model.BlogId })
-
                 @await Component.InvokeAsync("_ParagraphBlogDetailSideBarCompenentPartial")
             </div>
+
         </div>
     </div>
 </section>
