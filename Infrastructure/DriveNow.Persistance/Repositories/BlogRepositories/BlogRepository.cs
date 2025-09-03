@@ -15,10 +15,12 @@ namespace DriveNow.Persistance.Repositories.BlogRepositories
                                  .ToListAsync();
         }
 
-        public List<Blog> GetBlogByAuthorId(Guid id)
+        public async Task<Blog?> GetBlogByAuthorId(Guid id)
         {
-            var values = _context.Blogs.Include(x => x.Author).Where(y => y.BlogId == id).ToList();
-            return values;
+            var value = await _context.Blogs
+                                      .Include(x => x.Author)
+                                      .FirstOrDefaultAsync(y => y.AuthorId == id);
+            return value;
         }
 
         public async Task<List<Blog>> GetLast3BlogWithAuthors()

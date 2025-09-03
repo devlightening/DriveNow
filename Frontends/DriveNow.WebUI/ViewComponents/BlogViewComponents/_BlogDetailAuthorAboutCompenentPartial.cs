@@ -1,5 +1,4 @@
 ﻿using DriveNow.Dtos.AuthorDtos;
-using DriveNow.Dtos.BlogDtos;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -16,11 +15,17 @@ namespace DriveNow.WebUI.ViewComponents.BlogViewComponents
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
 
+              
+                var authors = JsonConvert.DeserializeObject<List<GetAuthorByBlogAuthorIdDto>>(jsonData);
 
-                var blogDetails = JsonConvert.DeserializeObject<List<GetAuthorByBlogAuthorIdDto>>(jsonData);
-                return View(blogDetails);
+             
+                if (authors != null && authors.Any())
+                {
+                    return View(authors.FirstOrDefault());
+                }
             }
 
+         
             return View(new GetAuthorByBlogAuthorIdDto());
         }
     }

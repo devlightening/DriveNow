@@ -34,6 +34,7 @@ namespace DriveNow.Persistance.Context
         public DbSet<BlogContent> BlogContents { get; set; }
         public DbSet<BlogCloudTagByBlog> BlogCloudTagByBlogs { get; set; }
         public DbSet<TagCloud> TagClouds { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         
         

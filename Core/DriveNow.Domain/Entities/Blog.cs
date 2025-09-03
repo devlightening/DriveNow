@@ -16,6 +16,7 @@ namespace DriveNow.Domain.Entities
         public ICollection<CloudTagByBlog> CloudTagByBlogs { get; set; }
         public ICollection<BlogContent> BlogContents { get; set; }
         public List<TagCloud> TagClouds { get; set; }
+        public List<Comment> Comments { get; set; }
 
     }
 }

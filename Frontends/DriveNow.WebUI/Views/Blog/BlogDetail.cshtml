@@ -15,7 +15,7 @@
 
                 <div class="pt-5 mt-5">
                     <h3 class="mb-5">Author</h3>
-                    @await Component.InvokeAsync("_BlogDetailAuthorAboutCompenentPartial", new { blogId = Model.BlogId })
+                    @await Component.InvokeAsync("_BlogDetailAuthorAboutCompenentPartial", new { id = Model.AuthorId })
 
                     <h3 class="mb-5">Comments</h3>
                     @await Component.InvokeAsync("_CommentListByBlogCompenentPartial", new { blogId = Model.BlogId })
