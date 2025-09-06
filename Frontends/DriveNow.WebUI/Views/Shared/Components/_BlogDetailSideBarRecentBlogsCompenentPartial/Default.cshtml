@@ -1,4 +1,4 @@
-﻿@model List<ResultBlogDto>
+﻿@model List<ResultRecentBlogDto>
 
 <style>
     .blog-carousel-wrapper {
@@ -33,15 +33,15 @@
             {
                 <div class="blog-item block-21 d-flex">
                     <a class="blog-img mr-4" style="background-image: url('/images/Authors/@item.CoverImageUrl');"></a>                    <div class="text">
-                        <h3 class="heading"><a href="#">@item.Title</a></h3>
+                        <a class="heading" href="/Blog/BlogDetail/@item.Slug">@item.Title</a>
                         <div class="meta">
                             <div><a href="#"><span class="icon-calendar"></span>@item.CreatedDate.ToShortDateString()</a></div>
                             <div><a href="#"><span class="icon-person"></span> @item.AuthorName</a></div>
-                            <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+                            <div><a href="#"><span class="icon-chat"></span>  @item.CommentCount</a></div>
                         </div>
                     </div>
                 </div>
-            }ç
+            }
         </div>
     </div>
 </div>

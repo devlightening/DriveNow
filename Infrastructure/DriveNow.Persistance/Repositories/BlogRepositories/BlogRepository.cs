@@ -23,6 +23,14 @@ namespace DriveNow.Persistance.Repositories.BlogRepositories
             return value;
         }
 
+        public async Task<Blog?> GetBlogBySlugAsync(string slug)
+        {
+            return await _context.Blogs
+                .Include(b => b.Author) 
+                .FirstOrDefaultAsync(b => b.Slug.ToLower() == slug.ToLower());
+        }
+
+
         public async Task<List<Blog>> GetLast3BlogWithAuthors()
         {
             return await _context.Blogs

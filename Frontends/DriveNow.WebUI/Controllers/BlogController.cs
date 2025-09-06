@@ -26,27 +26,25 @@ namespace DriveNow.WebUI.Controllers
         }
 
 
-        public  async Task<IActionResult> BlogDetail(Guid id)
+        public async Task<IActionResult> BlogDetail(string slug) 
         {
             ViewBag.v1 = "Blogs";
             ViewBag.v2 = "Blog Details and Comments";
 
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:7031/api/Blogs/{id}");
+          
+            var responseMessage = await client.GetAsync($"https://localhost:7031/api/Blogs/Slug/{slug}");
+
 
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
                
-                var values = JsonConvert.DeserializeObject<GetBlogByIdQueryResultDto>(jsonData);
-
-               
+                var values = JsonConvert.DeserializeObject<GetBlogBySlugQueryResultDto>(jsonData);
                 return View(values);
             }
 
-
             return NotFound();
-
         }
     }
 }

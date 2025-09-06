@@ -1,16 +1,17 @@
-﻿using MediatR;
-using System;
+﻿
 
-
-namespace DriveNow.Application.Features.Mediator.Commands.BlogCommands
+namespace DriveNow.Dtos.BlogDtos
 {
-    public class CreateBlogCommand:IRequest<Unit>
-    { 
+    public class ResultRecentBlogDto
+    {
+        public Guid BlogId { get; set; }
         public Guid AuthorId { get; set; }
         public string Title { get; set; }
         public string Slug { get; set; }
+        public string AuthorName { get; set; }
         public string CoverImageUrl { get; set; }
         public DateTime CreatedDate { get; set; }
-        public Guid CategoryId { get; set; }
+        public int CommentCount { get; set; }
+        
     }
 }

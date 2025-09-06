@@ -16,6 +16,21 @@ namespace DriveNow.WebAPI.Controllers
             return Ok(values);
         }
 
+
+        [HttpGet("Slug/{slug}")]
+        public async Task<IActionResult> GetBlogBySlug(string slug)
+        {
+          
+            var value = await _mediator.Send(new GetBlogBySlugQuery(slug));
+
+            if (value == null)
+            {
+                return NotFound();
+            }
+            return Ok(value);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBlog(Guid id)
         {
