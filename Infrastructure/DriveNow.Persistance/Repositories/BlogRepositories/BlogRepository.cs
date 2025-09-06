@@ -7,6 +7,13 @@ namespace DriveNow.Persistance.Repositories.BlogRepositories
 {
     public class BlogRepository(DriveNowContext _context) : IBlogRepository
     {
+        public async Task<List<Blog>> GetAllBlogsWithCommentCountAsync()
+        {
+             return await _context.Blogs
+            .Include(b => b.Comments) 
+            .ToListAsync();
+        }
+
         public async  Task<List<Blog>> GetAllBlogWithAuthors()
         {
             return await _context.Blogs

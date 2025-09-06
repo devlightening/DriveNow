@@ -10,7 +10,9 @@ namespace DriveNow.Persistance.Repositories
     {
         public async Task<List<T>> GetAllAsync()
         {
+
             return await _context.Set<T>().ToListAsync();
+
         }
 
         public async Task<T> GetByIdAsync(Guid id)

@@ -25,5 +25,6 @@ namespace DriveNow.Application.Features.Mediator.Results.BlogResults
         public string CoverImageUrl { get; set; }
         public DateTime CreatedDate { get; set; }
         public Guid CategoryId { get; set; }
+
     }
 }

@@ -14,6 +14,7 @@ namespace DriveNow.WebUI.Controllers
             ViewBag.v2 = "An Anthology of Our Authors' Journeys";
             var client = _httpClientFactory.CreateClient();
             var responseMessage = await client.GetAsync("https://localhost:7031/api/Blogs/GetAllBlogsWithAuthorList");
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -21,25 +22,21 @@ namespace DriveNow.WebUI.Controllers
                 return View(values);
             }
 
-            return View();
-
+            
+            return View(new List<ResultAllBlogWithAuthorDto>());
         }
 
-
-        public async Task<IActionResult> BlogDetail(string slug) 
+        public async Task<IActionResult> BlogDetail(string slug)
         {
             ViewBag.v1 = "Blogs";
             ViewBag.v2 = "Blog Details and Comments";
 
             var client = _httpClientFactory.CreateClient();
-          
             var responseMessage = await client.GetAsync($"https://localhost:7031/api/Blogs/Slug/{slug}");
-
 
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
-               
                 var values = JsonConvert.DeserializeObject<GetBlogBySlugQueryResultDto>(jsonData);
                 return View(values);
             }

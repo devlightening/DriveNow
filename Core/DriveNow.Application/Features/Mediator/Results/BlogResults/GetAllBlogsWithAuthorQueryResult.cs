@@ -14,7 +14,6 @@ namespace DriveNow.Application.Features.Mediator.Results.BlogResults
             CoverImageUrl = coverImageUrl;
             CreatedDate = createdDate;
             CategoryId = categoryId;
-
         }
 
         public Guid BlogId { get; set; }
