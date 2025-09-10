@@ -10,17 +10,19 @@ namespace DriveNow.Application.Features.Mediator.Handlers.BlogHandlers.BlogReadH
         public async Task<List<GetAllBlogsWithAuthorQueryResult>> Handle(GetAllBlogsWithAuthorQuery request, CancellationToken cancellationToken)
         {
             var blog = await _repository.GetAllBlogWithAuthors();
-            return blog.Select(b => new GetAllBlogsWithAuthorQueryResult(
-                    b.BlogId,
-                    b.AuthorId,
-                    b.Title,
-                    b.Description,
-                    b.Author.AuthorName,
-                    b.Category.CategoryName,
-                    b.CoverImageUrl,
-                    b.CreatedDate,
-                    b.CategoryId
-                )).ToList();
+            return blog.Select(b => new GetAllBlogsWithAuthorQueryResult
+            {
+                BlogId = b.BlogId,
+                AuthorId = b.AuthorId,
+                Title = b.Title,
+                Description = b.Description,
+                Slug = b.Slug,
+                AuthorName = b.Author.AuthorName,
+                CategoryName = b.Category.CategoryName,
+                CoverImageUrl = b.CoverImageUrl,
+                CreatedDate = b.CreatedDate,
+                CategoryId = b.CategoryId
+            }).ToList();
         }
     }
 }
