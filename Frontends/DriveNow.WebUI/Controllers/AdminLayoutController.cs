@@ -9,9 +9,6 @@ namespace DriveNow.WebUI.Controllers
             return View();
         }
 
-        public PartialViewResult AdminHeaderPartial()
-        {
-            return PartialView();
-        }
+     
     }
 }
