@@ -6,16 +6,8 @@ using DriveNow.Application.Features.Mediator.Results.BlogResults;
 
 namespace DriveNow.Application.Features.Mediator.Handlers.BlogHandlers.BlogReadHandlers
 {
-    public class GetBlogBySlugQueryHandler : IRequestHandler<GetBlogBySlugQuery, GetBlogBySlugQueryResult>
-    {
-        
-        private readonly IBlogRepository _blogRepository;
-
-        public GetBlogBySlugQueryHandler(IBlogRepository blogRepository)
-        {
-            _blogRepository = blogRepository;
-        }
-
+    public class GetBlogBySlugQueryHandler(IBlogRepository _blogRepository) : IRequestHandler<GetBlogBySlugQuery, GetBlogBySlugQueryResult>
+    {      
         public async Task<GetBlogBySlugQueryResult> Handle(GetBlogBySlugQuery request, CancellationToken cancellationToken)
         {
             

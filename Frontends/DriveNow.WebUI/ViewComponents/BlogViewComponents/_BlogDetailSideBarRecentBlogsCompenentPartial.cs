@@ -23,7 +23,7 @@ namespace DriveNow.WebUI.ViewComponents.BlogViewComponents
                     foreach (var blog in blogList)
                     {
                     
-                        var commentCountResponse = await client.GetAsync($"https://localhost:7031/api/Comments/GetCommentCountByBlog/{blog.Slug}");
+                        var commentCountResponse = await client.GetAsync($"https://localhost:7031/api/Comments/GetCommentCountByBlog/{blog.BlogId}");
 
                         if (commentCountResponse.IsSuccessStatusCode)
                         {

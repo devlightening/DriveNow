@@ -32,7 +32,7 @@
             @foreach (var item in Model)
             {
                 <div class="blog-item block-21 d-flex">
-                    <a class="blog-img mr-4" style="background-image: url('/images/Authors/@item.CoverImageUrl');"></a>                 
+                    <a class="blog-img mr-4" style="background-image: url('@item.CoverImageUrl');"></a>                 
                     <div class="text">
                         <a class="heading" href="/Blog/BlogDetail/@item.Slug">@item.Title</a>
                         <div class="meta">

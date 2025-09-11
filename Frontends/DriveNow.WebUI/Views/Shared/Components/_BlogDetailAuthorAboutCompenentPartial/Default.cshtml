@@ -2,14 +2,28 @@
 
 <div class="about-author d-flex p-4 bg-light">
     <div class="bio mr-5">
-        @if (!string.IsNullOrEmpty(Model.AuthorCoverImageUrl))
-        {
-            var imageUrl = Model.AuthorCoverImageUrl.StartsWith("http")
-            ? Model.AuthorCoverImageUrl
-            : Url.Content("~/" + Model.AuthorCoverImageUrl);
+        @{
+            // Varsayılan bir resim URL'si belirleyin.
+            var imageUrl = "/images/default-author-image.png";
 
-            <img src="@imageUrl" alt="@Model.AuthorName" class="img-fluid mb-4">
+            // AuthorCoverImageUrl'ın null veya boş olmadığını kontrol edin.
+            if (!string.IsNullOrEmpty(Model.AuthorCoverImageUrl))
+            {
+                // Eğer URL zaten tam bir URL ise (http ile başlıyorsa) onu kullan.
+                if (Model.AuthorCoverImageUrl.StartsWith("http"))
+                {
+                    imageUrl = Model.AuthorCoverImageUrl;
+                }
+                else
+                {
+                    // Aksi takdirde, wwwroot'tan ilgili yolu oluştur.
+                    // "~/" ASP.NET Core'da wwwroot klasörünü temsil eder.
+                    // Örnek: wwwroot/images/authors/chris_miller.jpg -> ~/images/authors/chris_miller.jpg
+                    imageUrl = Url.Content("~/images/authors/" + Model.AuthorCoverImageUrl);
+                }
+            }
         }
+        <img src="@imageUrl" alt="@Model.AuthorName" class="img-fluid mb-4">
     </div>
     <div class="desc">
         <h3>@Model.AuthorName</h3>
