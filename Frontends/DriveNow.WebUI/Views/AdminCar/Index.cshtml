@@ -1,25 +1,108 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Car Inventory";
     Layout = "~/Views/AdminLayout/Index.cshtml";
-    //AdminCarLayout
 }
 
-<div class="page-content">
+@model List<DriveNow.Dtos.CarDtos.ResultCarWithBrandsDto>
+
+@section Styles {
+    <link href="~/Admin/vertical/assets/css/theme-style.css" rel="stylesheet" type="text/css" />
+    <link href="~/Admin/vertical/assets/css/CarListStyleSheet.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+}
+
+<div class="page-content-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-flex align-items-center justify-content-between">
-                    <h4 class="mb-0 font-size-18">Starter</h4>
+                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling">
+                    <h4 class="mb-0 font-size-24 page-title-text">Car Inventory</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                            <li class="breadcrumb-item active">Starter</li>
+                            <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Car Inventory</li>
                         </ol>
                     </div>
-
                 </div>
             </div>
         </div>
-    </div> 
+
+        <div class="row mb-4 filter-search-section">
+            <div class="col-12">
+                <div class="card search-card-style">
+                    <div class="card-body">
+                        <div class="row align-items-center gx-3">
+                            <div class="col-lg-10 col-md-9">
+                                <div class="input-group modern-search-input">
+                                    <input type="text" id="carSearchInput" class="form-control" placeholder="Search by Brand, Model, Year, Fuel Type, Transmission...">
+                                    <button class="btn btn-primary search-button" type="button" id="carSearchButton"><i class="mdi mdi-magnify search-icon"></i> Search</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 text-lg-right text-md-right text-sm-center mt-3 mt-md-0">
+                                <a href="/AdminCar/CreateCar" class="btn btn-success btn-block waves-effect waves-light add-new-car-btn"><i class="mdi mdi-plus-circle-outline"></i> Add New Car</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="car-grid-container" id="carListContainer">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var car in Model)
+                {
+                    <div class="car-item-wrapper"
+                         data-brand="@car.BrandName.ToLower()"
+                         data-model="@car.Model.ToLower()"
+                         data-year="@car.ModelYear"
+                         data-type="@car.CarType.ToString().ToLower()"
+                         data-fueltype="@car.FuelType.ToString().ToLower()"
+                         data-transmission="@car.Transmission.ToString().ToLower()">
+                        <div class="card car-card">
+                            <div class="car-image-container">
+                                <img class="card-img-top car-image" src="@car.CoverImageUrl" alt="@(car.BrandName + " " + car.Model)">
+                                <div class="car-overlay">
+                                    <a href="/AdminCar/UpdateCar/@car.CarId" class="btn btn-edit-overlay">Edit</a>
+                                    <a href="/AdminCar/DeleteCar/@car.CarId" class="btn btn-delete-overlay">Delete</a>
+                                    <a href="/CarList/CarDetail/@car.CarId" class="btn btn-detail-overlay">Detail</a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title car-brand-model">
+                                    @car.BrandName
+                                    <span class="model-name">@car.Model</span>
+                                </h5>
+                                <p class="card-text car-info">
+                                    <span class="badge badge-soft-info">@car.BrandName</span>
+                                    <span class="badge badge-soft-primary">@car.Model</span>
+                                </p>
+                                <ul class="list-unstyled car-details">
+                                    <li><i class="mdi mdi-speedometer"></i> Kilometers: <span class="car-kilometers">@car.Kilometer km</span></li>
+                                    <li><i class="mdi mdi-seat-recline-normal"></i> Seats: <span class="car-seat">@car.Seat</span></li>
+                                    <li><i class="mdi mdi-briefcase-outline"></i> Luggage: <span class="car-luggage">@car.Luggage</span></li>
+                                    <li><i class="mdi mdi-cogs"></i> Transmission: <span class="car-transmission">@car.Transmission</span></li>
+                                    <li><i class="mdi mdi-fuel"></i> Fuel Type: <span class="car-fueltype">@car.FuelType</span></li>
+                                    <li><i class="mdi mdi-steering"></i> Drive Type: <span class="car-drivetype">@car.DriveType</span></li>
+                                    <li><i class="mdi mdi-calendar-range"></i> Model Year: <span class="car-modelyear">@car.ModelYear</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 no-cars-found-message">
+                    <div class="alert alert-info text-center" role="alert">
+                        No cars found or data could not be loaded.
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="~/Admin/vertical/assets/js/CarListScripts.js"></script>
+}

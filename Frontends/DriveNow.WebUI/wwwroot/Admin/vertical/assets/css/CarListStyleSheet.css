@@ -1,0 +1,434 @@
+﻿/* wwwroot/Admin/vertical/assets/css/CarListStyleSheet.css */
+
+/* Genel Sayfa Stil Ayarları */
+body {
+    background-color: #f4f7fc; /* Açık ve modern bir arka plan rengi */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Daha modern font */
+}
+
+.page-content-wrapper {
+    padding-top: 1.5rem; /* İçeriğe üstten biraz boşluk */
+}
+
+/* Sayfa Başlığı ve Navigasyon Stilleri */
+.page-header-styling {
+    background-color: #ffffff;
+    padding: 1.5rem 1.5rem;
+    border-radius: 12px; /* Daha yuvarlak köşeler */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Daha belirgin gölge */
+    margin-bottom: 2rem; /* Başlık ile filtre arasına daha fazla boşluk */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+}
+
+.page-title-text {
+    color: #2c3e50; /* Koyu, modern bir renk */
+    font-weight: 700;
+    font-size: 1.7rem; /* Başlığı biraz büyüttüm */
+}
+
+.breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+    .breadcrumb-item a:hover {
+        text-decoration: underline;
+    }
+
+.breadcrumb-item.active {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Filtreleme ve Arama Bölümü */
+.filter-search-section .card {
+    background-color: #ffffff;
+    border-radius: 12px; /* Daha yuvarlak köşeler */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border: none;
+}
+
+.search-card-style .card-body {
+    padding: 1.8rem; /* İç boşluğu artırdım */
+}
+
+.modern-search-input .form-control {
+    height: 48px; /* Input yüksekliğini artırdım */
+    font-size: 1rem;
+    color: #495057;
+    border: 1px solid #dcdcdc; /* Daha yumuşak kenarlık */
+    border-radius: 8px 0 0 8px; /* Sol tarafı yuvarladım */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+    .modern-search-input .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+        outline: none; /* Odaklanma outline'ını kaldırdım */
+    }
+
+.search-button {
+    height: 48px;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #007bff; /* Temel mavi renk */
+    border-color: #007bff;
+    border-radius: 0 8px 8px 0; /* Sağ tarafı yuvarladım */
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+    border-left: none; /* Input ile birleşmesi için */
+}
+
+    .search-button:hover {
+        background-color: #0056b3; /* Hover'da daha koyu */
+        border-color: #0056b3;
+        box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+        transform: translateY(-2px);
+    }
+
+.search-icon {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+.add-new-car-btn {
+    border-radius: 8px; /* Yeni araç ekle butonunu yuvarlattım */
+    padding: 0.8rem 1.2rem; /* İç boşluğunu artırdım */
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4); /* Yeşil buton için gölge */
+}
+
+    .add-new-car-btn i {
+        font-size: 1.1rem;
+        margin-right: 8px;
+    }
+
+    .add-new-car-btn:hover {
+        background-color: #218838; /* Hover'da daha koyu yeşil */
+        border-color: #1e7e34;
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+        transform: translateY(-2px);
+    }
+
+
+/* Araç Kartları Grid Düzeni */
+.car-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Otomatik duyarlı grid */
+    gap: 1.8rem; /* Kartlar arası boşluğu artırdım */
+    padding: 0;
+}
+
+.car-item-wrapper {
+    display: flex; /* Wrapper'ı flex yaparak yüksekliği eşitler */
+    flex-direction: column;
+}
+
+/* Ana Kart Stilleri */
+.car-card {
+    border: none;
+    border-radius: 15px; /* Daha belirgin yuvarlak köşeler */
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Daha derin ve modern gölge */
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #ffffff;
+    position: relative; /* Overlay için */
+}
+
+    .car-card:hover {
+        transform: translateY(-12px); /* Daha belirgin yukarı kalkma */
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Hover'da daha da belirgin gölge */
+    }
+
+/* Resim ve Overlay */
+.car-image-container {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* Üzerine gelince tıklanabilir hissi */
+}
+
+.car-image {
+    height: 250px; /* Resim yüksekliğini biraz artırdım */
+    object-fit: cover;
+    width: 100%;
+    display: block;
+    transition: transform 0.4s ease; /* Resim hover efekti için */
+}
+
+.car-card:hover .car-image {
+    transform: scale(1.07); /* Resim hafifçe büyür */
+}
+
+.car-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55); /* Daha koyu overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 10;
+    transform: translateY(20px); /* Başlangıçta biraz aşağıda */
+}
+
+.car-card:hover .car-overlay {
+    opacity: 1;
+    transform: translateY(0); /* Hover'da yerine gelir */
+}
+
+.car-overlay .btn {
+    margin: 0 12px;
+    padding: 0.7rem 1.5rem; /* Buton iç boşluğunu artırdım */
+    font-size: 1rem; /* Buton yazı boyutunu büyüttüm */
+    font-weight: 600;
+    border-radius: 10px; /* Butonları daha yuvarlak yaptım */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Butonlara belirgin gölge */
+    border: none; /* Kenarlığı kaldırdım */
+}
+
+/* Buton Renkleri */
+
+/* Detay Butonu (Mavi) */
+.btn-detail-overlay {
+    background-color: #007bff;
+    color: white;
+}
+
+    .btn-detail-overlay:hover {
+        background-color: #0056b3; /* Hover'da daha koyu mavi */
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+    }
+
+/* Edit Butonu (Sarı) */
+.btn-edit-overlay {
+    background-color: #ffc107; /* Sarı */
+    color: #212529; /* Koyu metin */
+}
+
+    .btn-edit-overlay:hover {
+        background-color: #e0a800; /* Hover'da daha koyu sarı */
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
+    }
+
+/* Delete Butonu (Kırmızı) */
+.btn-delete-overlay {
+    background-color: #dc3545; /* Kırmızı */
+    color: white;
+}
+
+    .btn-delete-overlay:hover {
+        background-color: #c82333; /* Hover'da daha koyu kırmızı */
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+    }
+
+
+/* Kart Gövdesi */
+.car-card .card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* İçeriği yaymak için */
+}
+
+/* Kart Başlığı ve Model Adı */
+.car-brand-model {
+    font-size: 1.5rem; /* Başlığı büyüttüm */
+    font-weight: 800; /* Daha kalın */
+    color: #2c3e50;
+    margin-bottom: 5px;
+    letter-spacing: -0.5px;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.model-name {
+    font-weight: 500;
+    color: #555; /* Model adını daha yumuşak gri yaptım */
+    font-size: 1.15rem;
+    display: block;
+    margin-top: 3px;
+}
+
+/* Bilgi Etiketleri */
+.car-card .car-info {
+    text-align: center;
+    margin-bottom: 1.2rem;
+    margin-top: 8px;
+    display: flex;
+    justify-content: center; /* Etiketleri ortalar */
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta gelsin */
+    gap: 6px; /* Etiketler arası boşluk */
+}
+
+    .car-card .car-info .badge {
+        font-size: 0.78rem;
+        padding: 0.5em 0.8em;
+        border-radius: 8px; /* Yuvarlaklığı artırdım */
+        font-weight: 600;
+        text-transform: uppercase;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        border: 1px solid transparent;
+        white-space: nowrap; /* Etiketler tek satırda kalsın */
+    }
+
+.badge-soft-info {
+    color: #117a8b;
+    background-color: rgba(17, 122, 139, 0.15);
+    border-color: rgba(17, 122, 139, 0.3);
+}
+
+    .badge-soft-info:hover {
+        background-color: #117a8b;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+.badge-soft-primary {
+    color: #0056b3;
+    background-color: rgba(0, 86, 179, 0.15);
+    border-color: rgba(0, 86, 179, 0.3);
+}
+
+    .badge-soft-primary:hover {
+        background-color: #0056b3;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+/* Özellik Listesi */
+.car-details {
+    margin-top: 0.5rem; /* Yukarıdan biraz boşluk */
+    padding-left: 0;
+    list-style: none;
+    flex-grow: 1;
+}
+
+    .car-details li {
+        margin-bottom: 0.9rem; /* Liste öğeleri arasındaki boşluğu artırdım */
+        font-size: 0.92rem;
+        color: #444; /* Daha koyu ve okunabilir gri */
+        display: flex;
+        align-items: center;
+        line-height: 1.7; /* Satır yüksekliğini artırdım */
+    }
+
+        .car-details li i {
+            font-size: 1.2rem; /* İkon boyutunu büyüttüm */
+            color: #007bff;
+            width: 30px;
+            text-align: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+/* Mesaj Alanı */
+.no-cars-found-message .alert {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #495057;
+    border-radius: 10px;
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Responsive Düzenlemeler */
+@media (max-width: 1200px) {
+    .car-item-wrapper {
+        flex-basis: 33.33%;
+        max-width: 33.33%;
+    }
+
+    .car-grid-container {
+        grid-template-columns: repeat(3, 1fr); /* 1200px'de 3'lü */
+    }
+}
+
+@media (max-width: 991px) {
+    .car-item-wrapper {
+        flex-basis: 50%;
+        max-width: 50%;
+    }
+
+    .car-grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Tablette 2'li veya 3'lü */
+    }
+
+    .car-card .car-title {
+        font-size: 1.2rem;
+    }
+
+    .page-title-text {
+        font-size: 1.5rem;
+    }
+
+    .search-button, .add-new-car-btn {
+        width: 100%; /* Butonlar tam genişlikte */
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .car-grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Mobilde tekli */
+    }
+
+    .car-item-wrapper {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+
+    .page-header-styling {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .page-title-right {
+        margin-top: 0.8rem;
+    }
+
+    .filter-search-section .card-body .row {
+        flex-direction: column;
+    }
+
+    .modern-search-input {
+        margin-bottom: 1rem;
+    }
+
+    .car-card .card-body {
+        padding: 1rem;
+    }
+
+    .car-details li {
+        font-size: 0.88rem;
+    }
+
+    .car-overlay .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .car-overlay {
+        justify-content: space-around; /* Butonlar arasına boşluk */
+    }
+}

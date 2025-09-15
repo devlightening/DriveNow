@@ -1,10 +1,6 @@
 ﻿using DriveNow.Domain.Entities;
 using DriveNow.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DriveNow.Dtos.CarDtos
 {
@@ -24,8 +20,5 @@ namespace DriveNow.Dtos.CarDtos
         public CarType CarType { get; set; }
         public FuelType FuelType { get; set; }
         public DriveTypes DriveType { get; set; }
-
-
-
     }
 }
