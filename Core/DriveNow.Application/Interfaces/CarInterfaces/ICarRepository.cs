@@ -14,6 +14,9 @@ namespace DriveNow.Application.Interfaces.CarInterfaces
         Task<List<Car>> GetCarsByBrandIdAsync(Guid brandId);
         Task<List<Car>> GetCarsListWithBrands();
         Task<List<Car>> GetLast5CarsWithBrands();
+        Task<List<Car>> GetPublishedCars(bool isPublished);
+        Task<Car> GetByIdAsync(Guid id);
+        Task<Car> UpdateAsync(Car car);
         int GetCarCount();
     }
 }

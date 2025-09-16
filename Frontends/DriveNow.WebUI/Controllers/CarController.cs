@@ -1,7 +1,8 @@
-﻿using DriveNow.Dtos.CarDtos;
-using DriveNow.Dtos.CarPricingDtos;
+﻿using DriveNow.Dtos.CarDtos; // GetCarPricingWithCarQueryResult buradaysa
+using DriveNow.Application.Features.DTOs; // CarListWithCountDto'nun olduğu yer
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using DriveNow.Application.Features.Mediator.Results.CarPricingResults;
 
 namespace DriveNow.WebUI.Controllers
 {
@@ -12,16 +13,19 @@ namespace DriveNow.WebUI.Controllers
             ViewBag.v1 = "Our Vehicle Fleet";
             ViewBag.v2 = "Find the Perfect Car for Your Journey";
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7031/api/CarPricings/GetCarPricingWithCarList");
+
+            // Güncellenmiş API endpoint'ini çağırın
+            var responseMessage = await client.GetAsync("https://localhost:7031/api/CarPricings/GetPublishedCarPricings");
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultCarPricingWithCarsDto>>(jsonData);
-                return View(values);
+                var resultData = JsonConvert.DeserializeObject<CarListWithCountDto>(jsonData);
+
+                return View(resultData); 
             }
 
-            return View();
-
+            return View(new CarListWithCountDto { Cars = new List<GetPublishedCarPricingWithCarQueryResult>(), TotalCount = 0 });
         }
     }
 }

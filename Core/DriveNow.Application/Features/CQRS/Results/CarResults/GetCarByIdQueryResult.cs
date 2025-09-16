@@ -4,7 +4,7 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
 {
     public class GetCarByIdQueryResult
     {
-        public GetCarByIdQueryResult(Guid carId, Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType, int modelYear)
+        public GetCarByIdQueryResult(Guid carId, Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType, int modelYear, bool ısPublished)
         {
             CarId = carId;
             BrandId = brandId;
@@ -19,6 +19,7 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
             FuelType = fuelType;
             DriveType = driveType;
             ModelYear = modelYear;
+            IsPublished = ısPublished;
         }
 
         public Guid CarId { get; set; }
@@ -34,9 +35,11 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
         public FuelType FuelType { get; set; }
         public DriveTypes DriveType { get; set; }
         public int ModelYear { get; set; }
+        public bool IsPublished { get; set; }
 
 
-        
+
+
 
 
     }

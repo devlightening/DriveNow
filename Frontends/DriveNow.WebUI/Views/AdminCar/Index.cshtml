@@ -58,16 +58,32 @@
                          data-year="@car.ModelYear"
                          data-type="@car.CarType.ToString().ToLower()"
                          data-fueltype="@car.FuelType.ToString().ToLower()"
-                         data-transmission="@car.Transmission.ToString().ToLower()">
-                        <div class="card car-card">
+                         data-transmission="@car.Transmission.ToString().ToLower()"
+                         data-published="@car.IsPublished.ToString().ToLower()">
+
+                        <div class="card car-card @(car.IsPublished ? "published" : "unpublished")">
                             <div class="car-image-container">
                                 <img class="card-img-top car-image" src="@car.CoverImageUrl" alt="@(car.BrandName + " " + car.Model)">
                                 <div class="car-overlay">
                                     <a href="/AdminCar/UpdateCar/@car.CarId" class="btn btn-edit-overlay">Edit</a>
-                                    <a href="/AdminCar/DeleteCar/@car.CarId" class="btn btn-delete-overlay">Delete</a>
+                                    <a href="/AdminCar/DeleteCar/@car.CarId" class="btn btn-delete-overlay" data-car-id="@car.CarId" data-car-name="@car.BrandName @car.Model @car.ModelYear" onclick="confirmDelete(this); return false;">Delete</a>
                                     <a href="/CarList/CarDetail/@car.CarId" class="btn btn-detail-overlay">Detail</a>
+
+                                    @{
+                                        bool isPublished = car.IsPublished;
+                                        string buttonClass = isPublished ? "btn-available" : "btn-unavailable";
+                                        string buttonText = isPublished ? "Available" : "Unavailable";
+                                    }
+                                    <button type="button"
+                                            class="btn btn-availability-overlay @buttonClass"
+                                            onclick="toggleAvailability('@car.CarId', @isPublished.ToString().ToLower())"
+                                            data-car-id="@car.CarId"
+                                            data-current-status="@isPublished.ToString().ToLower()">
+                                        @buttonText
+                                    </button>
                                 </div>
                             </div>
+                            @* ... Diğer kart içeriği ... *@
                             <div class="card-body">
                                 <h5 class="card-title car-brand-model">
                                     @car.BrandName

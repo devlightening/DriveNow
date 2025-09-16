@@ -9,25 +9,7 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
 {
     public class GetCarWithBrandQueryResult
     {
-        public Guid CarId { get; set; }
-        public Guid BrandId { get; set; }
-        public string BrandName { get; set; }
-        public string Model { get; set; }
-        public decimal Kilometer { get; set; }
-        public byte Seat { get; set; }
-        public int Luggage { get; set; }
-        public string CoverImageUrl { get; set; }
-        public string BigImageUrl { get; set; }
-        public TransmissionType Transmission { get; set; }
-        public CarType CarType { get; set; }
-        public FuelType FuelType { get; set; }
-        public DriveTypes DriveType { get; set; }
-        public int ModelYear { get; set; }
-
-
-        public GetCarWithBrandQueryResult(Guid carId, Guid brandId, string brandName, string model, decimal kilometer, byte seat,
-                                          int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission,
-                                          CarType carType, FuelType fuelType, DriveTypes driveType, int modelYear)
+        public GetCarWithBrandQueryResult(Guid carId, Guid brandId, string brandName, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType, int modelYear, bool ısPublished)
         {
             CarId = carId;
             BrandId = brandId;
@@ -43,9 +25,27 @@ namespace DriveNow.Application.Features.CQRS.Results.CarResults
             FuelType = fuelType;
             DriveType = driveType;
             ModelYear = modelYear;
-
-
+            IsPublished = ısPublished;
         }
+
+        public Guid CarId { get; set; }
+        public Guid BrandId { get; set; }
+        public string BrandName { get; set; }
+        public string Model { get; set; }
+        public decimal Kilometer { get; set; }
+        public byte Seat { get; set; }
+        public int Luggage { get; set; }
+        public string CoverImageUrl { get; set; }
+        public string BigImageUrl { get; set; }
+        public TransmissionType Transmission { get; set; }
+        public CarType CarType { get; set; }
+        public FuelType FuelType { get; set; }
+        public DriveTypes DriveType { get; set; }
+        public int ModelYear { get; set; }
+        public bool IsPublished { get; set; }
+
+
+
 
     }
 }

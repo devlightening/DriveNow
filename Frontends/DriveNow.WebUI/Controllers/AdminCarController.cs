@@ -11,7 +11,7 @@ namespace DriveNow.WebUI.Controllers
     public class AdminCarController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiBaseUrl = "https://localhost:7031"; // API base URL'nizi doğru ayarlayın
+        private readonly string _apiBaseUrl = "https://localhost:7031";
 
         public AdminCarController(IHttpClientFactory httpClientFactory)
         {
@@ -28,23 +28,19 @@ namespace DriveNow.WebUI.Controllers
             try
             {
                 var responseMessage = await client.GetAsync(requestUrl);
-                responseMessage.EnsureSuccessStatusCode(); // HTTP hata kodları için kontrol
+                responseMessage.EnsureSuccessStatusCode();
 
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
                 values = JsonConvert.DeserializeObject<List<ResultCarWithBrandsDto>>(jsonData);
 
                 if (values == null)
                 {
-                    values = new List<ResultCarWithBrandsDto>(); // Null ise boş liste ata
+                    values = new List<ResultCarWithBrandsDto>();
                 }
             }
             catch (HttpRequestException ex)
             {
-                // Hata yönetimi: Loglama veya kullanıcıya bilgi verme
-                // Log.Error(ex, "Failed to fetch car list.");
-                // Şimdilik basit bir hata mesajı ile View'ı gösterebiliriz
                 ViewBag.ErrorMessage = $"Error fetching car data: {ex.Message}";
-                // Boş bir liste ile devam edilebilir veya özel bir hata sayfasına yönlendirilebilir.
                 values = new List<ResultCarWithBrandsDto>();
             }
 
@@ -60,74 +56,56 @@ namespace DriveNow.WebUI.Controllers
             try
             {
                 var responseMessage = await client.GetAsync($"{_apiBaseUrl}/api/Brands/");
-                responseMessage.EnsureSuccessStatusCode(); // Hata durumunda exception fırlatır
+                responseMessage.EnsureSuccessStatusCode();
 
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
                 brandValuesApi = JsonConvert.DeserializeObject<List<ResultBrandDto>>(jsonData);
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
-                // Hata yönetimi: Loglama veya kullanıcıya bilgi verme
-                // Log.Error(ex, "Failed to fetch brands.");
-                return View("ErrorApiFetch"); // Custom bir hata sayfası oluşturulabilir
+                return View("ErrorApiFetch");
             }
 
-            // Dropdown için SelectListItem listesini oluştur
             List<SelectListItem> brandSelectItems = brandValuesApi.Select(x => new SelectListItem
             {
                 Text = x.BrandName,
                 Value = x.BrandId.ToString()
             }).ToList();
 
-            // ViewBag'e dropdown seçeneklerini ve boş bir CreateCarDto gönderiyoruz
             ViewBag.BrandSelectItems = brandSelectItems;
 
-            // Enumlar için de SelectListItem listeleri oluşturabiliriz
-            ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType))
-                                       .Cast<CarType>()
-                                       .Select(e => new SelectListItem
-                                       {
-                                           Text = e.ToString(),
-                                           Value = ((int)e).ToString()
-                                       }).ToList();
+            ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType)).Cast<CarType>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString()
+            }).ToList();
 
-            ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType))
-                                        .Cast<FuelType>()
-                                        .Select(e => new SelectListItem
-                                        {
-                                            Text = e.ToString(),
-                                            Value = ((int)e).ToString()
-                                        }).ToList();
+            ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType)).Cast<FuelType>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString()
+            }).ToList();
 
-            ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)) // Burada DriveTypes kullanıldı
-                                         .Cast<DriveTypes>()
-                                         .Select(e => new SelectListItem
-                                         {
-                                             Text = e.ToString(),
-                                             Value = ((int)e).ToString()
-                                         }).ToList();
+            ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)).Cast<DriveTypes>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString()
+            }).ToList();
 
-            ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType))
-                                            .Cast<TransmissionType>()
-                                            .Select(e => new SelectListItem
-                                            {
-                                                Text = e.ToString(),
-                                                Value = ((int)e).ToString()
-                                            }).ToList();
+            ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString()
+            }).ToList();
 
-
-            // View'a boş bir CreateCarDto modeli gönderiyoruz, formun doğru çalışması için
             return View(new CreateCarDto());
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCar(CreateCarDto createCarDto)
         {
-            // Model doğrulaması yapılır
             if (!ModelState.IsValid)
             {
-                // Model doğrulama başarısız olursa, hata mesajlarını tekrar gösterebilmek için
-                // Gerekli verileri (marka listesi ve enum listeleri) tekrar alıp View'a göndermeliyiz
                 var client = _httpClientFactory.CreateClient();
                 List<ResultBrandDto> brandValuesApi = null;
                 try
@@ -149,31 +127,14 @@ namespace DriveNow.WebUI.Controllers
                 }).ToList();
                 ViewBag.BrandSelectItems = brandSelectItems;
 
-                // Enum listelerini de tekrar yükle
-                ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType))
-                                           .Cast<CarType>()
-                                           .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                           .ToList();
+                ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType)).Cast<CarType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
+                ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType)).Cast<FuelType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
+                ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)).Cast<DriveTypes>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
+                ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
 
-                ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType))
-                                            .Cast<FuelType>()
-                                            .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                            .ToList();
-
-                ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)) // DriveTypes kullanıldı
-                                             .Cast<DriveTypes>()
-                                             .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                             .ToList();
-
-                ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType))
-                                                .Cast<TransmissionType>()
-                                                .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                                .ToList();
-
-                return View(createCarDto); // Hatalı model ile View'ı tekrar göster
+                return View(createCarDto);
             }
 
-            // Model doğrulaması başarılı ise API'ye gönder
             var clientPost = _httpClientFactory.CreateClient();
             var json = JsonConvert.SerializeObject(createCarDto);
             var stringContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -183,16 +144,12 @@ namespace DriveNow.WebUI.Controllers
                 var responseMessagePost = await clientPost.PostAsync($"{_apiBaseUrl}/api/Cars", stringContent);
                 responseMessagePost.EnsureSuccessStatusCode();
 
-                // Başarılı ise Car Inventory sayfasına yönlendir
                 return RedirectToAction("Index", "AdminCar");
             }
             catch (HttpRequestException ex)
             {
-                // Hata yönetimi
-                // Log.Error(ex, "Failed to create car.");
                 ViewBag.ErrorMessage = $"An error occurred while creating the car: {ex.Message}";
 
-                // Hata durumunda da marka ve enum listelerini göstermeliyiz
                 var brandClient = _httpClientFactory.CreateClient();
                 List<ResultBrandDto> errorBrandValuesApi = null;
                 try
@@ -214,29 +171,32 @@ namespace DriveNow.WebUI.Controllers
                 }).ToList();
                 ViewBag.BrandSelectItems = errorBrandSelectItems;
 
-                // Enum listelerini de tekrar yükle
-                ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType))
-                                           .Cast<CarType>()
-                                           .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                           .ToList();
+                ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType)).Cast<CarType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
+                ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType)).Cast<FuelType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
+                ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)).Cast<DriveTypes>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
+                ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
 
-                ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType))
-                                            .Cast<FuelType>()
-                                            .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                            .ToList();
+                return View(createCarDto);
+            }
+        }
 
-                ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)) // DriveTypes kullanıldı
-                                             .Cast<DriveTypes>()
-                                             .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                             .ToList();
+        public async Task<IActionResult> DeleteCar(Guid id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var requestUrl = $"{_apiBaseUrl}/api/Cars/{id}";
 
-                ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType))
-                                                .Cast<TransmissionType>()
-                                                .Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() })
-                                                .ToList();
+            try
+            {
+                var responseMessage = await client.DeleteAsync(requestUrl);
+                responseMessage.EnsureSuccessStatusCode();
 
-                return View(createCarDto); // Hata mesajıyla formu tekrar göster
+                return RedirectToAction("Index", "AdminCar");
+            }
+            catch (HttpRequestException ex)
+            {
+                ViewBag.ErrorMessage = $"Error deleting car: {ex.Message}";
+                return RedirectToAction("Index", "AdminCar");
             }
         }
     }
-}
+}   

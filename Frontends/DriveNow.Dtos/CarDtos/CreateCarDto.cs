@@ -16,8 +16,9 @@ namespace DriveNow.Dtos.CarDtos
         public FuelType FuelType { get; set; } 
         public DriveTypes DriveType { get; set; }
         public string CoverImageUrl { get; set; } 
-        public string BigImageUrl { get; set; } 
+        public string BigImageUrl { get; set; }
+        public bool IsPublished { get; set; }
 
-                                                  
+
     }
 }

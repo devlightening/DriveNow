@@ -1,14 +1,11 @@
 ﻿using DriveNow.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DriveNow.Application.Interfaces.CarPricingInterfaces
 {
     public interface ICarPricingRepository
     {
         Task<List<CarPricing>> GetCarPricingWithCars();
+        Task<(List<CarPricing> Cars, int Count)> GetPublishedCarPricingWithCarsAndCount();
+
     }
 }

@@ -7,7 +7,7 @@ namespace DriveNow.Persistance.Repositories.CarRepositories
 {
     public class CarRepository(DriveNowContext _context) : ICarRepository
     {
-      
+
         public async Task<Car> GetCarWithBrandAsync(Guid id)
         {
             return await _context.Cars
@@ -15,7 +15,7 @@ namespace DriveNow.Persistance.Repositories.CarRepositories
                                  .SingleOrDefaultAsync(c => c.CarId == id);
         }
 
-     
+
         public async Task<List<Car>> GetCarListWithBrandsAsync()
         {
             return await _context.Cars
@@ -25,7 +25,7 @@ namespace DriveNow.Persistance.Repositories.CarRepositories
 
         public async Task<List<Car>> GetCarsByBrandIdAsync(Guid brandId)
         {
-       
+
             return await _context.Cars
                                  .Include(c => c.Brand)
                                  .Where(c => c.BrandId == brandId)
@@ -40,7 +40,7 @@ namespace DriveNow.Persistance.Repositories.CarRepositories
 
         public async Task<List<Car>> GetCarsListWithBrands()
         {
-            var values =  _context.Cars.Include(x => x.Brand).ToList();
+            var values = _context.Cars.Include(x => x.Brand).ToList();
             return values;
         }
         public async Task<List<Car>> GetLast5CarsWithBrands()
@@ -48,6 +48,23 @@ namespace DriveNow.Persistance.Repositories.CarRepositories
             var values = _context.Cars.Include(x => x.Brand).OrderByDescending(x => x.CarId).Take(5).ToList();
             return values;
         }
-      
+
+        public async Task<List<Car>> GetPublishedCars(bool isPublished)
+        {
+            return await _context.Cars.Where(x => x.IsPublished == isPublished).ToListAsync();
+        }
+
+        public async Task<Car> GetByIdAsync(Guid id)
+        {
+
+            return await _context.Set<Car>().FindAsync(id);
+        }
+
+        public async Task<Car> UpdateAsync(Car car)
+        {
+            _context.Set<Car>().Update(car);
+            await _context.SaveChangesAsync();
+            return car;
+        }
     }
 }

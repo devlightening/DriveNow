@@ -1,4 +1,5 @@
-﻿using DriveNow.Application.Features.Mediator.Queries.CarPricingQueries;
+﻿using DriveNow.Application.Features.DTOs;
+using DriveNow.Application.Features.Mediator.Queries.CarPricingQueries;
 using DriveNow.Application.Features.Mediator.Queries.FeatureQueries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -10,11 +11,15 @@ namespace DriveNow.WebAPI.Controllers
     [ApiController]
     public class CarPricingsController(IMediator _mediator) : ControllerBase
     {
-        [HttpGet("GetCarPricingWithCarList")]
-        public async Task<IActionResult> GetCarPricingWithCarList()
+
+        [HttpGet("GetPublishedCarPricings")]
+        public async Task<IActionResult> GetPublishedCarPricings()
         {
-            var values = await _mediator.Send(new GetCarPricingWithCarQuery());
-            return Ok(values);
+            var query = new GetPublishedCarPricingWithCarQuery();
+
+            var resultDto = await _mediator.Send(query);
+
+            return Ok(resultDto);
         }
 
 

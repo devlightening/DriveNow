@@ -34,7 +34,8 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandler
                 car.CarType,
                 car.FuelType,
                 car.DriveType,
-                car.ModelYear
+                car.ModelYear,
+                car.IsPublished
             )).ToList();
         }
     }

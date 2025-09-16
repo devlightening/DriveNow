@@ -23,5 +23,6 @@ namespace DriveNow.Dtos.CarDtos
         public FuelType FuelType { get; set; }
         public DriveTypes DriveType { get; set; }
         public int ModelYear { get; set; }
+        public bool IsPublished { get; set; }
     }
 }

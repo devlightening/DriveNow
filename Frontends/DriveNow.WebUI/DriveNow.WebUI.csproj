@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\DriveNow.Application\DriveNow.Application.csproj" />
     <ProjectReference Include="..\DriveNow.Dtos\DriveNow.Dtos.csproj" />
   </ItemGroup>
 

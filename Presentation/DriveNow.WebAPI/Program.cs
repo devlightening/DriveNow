@@ -85,6 +85,8 @@ internal class Program
         builder.Services.AddScoped<GetCarsByBrandQueryHandler>();
         builder.Services.AddScoped<GetLast5CarsWithBrandQueryHandler>();
         builder.Services.AddScoped<GetCarsWithBrandQueryHandler>();
+        builder.Services.AddScoped<GetPublishedCarsQueryHandler>();
+
 
 
         builder.Services.AddScoped<GetCategoryQueryHandler>();
@@ -111,6 +113,17 @@ internal class Program
 
 
         builder.Services.AddControllers();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowDriveNowWebUI",
+                policy =>
+                {
+                    // Ön yüz uygulamanýzýn tam URL'sini belirtin
+                    policy.WithOrigins("https://localhost:7182")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+        });
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -127,6 +140,7 @@ internal class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
+        app.UseCors("AllowDriveNowWebUI");
 
         app.MapControllers();
 

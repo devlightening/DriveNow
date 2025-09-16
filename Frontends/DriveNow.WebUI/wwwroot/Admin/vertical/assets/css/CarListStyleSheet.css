@@ -145,6 +145,16 @@ body {
     position: relative; /* Overlay için */
 }
 
+    /* Müsaitlik Durumuna Göre Kartın Ana Arka Plan Rengi */
+    .car-card.published { /* Yeşil tonlu bir etki */
+        border-left: 5px solid #28a745; /* Yeşil kenarlık */
+    }
+
+    .car-card.unpublished { /* Kırmızı tonlu bir etki */
+        border-left: 5px solid #dc3545; /* Kırmızı kenarlık */
+        opacity: 0.9; /* Biraz soluk görünüm */
+    }
+
     .car-card:hover {
         transform: translateY(-12px); /* Daha belirgin yukarı kalkma */
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Hover'da daha da belirgin gölge */
@@ -183,6 +193,8 @@ body {
     transition: opacity 0.4s ease, transform 0.4s ease;
     z-index: 10;
     transform: translateY(20px); /* Başlangıçta biraz aşağıda */
+    gap: 10px; /* Butonlar arası boşluğu ayarlar */
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta gelsin */
 }
 
 .car-card:hover .car-overlay {
@@ -191,14 +203,16 @@ body {
 }
 
 .car-overlay .btn {
-    margin: 0 12px;
+    margin: 0; /* Margin kaldırıldı, gap kullanılacak */
     padding: 0.7rem 1.5rem; /* Buton iç boşluğunu artırdım */
-    font-size: 1rem; /* Buton yazı boyutunu büyüttüm */
+    font-size: 0.9rem; /* Buton yazı boyutunu küçülttüm, daha iyi sığması için */
     font-weight: 600;
     border-radius: 10px; /* Butonları daha yuvarlak yaptım */
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Butonlara belirgin gölge */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Butonlara belirgin gölge */
     border: none; /* Kenarlığı kaldırdım */
+    text-decoration: none; /* Linkler için */
+    display: inline-block; /* Buttonlar için */
 }
 
 /* Buton Renkleri */
@@ -212,7 +226,7 @@ body {
     .btn-detail-overlay:hover {
         background-color: #0056b3; /* Hover'da daha koyu mavi */
         transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
     }
 
 /* Edit Butonu (Sarı) */
@@ -224,7 +238,7 @@ body {
     .btn-edit-overlay:hover {
         background-color: #e0a800; /* Hover'da daha koyu sarı */
         transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
+        box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
     }
 
 /* Delete Butonu (Kırmızı) */
@@ -236,9 +250,60 @@ body {
     .btn-delete-overlay:hover {
         background-color: #c82333; /* Hover'da daha koyu kırmızı */
         transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
     }
 
+/* Müsaitlik Butonu Stilleri */
+.btn-availability-overlay {
+    padding: 0.7rem 1rem; /* Buton boyutunu biraz küçülttüm */
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+    min-width: 110px; /* Butonun en az genişliği */
+    text-align: center;
+}
+
+/* Müsait (Yeşil) */
+.btn-available {
+    background-color: #28a745; /* Yeşil */
+    color: white;
+    border: 1px solid #28a745;
+}
+
+    .btn-available:hover {
+        background-color: #218838; /* Hover'da daha koyu yeşil */
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+/* Müsait Değil (Kırmızı/Gri Tonu) */
+.btn-unavailable {
+    background-color: #dc3545; /* Kırmızı */
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+    .btn-unavailable:hover {
+        background-color: #5a6268; /* Hover'da daha koyu gri */
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    }
+.btn-availability-overlay.clicked {
+    opacity: 0.7; /* Biraz soluklaşsın */
+    transform: scale(0.95); /* Hafifçe küçülsün */
+}
+
+.btn-loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: #ccc !important; /* Geçici olarak gri yap */
+    color: #555 !important;
+}
 
 /* Kart Gövdesi */
 .car-card .card-body {
@@ -353,28 +418,14 @@ body {
 
 /* Responsive Düzenlemeler */
 @media (max-width: 1200px) {
-    .car-item-wrapper {
-        flex-basis: 33.33%;
-        max-width: 33.33%;
-    }
-
     .car-grid-container {
         grid-template-columns: repeat(3, 1fr); /* 1200px'de 3'lü */
     }
 }
 
 @media (max-width: 991px) {
-    .car-item-wrapper {
-        flex-basis: 50%;
-        max-width: 50%;
-    }
-
     .car-grid-container {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Tablette 2'li veya 3'lü */
-    }
-
-    .car-card .car-title {
-        font-size: 1.2rem;
     }
 
     .page-title-text {
@@ -423,12 +474,17 @@ body {
         font-size: 0.88rem;
     }
 
-    .car-overlay .btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-    }
-
     .car-overlay {
         justify-content: space-around; /* Butonlar arasına boşluk */
+        padding: 5px; /* Overlay'e biraz padding */
+    }
+
+        .car-overlay .btn {
+            padding: 0.5rem 0.8rem; /* Butonları küçülttüm */
+            font-size: 0.8rem;
+        }
+
+    .btn-availability-overlay {
+        min-width: 90px; /* Müsaitlik butonu genişliği */
     }
 }

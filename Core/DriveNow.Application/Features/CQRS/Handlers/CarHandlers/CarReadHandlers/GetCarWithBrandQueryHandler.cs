@@ -8,28 +8,29 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandler
 {
     public class GetCarWithBrandQueryHandler(ICarRepository _repository)
     {
-       public async Task<List<GetCarWithBrandQueryResult>> Handle()
-       {
-           var cars = await _repository.GetCarsListWithBrands   ();
-           
-         
+        public async Task<List<GetCarWithBrandQueryResult>> Handle()
+        {
+            var cars = await _repository.GetCarsListWithBrands();
 
-           return cars.Select(car => new GetCarWithBrandQueryResult(
-               car.CarId,
-               car.BrandId,
-               car.Brand?.BrandName,
-               car.Model,
-               car.Kilometer,
-               car.Seat,
-               car.Luggage,
-               car.CoverImageUrl,
-               car.BigImageUrl,
-               car.Transmission,
-               car.CarType,
-               car.FuelType,
-               car.DriveType,
-               car.ModelYear
-           )).ToList();
-       }
+
+
+            return cars.Select(car => new GetCarWithBrandQueryResult(
+                car.CarId,
+                car.BrandId,
+                car.Brand?.BrandName,
+                car.Model,
+                car.Kilometer,
+                car.Seat,
+                car.Luggage,
+                car.CoverImageUrl,
+                car.BigImageUrl,
+                car.Transmission,
+                car.CarType,
+                car.FuelType,
+                car.DriveType,
+                car.ModelYear,
+                car.IsPublished
+            )).ToList();
+        }
     }
 }
