@@ -21,7 +21,8 @@ namespace DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarWriteHandle
                 CarType = command.CarType,
                 FuelType = command.FuelType,
                 DriveType = command.DriveType,
-                ModelYear=command.ModelYear
+                ModelYear=command.ModelYear,
+                IsPublished = command.IsPublished
 
             };
 

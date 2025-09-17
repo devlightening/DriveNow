@@ -65,26 +65,25 @@ namespace DriveNow.WebAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCar([FromBody] UpdateCarCommand command)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCar(Guid id, [FromBody] UpdateCarCommand command)
         {
-            if (command == null)
+            if (command == null || id != command.CarId)
             {
-                return BadRequest("Invalid data.");
+                return BadRequest("Invalid data or ID mismatch.");
             }
 
             var updatedCar = await _updateCarCommandHandler.Handle(command);
 
             if (updatedCar == null)
             {
-                return NotFound();
+                return NotFound($"Car with ID {id} not found.");
             }
 
             return Ok(updatedCar);
         }
 
 
-       
         [HttpGet("GetCarWithBrand")]
         public async Task<IActionResult> GetCarWithBrand()
         {

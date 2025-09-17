@@ -1,0 +1,628 @@
+﻿@{
+    ViewData["Title"] = "UpdateCar";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@model DriveNow.Dtos.CarDtos.UpdateCarDto 
+@section Styles {
+    <link href="~/Admin/vertical/assets/css/theme-style.css" rel="stylesheet" type="text/css" />
+    <link href="~/Admin/vertical/assets/css/CarListStyleSheet.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .form-container-wrapper {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.9) 100%);
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            padding: 3rem;
+            animation: slideInUp 0.8s ease-out forwards;
+            transform-origin: center;
+            margin-top: 2rem;
+        }
+
+        @@keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container-wrapper h4 {
+            color: #2c3e50;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            font-size: 2.5rem;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #34495e;
+            margin-bottom: 2rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #3498db;
+            display: inline-block;
+            position: relative;
+            padding-left: 40px; /* İkon için yer */
+        }
+
+            .form-section-title::before {
+                font-family: 'Material Design Icons';
+                font-size: 1.8rem;
+                color: #3498db;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                line-height: 1; /* İkon hizalaması için */
+            }
+
+            .form-section-title.car-details-title::before {
+                content: '\F0405'; /* Araba ikonu */
+            }
+
+            .form-section-title.specs-title::before {
+                content: '\F0BEF'; /* Özellikler ikonu */
+            }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+            .form-group label {
+                font-weight: 700;
+                color: #34495e;
+                margin-bottom: 0.8rem;
+                font-size: 1rem;
+                display: block;
+            }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+            .input-wrapper .form-control,
+            .form-select {
+                border-radius: 12px !important;
+                height: 56px !important;
+                font-size: 1.1rem !important;
+                border: 2px solid #e0e0e0 !important;
+                padding-left: 3.5rem !important; /* İkon için alan */
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                background-color: #fdfdfd !important;
+            }
+
+                .input-wrapper .form-control:focus,
+                .form-select:focus {
+                    border-color: #3498db !important;
+                    box-shadow: 0 0 0 0.35rem rgba(52, 152, 219, 0.25) !important;
+                }
+
+            .input-wrapper .input-group-text {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                border: none;
+                background: none;
+                color: #3498db;
+                font-size: 1.4rem;
+                z-index: 5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+
+        /* Select2 stilleri */
+        .select2-container--default .select2-selection--single {
+            border-radius: 12px !important;
+            height: 56px !important;
+            border: 2px solid #e0e0e0 !important;
+            background-color: #fdfdfd !important;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            padding-left: 3.5rem !important; /* İkon için alan */
+        }
+
+        .select2-container--default.select2-container--open .select2-selection--single {
+            border-color: #3498db !important;
+            box-shadow: 0 0 0 0.35rem rgba(52, 152, 219, 0.25) !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 56px !important;
+            top: 0 !important;
+        }
+
+            .select2-container--default .select2-selection--single .select2-selection__arrow b {
+                margin-top: -6px !important;
+            }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--open .select2-dropdown--below {
+            border-color: #3498db !important;
+            border-top: none !important;
+            box-shadow: 0 0 0 0.35rem rgba(52, 152, 219, 0.25) !important;
+            border-radius: 0 0 12px 12px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 3.5rem !important; /* İkon için alan */
+            line-height: 56px !important;
+            color: #555 !important;
+            font-size: 1.1rem !important;
+            font-weight: normal;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #999 !important;
+            font-size: 1.1rem !important;
+            font-weight: normal;
+        }
+
+        /* BrandId label'ına özel stil */
+        .form-container-wrapper .form-group label.required-indicator[for="BrandId"]::before {
+            content: '\F0405'; /* MDI car ikonu */
+            font-family: 'Material Design Icons';
+            font-size: 1.5rem;
+            color: #3498db;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* Enum dropdown'ları için genel ikon */
+        .input-wrapper .form-select + .input-group-text .mdi {
+            color: #3498db; /* Mavi ikon rengi */
+        }
+
+        /* Özel buton stili */
+        .btn-create-car { /* Güncelleme butonunda da bu stili kullanacağız */
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border: none;
+            color: white;
+            padding: 1.2rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-radius: 15px;
+            box-shadow: 0 12px 30px rgba(52, 152, 219, 0.4);
+            transition: all 0.4s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center; /* Buton içeriğini ortalamak için */
+        }
+
+            .btn-create-car:hover {
+                background: linear-gradient(45deg, #2980b9, #1f618d);
+                transform: translateY(-6px) scale(1.05);
+                box-shadow: 0 18px 40px rgba(52, 152, 219, 0.5);
+            }
+
+            .btn-create-car i {
+                margin-right: 12px;
+                font-size: 1.5rem;
+            }
+
+        .field-validation-error {
+            color: #e74c3c;
+            font-size: 0.875em;
+            margin-top: 0.75rem;
+            display: block;
+            font-weight: 500;
+        }
+
+        .required-indicator::after {
+            content: ' *';
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .form-row {
+            margin-bottom: 2rem;
+        }
+
+            .form-row .form-group {
+                margin-bottom: 0;
+            }
+
+        /* Select2'nin kendi placeholder'ına ikon eklemek için */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            position: relative;
+            padding-left: 3.5rem !important; /* İkonun konumu için */
+        }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered .mdi {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 1.4rem;
+                color: #3498db;
+            }
+
+        /* Butonlara tıklama animasyonu */
+        .btn-update-car, .btn-delete-car {
+            background: linear-gradient(45deg, #2ecc71, #27ae60); /* Yeşil tonları */
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.4);
+            transition: all 0.3s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .btn-update-car:hover, .btn-delete-car:hover {
+                transform: translateY(-4px) scale(1.03);
+                box-shadow: 0 15px 30px rgba(46, 204, 113, 0.5);
+            }
+
+        .btn-delete-car {
+            background: linear-gradient(45deg, #e74c3c, #c0392b); /* Kırmızı tonları */
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4);
+        }
+
+            .btn-delete-car:hover {
+                box-shadow: 0 15px 30px rgba(231, 76, 60, 0.5);
+            }
+
+            .btn-update-car i, .btn-delete-car i {
+                margin-right: 10px;
+                font-size: 1.3rem;
+            }
+    </style>
+}
+
+<div class="page-content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling" style="padding-top: 80px;">
+                    <h4 class="mb-0 font-size-24 page-title-text">Update Car</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/AdminCar/Index">Car Inventory</a></li>
+                            <li class="breadcrumb-item active">Update Car</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="form-container-wrapper">
+                    <h4 class="mb-5">Update Your Car Details</h4>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <form asp-action="UpdateCar" method="post" id="updateCarForm" enctype="multipart/form-data">
+                        <input type="hidden" name="__RequestVerificationToken" value="@Context.Request.Cookies["__RequestVerificationToken"]">
+
+                        <input type="hidden" asp-for="CarId" /> <div class="row form-row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="BrandId" class="required-indicator">Brand Name</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-car-cruise-control"></i></span>
+                                        <select asp-for="BrandId" class="form-select" id="brandSelect" asp-items="ViewBag.BrandSelectItems">
+                                            <option value="" disabled>-- Select a Brand --</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="BrandId" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="form-section-title car-details-title">Car Details</h5>
+                        <div class="row form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Model" class="required-indicator">Model</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-car-info"></i></span>
+                                        <input asp-for="Model" class="form-control" placeholder="Enter car model" />
+                                    </div>
+                                    <span asp-validation-for="Model" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ModelYear" class="required-indicator">Model Year</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-calendar-range"></i></span>
+                                        <input asp-for="ModelYear" class="form-control" placeholder="e.g., 2024" type="number" min="1900" max="2099" />
+                                    </div>
+                                    <span asp-validation-for="ModelYear" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Kilometer" class="required-indicator">Kilometers</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-road-variant"></i></span>
+                                        <input asp-for="Kilometer" class="form-control" placeholder="e.g., 30000" type="number" min="0" />
+                                    </div>
+                                    <span asp-validation-for="Kilometer" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Seat" class="required-indicator">Seats</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-seat-flat-angled"></i></span>
+                                        <input asp-for="Seat" class="form-control" placeholder="e.g., 5" type="number" min="1" />
+                                    </div>
+                                    <span asp-validation-for="Seat" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Luggage" class="required-indicator">Luggage Capacity</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-briefcase-variant-outline"></i></span>
+                                        <input asp-for="Luggage" class="form-control" placeholder="e.g., 450" type="number" min="0" />
+                                    </div>
+                                    <span asp-validation-for="Luggage" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Transmission" class="required-indicator">Transmission Type</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-cog-sync"></i></span>
+                                        <select asp-for="Transmission" class="form-select" id="transmissionSelect" asp-items="ViewBag.TransmissionItems">
+                                            <option value="" disabled>-- Select Transmission --</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Transmission" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="form-section-title specs-title">Specifications</h5>
+                        <div class="row form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CarType" class="required-indicator">Car Type</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-car-variant"></i></span>
+                                        <select asp-for="CarType" class="form-select" id="carTypeSelect" asp-items="ViewBag.CarTypeItems">
+                                            <option value="" disabled>-- Select Car Type --</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="CarType" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="FuelType" class="required-indicator">Fuel Type</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-fuel"></i></span>
+                                        <select asp-for="FuelType" class="form-select" id="fuelTypeSelect" asp-items="ViewBag.FuelTypeItems">
+                                            <option value="" disabled>-- Select Fuel Type --</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="FuelType" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="DriveType" class="required-indicator">Drive Type</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-power-plug"></i></span>
+                                        <select asp-for="DriveType" class="form-select" id="driveTypeSelect" asp-items="ViewBag.DriveTypeItems">
+                                            <option value="" disabled>-- Select Drive Type --</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="DriveType" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CoverImageUrl" class="required-indicator">Cover Image URL</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-link-variant"></i></span>
+                                        <input asp-for="CoverImageUrl" class="form-control" placeholder="Paste image URL here" />
+                                    </div>
+                                    <span asp-validation-for="CoverImageUrl" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="BigImageUrl" class="required-indicator">Additional Image URL</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-group-text"><i class="mdi mdi-image-multiple"></i></span>
+                                        <input asp-for="BigImageUrl" class="form-control" placeholder="Paste additional image URL here" />
+                                    </div>
+                                    <span asp-validation-for="BigImageUrl" class="field-validation-error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <i class="mdi mdi-alert-circle-outline"></i> <strong>Error!</strong> @ViewBag.ErrorMessage
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <div class="d-flex justify-content-center mt-5 mb-3">
+                            <button type="submit" class="btn btn-update-car me-3">
+                                <i class="mdi mdi-car-update"></i> Update Car
+                            </button>
+                            <button type="button" class="btn btn-delete-car"
+                                    data-car-id="@Model.CarId"
+                                    data-car-name="@Model.Model"
+                                    onclick="confirmDelete(this)">
+                                <i class="mdi mdi-delete-outline"></i> Delete Car
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // jQuery Validation'ı başlat
+            $("#updateCarForm").validate();
+
+            // Select2 formatlaması için fonksiyon
+            function formatState (state) {
+                if (!state.id) {
+                    return state.text;
+                }
+                var iconClass = "mdi mdi-tag-outline"; // Varsayılan ikon
+                var iconColor = "#3498db"; // Varsayılan renk
+
+                var currentSelectId = $(state.element).closest('select').attr('id');
+
+                switch (currentSelectId) {
+                    case 'brandSelect':
+                        iconClass = "mdi mdi-car-cruise-control";
+                        break;
+                    case 'transmissionSelect':
+                        iconClass = "mdi mdi-cog-sync";
+                        break;
+                    case 'carTypeSelect':
+                        iconClass = "mdi mdi-car-variant";
+                        break;
+                    case 'fuelTypeSelect':
+                        iconClass = "mdi mdi-fuel";
+                        break;
+                    case 'driveTypeSelect':
+                        iconClass = "mdi mdi-power-plug";
+                        break;
+                
+                    default:
+                        // Genel enum değerleri için (eğer varsa)
+                        switch (state.element.value) {
+                            case "1": iconClass = "mdi mdi-cog-sync"; break; // Örnek değerler
+                            case "2": iconClass = "mdi mdi-car-shift-pattern"; break;
+                            case "3": iconClass = "mdi mdi-car-sedan"; break;
+                            case "4": iconClass = "mdi mdi-car-suv"; break;
+                            case "5": iconClass = "mdi mdi-fuel-station"; break;
+                            case "6": iconClass = "mdi mdi-fuel"; break;
+                            case "7": iconClass = "mdi mdi-car-multiple-outline"; break;
+                            case "8": iconClass = "mdi mdi-car-traction-control"; break;
+                        }
+                        break;
+                }
+
+                var icon = $(`<i class="${iconClass}" style="color:${iconColor}; margin-right: 5px;"></i>`);
+                return $('<span>').append(icon).append(state.text);
+            }
+
+            // Select2'yi tüm dropdown'lar için başlat
+            $('#brandSelect').select2({
+                placeholder: "-- Select a Brand --",
+                theme: "materialdesign",
+                templateResult: formatState,
+                templateSelection: formatState
+            });
+
+            $('#transmissionSelect').select2({
+                placeholder: "-- Select Transmission --",
+                theme: "materialdesign",
+                templateResult: formatState,
+                templateSelection: formatState
+            });
+
+            $('#carTypeSelect').select2({
+                placeholder: "-- Select Car Type --",
+                theme: "materialdesign",
+                templateResult: formatState,
+                templateSelection: formatState
+            });
+
+            $('#fuelTypeSelect').select2({
+                placeholder: "-- Select Fuel Type --",
+                theme: "materialdesign",
+                templateResult: formatState,
+                templateSelection: formatState
+            });
+
+            $('#driveTypeSelect').select2({
+                placeholder: "-- Select Drive Type --",
+                theme: "materialdesign",
+                templateResult: formatState,
+                templateSelection: formatState
+            });
+
+           
+
+            // Placeholder'ın doğru çalışmasını sağla ve 'is-invalid' sınıfını kaldır
+            $('.form-select').on('change', function() {
+                if ($(this).val()) {
+                    $(this).removeClass('is-invalid');
+                    $(this).closest('.form-group').find('.field-validation-error').text('');
+                }
+            });
+
+            // Initial state for select2 if value is already set (for update page)
+            $('.form-select').each(function() {
+                if ($(this).val() !== null && $(this).val() !== "") {
+                    $(this).removeClass('is-invalid'); // Ensure it's not marked as invalid if pre-selected
+                } else {
+                    // If it's an empty value and supposed to be a placeholder, ensure it's treated as such
+                    if ($(this).find('option[value=""]').length > 0) {
+                        $(this).val(null).trigger('change'); // Reset to placeholder
+                    }
+                }
+            });
+
+            // Butonlara tıklama animasyonu (JavaScript ile)
+            $('.btn-update-car, .btn-delete-car').on('mousedown', function() {
+                $(this).addClass('clicked'); // Tıklanma efekti için bir sınıf ekleyelim
+            }).on('mouseup mouseleave', function() {
+                $(this).removeClass('clicked'); // Animasyon bittiğinde sınıfı kaldıralım
+            });
+
+            // Sayfa yüklendiğinde animasyonun tetiklenmesi
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.classList.add('loaded');
+            });
+        });
+    </script>
+}

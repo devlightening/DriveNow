@@ -5,23 +5,10 @@ namespace DriveNow.Application.Features.CQRS.Commands.CarCommands
 {
     public class CreateCarCommand
     {
-        public CreateCarCommand(Guid brandId, string model, decimal kilometer, byte seat, int luggage, string coverImageUrl, string bigImageUrl, TransmissionType transmission, CarType carType, FuelType fuelType, DriveTypes driveType, int modelYear, bool ısPublished)
+        public CreateCarCommand()
         {
-            BrandId = brandId;
-            Model = model;
-            Kilometer = kilometer;
-            Seat = seat;
-            Luggage = luggage;
-            CoverImageUrl = coverImageUrl;
-            BigImageUrl = bigImageUrl;
-            Transmission = transmission;
-            CarType = carType;
-            FuelType = fuelType;
-            DriveType = driveType;
-            ModelYear = modelYear;
-            IsPublished = ısPublished;
-        }
 
+        }
         public Guid BrandId { get; set; }
         public string Model { get; set; }
         public decimal Kilometer { get; set; }

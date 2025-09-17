@@ -10,7 +10,7 @@
     <link href="~/Admin/vertical/assets/css/CarListStyleSheet.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
 
-   <style>
+    <style>
         /* Genel stiller buraya gelecek (öncekiyle aynı) */
         .form-container-wrapper {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.9) 100%);
@@ -23,18 +23,14 @@
         }
 
         @@keyframes slideInUp {
-            from
-
-        {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-container-wrapper h4 {
@@ -59,73 +55,73 @@
             padding-left: 40px; /* İkon için yer */
         }
 
-            .form-section-title::before {
-                font-family: 'Material Design Icons';
-                font-size: 1.8rem;
-                color: #3498db;
-                position: absolute;
-                left: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                line-height: 1; /* İkon hizalaması için */
-            }
+        .form-section-title::before {
+            font-family: 'Material Design Icons';
+            font-size: 1.8rem;
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            line-height: 1; /* İkon hizalaması için */
+        }
 
-            .form-section-title.car-details-title::before {
-                content: '\F0405'; /* Araba ikonu */
-            }
+        .form-section-title.car-details-title::before {
+            content: '\F0405'; /* Araba ikonu */
+        }
 
-            .form-section-title.specs-title::before {
-                content: '\F0BEF'; /* Özellikler ikonu */
-            }
+        .form-section-title.specs-title::before {
+            content: '\F0BEF'; /* Özellikler ikonu */
+        }
 
         .form-group {
             margin-bottom: 2rem;
         }
 
-            .form-group label {
-                font-weight: 700;
-                color: #34495e;
-                margin-bottom: 0.8rem;
-                font-size: 1rem;
-                display: block;
-            }
+        .form-group label {
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            display: block;
+        }
 
         .input-wrapper {
             position: relative;
         }
 
-            .input-wrapper .form-control,
-            .form-select {
-                border-radius: 12px !important;
-                height: 56px !important;
-                font-size: 1.1rem !important;
-                border: 2px solid #e0e0e0 !important;
-                padding-left: 3.5rem !important; /* İkon için alan */
-                transition: border-color 0.3s ease, box-shadow 0.3s ease;
-                background-color: #fdfdfd !important;
-            }
+        .input-wrapper .form-control,
+        .form-select {
+            border-radius: 12px !important;
+            height: 56px !important;
+            font-size: 1.1rem !important;
+            border: 2px solid #e0e0e0 !important;
+            padding-left: 3.5rem !important; /* İkon için alan */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fdfdfd !important;
+        }
 
-                .input-wrapper .form-control:focus,
-                .form-select:focus {
-                    border-color: #3498db !important;
-                    box-shadow: 0 0 0 0.35rem rgba(52, 152, 219, 0.25) !important;
-                }
+        .input-wrapper .form-control:focus,
+        .form-select:focus {
+            border-color: #3498db !important;
+            box-shadow: 0 0 0 0.35rem rgba(52, 152, 219, 0.25) !important;
+        }
 
-            .input-wrapper .input-group-text {
-                position: absolute;
-                left: 12px;
-                top: 50%;
-                transform: translateY(-50%);
-                border: none;
-                background: none;
-                color: #3498db;
-                font-size: 1.4rem;
-                z-index: 5;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-            }
+        .input-wrapper .input-group-text {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            color: #3498db;
+            font-size: 1.4rem;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
 
         /* Select2 stilleri */
         .select2-container--default .select2-selection--single {
@@ -147,9 +143,9 @@
             top: 0 !important;
         }
 
-            .select2-container--default .select2-selection--single .select2-selection__arrow b {
-                margin-top: -6px !important;
-            }
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            margin-top: -6px !important;
+        }
 
         .select2-container {
             width: 100% !important;
@@ -209,16 +205,16 @@
             justify-content: center; /* Buton içeriğini ortalamak için */
         }
 
-            .btn-create-car:hover {
-                background: linear-gradient(45deg, #2980b9, #1f618d);
-                transform: translateY(-6px) scale(1.05);
-                box-shadow: 0 18px 40px rgba(52, 152, 219, 0.5);
-            }
+        .btn-create-car:hover {
+            background: linear-gradient(45deg, #2980b9, #1f618d);
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 18px 40px rgba(52, 152, 219, 0.5);
+        }
 
-            .btn-create-car i {
-                margin-right: 12px;
-                font-size: 1.5rem;
-            }
+        .btn-create-car i {
+            margin-right: 12px;
+            font-size: 1.5rem;
+        }
 
         .field-validation-error {
             color: #e74c3c;
@@ -239,9 +235,9 @@
             margin-bottom: 2rem;
         }
 
-            .form-row .form-group {
-                margin-bottom: 0;
-            }
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
 
         /* Select2'nin kendi placeholder'ına ikon eklemek için */
         .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -249,22 +245,130 @@
             padding-left: 3.5rem !important; /* İkonun konumu için */
         }
 
-            .select2-container--default .select2-selection--single .select2-selection__rendered .mdi {
-                position: absolute;
-                left: 12px;
-                top: 50%;
-                transform: translateY(-50%);
-                font-size: 1.4rem;
-                color: #3498db;
+        .select2-container--default .select2-selection--single .select2-selection__rendered .mdi {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            color: #3498db;
+        }
+
+        .add-brand-button {
+            background-color: #28a745; /* Vibrant green */
+            color: white;
+            border: none;
+            border-radius: 8px; /* Slightly rounded corners */
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-left: 15px; /* Consistent spacing */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); /* Subtle shadow */
+        }
+
+            .add-brand-button:hover {
+                background-color: #218838; /* Darker green on hover */
+                transform: translateY(-2px); /* Slight lift effect */
+                box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4); /* Enhanced shadow on hover */
             }
-   </style>
+
+            .add-brand-button i {
+                margin-right: 8px;
+                font-size: 1.1rem; /* Adjusted icon size */
+            }
+
+        /* Modal Header Styling */
+        .modal-header {
+            background-color: #e9ecef; /* Light gray background */
+            border-bottom: 1px solid #dee2e6;
+            padding: 1rem 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.4rem; /* Slightly larger title */
+            font-weight: 700;
+            color: #343a40; /* Darker text for emphasis */
+        }
+
+        /* Modal Body Styling */
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+            .modal-body .form-label {
+                font-weight: 600;
+                font-size: 1rem;
+                color: #495057;
+            }
+
+        #newBrandName {
+            border-radius: 8px; /* Consistent rounded corners */
+            border: 1px solid #ced4da;
+            padding: 0.75rem 1rem; /* More comfortable padding */
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            #newBrandName:focus {
+                border-color: #3498db; /* Highlight on focus */
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25); /* Bootstrap-like focus ring */
+            }
+
+        /* Error message styling within the modal */
+        .field-validation-error {
+            color: #e74c3c; /* Red for errors */
+            font-size: 0.875em;
+            margin-top: 0.5rem;
+            display: block; /* Ensure it takes its own line */
+        }
+
+        /* Modal Footer Styling */
+        .modal-footer {
+            background-color: #e9ecef; /* Light gray background */
+            border-top: 1px solid #dee2e6;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: flex-end; /* Align buttons to the right */
+        }
+
+            .modal-footer .btn-secondary {
+                background-color: #6c757d; /* Standard secondary button color */
+                border: none;
+                border-radius: 6px;
+                padding: 0.6rem 1.2rem;
+                font-weight: 500;
+                transition: background-color 0.2s ease;
+            }
+
+                .modal-footer .btn-secondary:hover {
+                    background-color: #5a6268;
+                }
+
+            .modal-footer .btn-primary {
+                background-color: #007bff; /* Standard primary button color */
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 0.6rem 1.2rem;
+                font-weight: 500;
+                transition: background-color 0.2s ease;
+            }
+
+                .modal-footer .btn-primary:hover {
+                    background-color: #0056b3;
+                }
+    </style>
 }
 
 <div class="page-content-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling">
+                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling" style="padding-top: 80px;">
                     <h4 class="mb-0 font-size-24 page-title-text">Add New Car</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -276,23 +380,28 @@
                 </div>
             </div>
         </div>
-
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="form-container-wrapper">
                     <h4 class="mb-5">Create Your Next Dream Car</h4>
 
                     <form asp-action="CreateCar" method="post" id="createCarForm" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <div class="row form-row">
                             <div class="col-12">
                                 <div class="form-group">
                                     <label asp-for="BrandId" class="required-indicator">Brand Name</label>
-                                    <div class="input-wrapper">
-                                        <span class="input-group-text"><i class="mdi mdi-car-cruise-control"></i></span>
-                                        <select asp-for="BrandId" class="form-select" id="brandSelect" asp-items="ViewBag.BrandSelectItems">
-                                            <option value="" disabled selected>-- Select a Brand --</option>
-                                        </select>
+                                    <div class="input-wrapper d-flex align-items-center">
+                                        <div class="input-group flex-grow-1">
+                                            <span class="input-group-text"><i class="mdi mdi-car-cruise-control"></i></span>
+                                            <select asp-for="BrandId" class="form-select" id="brandSelect" asp-items="ViewBag.BrandSelectItems">
+                                                <option value="" disabled selected>-- Select a Brand --</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn add-brand-button" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                                            <i class="mdi mdi-plus"></i> Add Brand
+                                        </button>
                                     </div>
                                     <span asp-validation-for="BrandId" class="field-validation-error"></span>
                                 </div>
@@ -422,6 +531,9 @@
                                     <span asp-validation-for="CoverImageUrl" class="field-validation-error"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row form-row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label asp-for="BigImageUrl" class="required-indicator">Additional Image URL</label>
@@ -447,6 +559,28 @@
                                 <i class="mdi mdi-car-plus"></i> Add New Car
                             </button>
                         </div>
+
+                        <div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="addBrandModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addBrandModalLabel">Add New Brand</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="newBrandName" class="form-label">Brand Name</label>
+                                            <input type="text" class="form-control" id="newBrandName" placeholder="Enter brand name">
+                                            <div id="brandNameError" class="field-validation-error" style="display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-primary" id="saveNewBrandBtn">Save Brand</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -455,123 +589,173 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
-        $(document).ready(function() {
-            // Initialize jQuery Validation
-            $("#createCarForm").validate();
+        $(document).ready(function () {
+            // JQuery Validation Ayarları
+            $.validator.setDefaults({
+                highlight: function (element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass('is-invalid');
+                },
+                errorPlacement: function (error, element) {
+                    // Custom error placement for form groups
+                    const errorContainer = element.closest('.form-group').find('.field-validation-error');
+                    if (errorContainer.length) {
+                        errorContainer.html(error.html());
+                    } else {
+                        // Fallback if .field-validation-error is not found
+                        error.insertAfter(element);
+                    }
+                }
+            });
 
-            // Select2 formatlaması için fonksiyon
-            function formatState (state) {
+            // Select2 Formatlama Fonksiyonu
+            function formatState(state) {
                 if (!state.id) {
                     return state.text;
                 }
-                // Varsayılan ikon ve renk
-                var iconClass = "mdi mdi-tag-outline"; // Varsayılan ikon
-                var iconColor = "#3498db"; // Varsayılan renk
+                var iconClass = "mdi mdi-tag-outline";
+                var iconColor = "#3498db";
 
-                // Belirli select elementleri için özel ikonlar
-                var currentSelectId = $(state.element).closest('select').attr('id');
+                var stateText = state.text;
+                var stateValue = state.id;
 
-                switch (currentSelectId) {
-                    case 'brandSelect':
-                        iconClass = "mdi mdi-car-cruise-control";
-                        break;
-                    case 'transmissionSelect':
-                        iconClass = "mdi mdi-cog-sync";
-                        break;
-                    case 'carTypeSelect':
-                        iconClass = "mdi mdi-car-variant";
-                        break;
-                    case 'fuelTypeSelect':
-                        iconClass = "mdi mdi-fuel";
-                        break;
-                    case 'driveTypeSelect':
-                        iconClass = "mdi mdi-power-plug";
-                        break;
-                    default:
-                        // Genel enum değerleri için (eğer varsa)
-                        switch (state.element.value) {
-                            case "1": iconClass = "mdi mdi-cog-sync"; break;
-                            case "2": iconClass = "mdi mdi-car-shift-pattern"; break;
-                            case "3": iconClass = "mdi mdi-car-sedan"; break;
-                            case "4": iconClass = "mdi mdi-car-suv"; break;
-                            case "5": iconClass = "mdi mdi-fuel-station"; break;
-                            case "6": iconClass = "mdi mdi-fuel"; break;
-                            case "7": iconClass = "mdi mdi-car-multiple-outline"; break;
-                            case "8": iconClass = "mdi mdi-car-traction-control"; break;
-                        }
-                        break;
+                // Marka ikonu
+                if (stateValue && stateValue.length === 36) { // Check if stateValue is defined and has the correct length
+                    iconClass = "mdi mdi-car-cruise-control";
                 }
-
+                // Diğer Enumlar
+                else {
+                    switch (stateText) {
+                        case "Automatic": iconClass = "mdi mdi-cog-sync"; break;
+                        case "Manual": iconClass = "mdi mdi-car-shift-pattern"; break;
+                        case "Sedan": iconClass = "mdi mdi-car-sedan"; break;
+                        case "SUV": iconClass = "mdi mdi-car-suv"; break;
+                        case "Gasoline": iconClass = "mdi mdi-fuel-station"; break;
+                        case "Diesel": iconClass = "mdi mdi-fuel"; break;
+                        case "Electric": iconClass = "mdi mdi-car-electric"; break;
+                        case "AWD": iconClass = "mdi mdi-car-traction-control"; break;
+                        case "FWD": iconClass = "mdi mdi-power-front"; break; // FWD için
+                        case "RWD": iconClass = "mdi mdi-power-rear"; break; // RWD için
+                        case "Hybrid": iconClass = "mdi mdi-gas-station"; break; // Hybrid için
+                        default: iconClass = "mdi mdi-car-info"; break;
+                    }
+                }
                 var icon = $(`<i class="${iconClass}" style="color:${iconColor}; margin-right: 5px;"></i>`);
-                return $('<span>').append(icon).append(state.text);
+                return $('<span>').append(icon).append(stateText);
             }
 
-            // Select2'yi tüm dropdown'lar için başlat
+            // Select2 dropdown'larını başlat
             $('#brandSelect').select2({
                 placeholder: "-- Select a Brand --",
-                theme: "materialdesign",
+                theme: "bootstrap",
                 templateResult: formatState,
                 templateSelection: formatState
             });
+            $('#transmissionSelect').select2({ placeholder: "-- Select Transmission --", theme: "bootstrap", templateResult: formatState, templateSelection: formatState });
+            $('#carTypeSelect').select2({ placeholder: "-- Select Car Type --", theme: "bootstrap", templateResult: formatState, templateSelection: formatState });
+            $('#fuelTypeSelect').select2({ placeholder: "-- Select Fuel Type --", theme: "bootstrap", templateResult: formatState, templateSelection: formatState });
+            $('#driveTypeSelect').select2({ placeholder: "-- Select Drive Type --", theme: "bootstrap", templateResult: formatState, templateSelection: formatState });
 
-            $('#transmissionSelect').select2({
-                placeholder: "-- Select Transmission --",
-                theme: "materialdesign",
-                templateResult: formatState,
-                templateSelection: formatState
-            });
-
-            $('#carTypeSelect').select2({
-                placeholder: "-- Select Car Type --",
-                theme: "materialdesign",
-                templateResult: formatState,
-                templateSelection: formatState
-            });
-
-            $('#fuelTypeSelect').select2({
-                placeholder: "-- Select Fuel Type --",
-                theme: "materialdesign",
-                templateResult: formatState,
-                templateSelection: formatState
-            });
-
-            $('#driveTypeSelect').select2({
-                placeholder: "-- Select Drive Type --",
-                theme: "materialdesign",
-                templateResult: formatState,
-                templateSelection: formatState
-            });
-
-            // Placeholder'ın doğru çalışmasını sağla ve 'is-invalid' sınıfını kaldır
-            $('.form-select').on('change', function() {
+            // Form alanı değiştiğinde Select2'nin durumunu güncelle
+            $('.form-select').on('change', function () {
                 if ($(this).val()) {
                     $(this).removeClass('is-invalid');
                     $(this).closest('.form-group').find('.field-validation-error').text('');
                 }
             });
 
-            // Hata durumunda Select2 placeholder'ını manuel olarak ayarla (isteğe bağlı)
-            // Eğer server-side validation sonrası hata mesajı varsa ve placeholder gözükmüyorsa bu kısım devreye girebilir.
-            $('.form-select').each(function() {
-                if ($(this).val() === null || $(this).val() === "") {
-                    var placeholderText = $(this).find('option[value=""]').text();
-                    if ($(this).hasClass('is-invalid')) {
-                       // Hatalı alan için placeholder ayarı
-                    } else {
-                       // Normal placeholder ayarı
-                    }
-                }
-            });
-        });
+            // Yeni Marka Ekleme Modal'ı Buton Olayı
+            $('#saveNewBrandBtn').on('click', function () {
+                var newBrandName = $('#newBrandName').val().trim();
+                var brandNameErrorDiv = $('#brandNameError');
 
-        // Animasyon için 'loaded' sınıfını ekle
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.classList.add('loaded');
+                // Basic validation for brand name
+                if (newBrandName === '') {
+                    brandNameErrorDiv.text('Brand name is required.');
+                    brandNameErrorDiv.show();
+                    $('#newBrandName').addClass('is-invalid');
+                    return; // Stop if validation fails
+                }
+
+                brandNameErrorDiv.hide();
+                $('#newBrandName').removeClass('is-invalid');
+
+                // Prepare the DTO for the AJAX post
+                var brandDto = {
+                    brandName: newBrandName
+                };
+
+                // AJAX request to add the new brand
+                axios.post('/AdminCar/AddNewBrandViaAjax', brandDto)
+                .then(function (response) {
+                    if (response.data.success) {
+                        var newBrand = response.data.brand;
+                        // Create a new Select2 option and add it to the brandSelect dropdown
+                        var newOption = new Option(newBrand.brandName, newBrand.brandId, false, true);
+                        $('#brandSelect').append(newOption).trigger('change');
+
+                        // Close the modal and clear the input
+                        $('#addBrandModal').modal('hide');
+                        $('#newBrandName').val('');
+
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Brand added successfully!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        // Handle API errors
+                        var errorMessage = response.data.message || 'An error occurred.';
+                        brandNameErrorDiv.text(errorMessage);
+                        brandNameErrorDiv.show();
+                        $('#newBrandName').addClass('is-invalid');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: errorMessage,
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    // Handle network or unexpected errors
+                    var errorMessage = 'An unexpected error occurred while processing your request.';
+                    if (error.response && error.response.data && error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+
+                    brandNameErrorDiv.text(errorMessage);
+                    brandNameErrorDiv.show();
+                    $('#newBrandName').addClass('is-invalid');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: errorMessage,
+                    });
+                    console.error('Error adding brand:', error);
+                });
+            });
+
+            // Clear modal input and error messages when modal is shown
+            $('#addBrandModal').on('shown.bs.modal', function () {
+                $('#newBrandName').val('');
+                $('#newBrandName').removeClass('is-invalid');
+                $('#brandNameError').hide().text('');
+            });
         });
     </script>
 }

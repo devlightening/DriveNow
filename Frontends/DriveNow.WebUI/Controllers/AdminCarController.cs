@@ -4,7 +4,9 @@ using DriveNow.Dtos.CarDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Globalization;
+using System.Text;
+using DriveNow.Application.Features.CQRS.Commands.CarCommands;
 
 namespace DriveNow.WebUI.Controllers
 {
@@ -28,7 +30,11 @@ namespace DriveNow.WebUI.Controllers
             try
             {
                 var responseMessage = await client.GetAsync(requestUrl);
-                responseMessage.EnsureSuccessStatusCode();
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    ViewBag.ErrorMessage = $"Error fetching car data. Status code: {responseMessage.StatusCode}";
+                    return View(new List<ResultCarWithBrandsDto>());
+                }
 
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
                 values = JsonConvert.DeserializeObject<List<ResultCarWithBrandsDto>>(jsonData);
@@ -40,7 +46,17 @@ namespace DriveNow.WebUI.Controllers
             }
             catch (HttpRequestException ex)
             {
-                ViewBag.ErrorMessage = $"Error fetching car data: {ex.Message}";
+                ViewBag.ErrorMessage = $"API connection error: {ex.Message}";
+                values = new List<ResultCarWithBrandsDto>();
+            }
+            catch (JsonException ex)
+            {
+                ViewBag.ErrorMessage = $"Error parsing car data: {ex.Message}";
+                values = new List<ResultCarWithBrandsDto>();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"An unexpected error occurred: {ex.Message}";
                 values = new List<ResultCarWithBrandsDto>();
             }
 
@@ -50,54 +66,7 @@ namespace DriveNow.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateCar()
         {
-            var client = _httpClientFactory.CreateClient();
-            List<ResultBrandDto> brandValuesApi = null;
-
-            try
-            {
-                var responseMessage = await client.GetAsync($"{_apiBaseUrl}/api/Brands/");
-                responseMessage.EnsureSuccessStatusCode();
-
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                brandValuesApi = JsonConvert.DeserializeObject<List<ResultBrandDto>>(jsonData);
-            }
-            catch (HttpRequestException)
-            {
-                return View("ErrorApiFetch");
-            }
-
-            List<SelectListItem> brandSelectItems = brandValuesApi.Select(x => new SelectListItem
-            {
-                Text = x.BrandName,
-                Value = x.BrandId.ToString()
-            }).ToList();
-
-            ViewBag.BrandSelectItems = brandSelectItems;
-
-            ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType)).Cast<CarType>().Select(e => new SelectListItem
-            {
-                Text = e.ToString(),
-                Value = ((int)e).ToString()
-            }).ToList();
-
-            ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType)).Cast<FuelType>().Select(e => new SelectListItem
-            {
-                Text = e.ToString(),
-                Value = ((int)e).ToString()
-            }).ToList();
-
-            ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)).Cast<DriveTypes>().Select(e => new SelectListItem
-            {
-                Text = e.ToString(),
-                Value = ((int)e).ToString()
-            }).ToList();
-
-            ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Select(e => new SelectListItem
-            {
-                Text = e.ToString(),
-                Value = ((int)e).ToString()
-            }).ToList();
-
+            await PopulateDropdowns();
             return View(new CreateCarDto());
         }
 
@@ -106,77 +75,99 @@ namespace DriveNow.WebUI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var client = _httpClientFactory.CreateClient();
-                List<ResultBrandDto> brandValuesApi = null;
-                try
-                {
-                    var responseMessage = await client.GetAsync($"{_apiBaseUrl}/api/Brands/");
-                    responseMessage.EnsureSuccessStatusCode();
-                    var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                    brandValuesApi = JsonConvert.DeserializeObject<List<ResultBrandDto>>(jsonData);
-                }
-                catch (HttpRequestException)
-                {
-                    return View("ErrorApiFetch");
-                }
-
-                List<SelectListItem> brandSelectItems = brandValuesApi.Select(x => new SelectListItem
-                {
-                    Text = x.BrandName,
-                    Value = x.BrandId.ToString()
-                }).ToList();
-                ViewBag.BrandSelectItems = brandSelectItems;
-
-                ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType)).Cast<CarType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-                ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType)).Cast<FuelType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-                ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)).Cast<DriveTypes>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-                ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-
+                await PopulateDropdowns();
                 return View(createCarDto);
             }
 
-            var clientPost = _httpClientFactory.CreateClient();
-            var json = JsonConvert.SerializeObject(createCarDto);
-            var stringContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var client = _httpClientFactory.CreateClient();
+
+            var commandToSend = new CreateCarCommand
+            {
+                BrandId = createCarDto.BrandId,
+                Model = createCarDto.Model,
+                Kilometer = createCarDto.Kilometer,
+                Seat = createCarDto.Seat,
+                Luggage = createCarDto.Luggage,
+                CoverImageUrl = createCarDto.CoverImageUrl,
+                BigImageUrl = createCarDto.BigImageUrl,
+                Transmission = createCarDto.Transmission,
+                CarType = createCarDto.CarType,
+                FuelType = createCarDto.FuelType,
+                DriveType = createCarDto.DriveType,
+                ModelYear = createCarDto.ModelYear,
+                IsPublished = createCarDto.IsPublished,
+            };
+
+            var json = JsonConvert.SerializeObject(commandToSend);
+            var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
             {
-                var responseMessagePost = await clientPost.PostAsync($"{_apiBaseUrl}/api/Cars", stringContent);
-                responseMessagePost.EnsureSuccessStatusCode();
+                var responseMessage = await client.PostAsync($"{_apiBaseUrl}/api/Cars", stringContent);
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    var errorBody = await responseMessage.Content.ReadAsStringAsync();
+                    ViewBag.ErrorMessage = $"Error creating car. Status: {responseMessage.StatusCode}. Details: {errorBody}";
+                    await PopulateDropdowns();
+                    return View(createCarDto);
+                }
 
                 return RedirectToAction("Index", "AdminCar");
             }
             catch (HttpRequestException ex)
             {
-                ViewBag.ErrorMessage = $"An error occurred while creating the car: {ex.Message}";
-
-                var brandClient = _httpClientFactory.CreateClient();
-                List<ResultBrandDto> errorBrandValuesApi = null;
-                try
-                {
-                    var brandResponseMessage = await brandClient.GetAsync($"{_apiBaseUrl}/api/Brands/");
-                    brandResponseMessage.EnsureSuccessStatusCode();
-                    var brandJsonData = await brandResponseMessage.Content.ReadAsStringAsync();
-                    errorBrandValuesApi = JsonConvert.DeserializeObject<List<ResultBrandDto>>(brandJsonData);
-                }
-                catch (HttpRequestException)
-                {
-                    return View("ErrorApiFetch");
-                }
-
-                List<SelectListItem> errorBrandSelectItems = errorBrandValuesApi.Select(x => new SelectListItem
-                {
-                    Text = x.BrandName,
-                    Value = x.BrandId.ToString()
-                }).ToList();
-                ViewBag.BrandSelectItems = errorBrandSelectItems;
-
-                ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType)).Cast<CarType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-                ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType)).Cast<FuelType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-                ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)).Cast<DriveTypes>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-                ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Select(e => new SelectListItem { Text = e.ToString(), Value = ((int)e).ToString() }).ToList();
-
+                ViewBag.ErrorMessage = $"API connection error during car creation: {ex.Message}";
+                await PopulateDropdowns();
                 return View(createCarDto);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"An unexpected error occurred during car creation: {ex.Message}";
+                await PopulateDropdowns();
+                return View(createCarDto);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewBrandViaAjax([FromBody] CreateBrandDto createBrandDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var json = JsonConvert.SerializeObject(createBrandDto);
+            var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var responseMessage = await client.PostAsync($"{_apiBaseUrl}/api/Brands", stringContent);
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    var errorBody = await responseMessage.Content.ReadAsStringAsync();
+                    var statusCode = (int)responseMessage.StatusCode;
+                    return StatusCode(statusCode, new { success = false, message = $"API Error: {errorBody}", statusCode = statusCode });
+                }
+
+                var responseData = await responseMessage.Content.ReadAsStringAsync();
+                var newBrand = JsonConvert.DeserializeObject<ResultBrandDto>(responseData);
+
+                return Json(new { success = true, brand = newBrand });
+            }
+            catch (HttpRequestException ex)
+            {
+                return StatusCode(500, new { success = false, message = $"API connection error: {ex.Message}" });
+            }
+            catch (JsonException ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Error processing API response: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 
@@ -189,7 +180,6 @@ namespace DriveNow.WebUI.Controllers
             {
                 var responseMessage = await client.DeleteAsync(requestUrl);
                 responseMessage.EnsureSuccessStatusCode();
-
                 return RedirectToAction("Index", "AdminCar");
             }
             catch (HttpRequestException ex)
@@ -198,5 +188,126 @@ namespace DriveNow.WebUI.Controllers
                 return RedirectToAction("Index", "AdminCar");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateCar(Guid id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var requestUrl = $"{_apiBaseUrl}/api/Cars/{id}";
+
+            try
+            {
+                var responseMessage = await client.GetAsync(requestUrl);
+                responseMessage.EnsureSuccessStatusCode();
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                var updateCarDto = JsonConvert.DeserializeObject<UpdateCarDto>(jsonData);
+
+                if (updateCarDto == null)
+                {
+                    return NotFound();
+                }
+
+                await PopulateDropdowns(updateCarDto.BrandId, updateCarDto.CarType, updateCarDto.FuelType, updateCarDto.DriveType, updateCarDto.Transmission);
+                return View(updateCarDto);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"An unexpected error occurred while fetching car details: {ex.Message}";
+                return RedirectToAction("Index", "AdminCar");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCar(UpdateCarDto updateCarDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                await PopulateDropdowns(updateCarDto.BrandId, updateCarDto.CarType, updateCarDto.FuelType, updateCarDto.DriveType, updateCarDto.Transmission);
+                return View(updateCarDto);
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var requestUrl = $"{_apiBaseUrl}/api/Cars/{updateCarDto.CarId}";
+            var json = JsonConvert.SerializeObject(updateCarDto, new JsonSerializerSettings { Culture = CultureInfo.InvariantCulture });
+            var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var responseMessage = await client.PutAsync(requestUrl, stringContent);
+                responseMessage.EnsureSuccessStatusCode();
+                return RedirectToAction("Index", "AdminCar");
+            }
+            catch (HttpRequestException ex)
+            {
+                ViewBag.ErrorMessage = $"An error occurred while updating the car: {ex.Message}";
+                await PopulateDropdowns(updateCarDto.BrandId, updateCarDto.CarType, updateCarDto.FuelType, updateCarDto.DriveType, updateCarDto.Transmission);
+                return View(updateCarDto);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"An unexpected error occurred during car update: {ex.Message}";
+                await PopulateDropdowns(updateCarDto.BrandId, updateCarDto.CarType, updateCarDto.FuelType, updateCarDto.DriveType, updateCarDto.Transmission);
+                return View(updateCarDto);
+            }
+        }
+
+        private async Task PopulateDropdowns(Guid? selectedBrandId = null, CarType? selectedCarType = null, FuelType? selectedFuelType = null, DriveTypes? selectedDriveType = null, TransmissionType? selectedTransmission = null)
+        {
+            var client = _httpClientFactory.CreateClient();
+            List<ResultBrandDto> brandValuesApi = null;
+
+            try
+            {
+                var responseMessage = await client.GetAsync($"{_apiBaseUrl}/api/Brands/");
+                responseMessage.EnsureSuccessStatusCode();
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                brandValuesApi = JsonConvert.DeserializeObject<List<ResultBrandDto>>(jsonData);
+            }
+            catch (HttpRequestException)
+            {
+            }
+
+            if (brandValuesApi != null)
+            {
+                ViewBag.BrandSelectItems = brandValuesApi.Select(x => new SelectListItem
+                {
+                    Text = x.BrandName,
+                    Value = x.BrandId.ToString(),
+                    Selected = x.BrandId == selectedBrandId
+                }).ToList();
+            }
+            else
+            {
+                ViewBag.BrandSelectItems = new List<SelectListItem>();
+            }
+
+            ViewBag.CarTypeItems = Enum.GetValues(typeof(CarType)).Cast<CarType>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString(),
+                Selected = e == selectedCarType
+            }).ToList();
+
+            ViewBag.FuelTypeItems = Enum.GetValues(typeof(FuelType)).Cast<FuelType>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString(),
+                Selected = e == selectedFuelType
+            }).ToList();
+
+            ViewBag.DriveTypeItems = Enum.GetValues(typeof(DriveTypes)).Cast<DriveTypes>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString(),
+                Selected = e == selectedDriveType
+            }).ToList();
+
+            ViewBag.TransmissionItems = Enum.GetValues(typeof(TransmissionType)).Cast<TransmissionType>().Select(e => new SelectListItem
+            {
+                Text = e.ToString(),
+                Value = ((int)e).ToString(),
+                Selected = e == selectedTransmission
+            }).ToList();
+        }
     }
-}   
+}

@@ -15,8 +15,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling">
-                    <h4 class="mb-0 font-size-24 page-title-text">Car Inventory</h4>
+                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling" style="padding-top: 80px;"> <h4 class="mb-0 font-size-24 page-title-text">Car Inventory</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
@@ -83,7 +82,7 @@
                                     </button>
                                 </div>
                             </div>
-                            @* ... Diğer kart içeriği ... *@
+                            
                             <div class="card-body">
                                 <h5 class="card-title car-brand-model">
                                     @car.BrandName
@@ -118,7 +117,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script src="~/Admin/vertical/assets/js/CarListScripts.js"></script>
 }

@@ -8,13 +8,28 @@ namespace DriveNow.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandsController
-        (CreateBrandCommandHandler _createBrandCommandHandler,
-         UpdateBrandCommandHandler _updateBrandCommandHandler,
-         RemoveBrandCommandHandler _removeBrandCommandHandler,
-         GetBrandByIdQueryHandler _getBrandByIdQueryHandler,
-         GetBrandQueryHandler _getBrandQueryHandler) : ControllerBase
+    public class BrandsController : ControllerBase
     {
+        private readonly CreateBrandCommandHandler _createBrandCommandHandler;
+        private readonly UpdateBrandCommandHandler _updateBrandCommandHandler;
+        private readonly RemoveBrandCommandHandler _removeBrandCommandHandler;
+        private readonly GetBrandByIdQueryHandler _getBrandByIdQueryHandler;
+        private readonly GetBrandQueryHandler _getBrandQueryHandler;
+
+        public BrandsController(
+            CreateBrandCommandHandler createBrandCommandHandler,
+            UpdateBrandCommandHandler updateBrandCommandHandler,
+            RemoveBrandCommandHandler removeBrandCommandHandler,
+            GetBrandByIdQueryHandler getBrandByIdQueryHandler,
+            GetBrandQueryHandler getBrandQueryHandler)
+        {
+            _createBrandCommandHandler = createBrandCommandHandler;
+            _updateBrandCommandHandler = updateBrandCommandHandler;
+            _removeBrandCommandHandler = removeBrandCommandHandler;
+            _getBrandByIdQueryHandler = getBrandByIdQueryHandler;
+            _getBrandQueryHandler = getBrandQueryHandler;
+        }
+
         [HttpGet]
         public async Task<IActionResult> BrandList()
         {
@@ -38,17 +53,25 @@ namespace DriveNow.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBrand([FromBody] CreateBrandCommand command)
         {
-            if (command == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid data.");
+                return BadRequest(ModelState);
             }
 
+            try
+            {
+                var createdBrand = await _createBrandCommandHandler.Handle(command);
 
-            var createdBrand = await _createBrandCommandHandler.Handle(command);
-            return CreatedAtAction(
-                nameof(GetBrandById),
-                new { id = createdBrand.BrandId },
-                createdBrand);
+                return CreatedAtAction(
+                    nameof(GetBrandById),
+                    new { id = createdBrand.BrandId }, 
+                    createdBrand);
+            }
+            catch (Exception ex)
+            {
+             
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while creating the brand.", details = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
@@ -61,20 +84,17 @@ namespace DriveNow.WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateBrand([FromBody] UpdateBrandCommand command)
         {
-            if (command == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid data.");
+                return BadRequest(ModelState);
             }
 
-
             var updatedBrand = await _updateBrandCommandHandler.Handle(command);
-
 
             if (updatedBrand == null)
             {
                 return NotFound();
             }
-
 
             return Ok(updatedBrand);
         }
