@@ -15,7 +15,8 @@ namespace DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandWriteHa
         {
             var brand = new Brand
             {
-                BrandName = command.BrandName
+                BrandName = command.BrandName,
+                LogoUrl = command.LogoUrl
             };
             return await repository.CreateAsync(brand);
         }

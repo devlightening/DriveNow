@@ -231,10 +231,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
-            // "Add New Feature" modal'ı açmak için kullanılan buton
             $('#saveFeatureBtn').click(function () {
                 var featureName = $('#createFeatureNameInput').val();
-                var iconUrl = $('#createIconUrlInput').val(); // Yeni IconUrl inputundan değeri al
+                var iconUrl = $('#createIconUrlInput').val();
 
                 if (!featureName || !iconUrl) {
                     alert('Feature Name and Icon Class are required.');
@@ -243,7 +242,7 @@
 
                 var createFeatureDto = {
                     FeatureName: featureName,
-                    IconUrl: iconUrl // DTO'ya IconUrl'yi ekle
+                    IconUrl: iconUrl
                 };
 
                 $.ajax({
@@ -262,24 +261,22 @@
                 });
             });
 
-            // "Update Feature" modalı açıldığında input alanlarını doldurur
             $('#updateFeatureModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
                 var featureId = button.data('feature-id');
                 var featureName = button.data('feature-name');
-                var iconUrl = button.data('icon-url'); // Yeni IconUrl'yi al
+                var iconUrl = button.data('icon-url'); 
 
                 var modal = $(this);
                 modal.find('#updateFeatureIdInput').val(featureId);
                 modal.find('#updateFeatureNameInput').val(featureName);
-                modal.find('#updateIconUrlInput').val(iconUrl); // Güncelleme modalına IconUrl'yi yerleştir
+                modal.find('#updateIconUrlInput').val(iconUrl);
             });
 
-            // "Update Feature" modalındaki "Save changes" butonu
             $('#saveUpdateBtn').click(function () {
                 var featureId = $('#updateFeatureIdInput').val();
                 var featureName = $('#updateFeatureNameInput').val();
-                var iconUrl = $('#updateIconUrlInput').val(); // Güncellenen IconUrl'yi al
+                var iconUrl = $('#updateIconUrlInput').val();
 
                 if (!featureName || !iconUrl) {
                     alert('Feature Name and Icon Class are required.');
@@ -289,7 +286,7 @@
                 var updateFeatureDto = {
                     FeatureId: featureId,
                     FeatureName: featureName,
-                    IconUrl: iconUrl // DTO'ya IconUrl'yi ekle
+                    IconUrl: iconUrl 
                 };
 
                 $.ajax({

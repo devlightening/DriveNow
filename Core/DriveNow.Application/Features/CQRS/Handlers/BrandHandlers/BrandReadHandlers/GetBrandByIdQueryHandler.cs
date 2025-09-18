@@ -16,7 +16,7 @@ namespace DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandReadHan
                 return null;
             }
 
-            return new GetBrandByIdQueryResult(value.BrandId, value.BrandName);
+            return new GetBrandByIdQueryResult(value.BrandId, value.BrandName,value.LogoUrl);
         }
     }
 }

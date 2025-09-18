@@ -16,6 +16,7 @@ namespace DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandWriteHa
             }
 
             brand.BrandName = command.BrandName;
+            brand.LogoUrl = command.LogoUrl;
 
             return await _repository.UpdateAsync(brand);
         }

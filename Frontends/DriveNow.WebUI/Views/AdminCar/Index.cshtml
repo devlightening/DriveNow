@@ -15,7 +15,8 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling" style="padding-top: 80px;"> <h4 class="mb-0 font-size-24 page-title-text">Car Inventory</h4>
+                <div class="page-title-box d-flex align-items-center justify-content-between page-header-styling" style="padding-top: 80px;">
+                    <h4 class="mb-0 font-size-24 page-title-text">Car Inventory</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
@@ -68,6 +69,9 @@
                                     <a href="/AdminCar/DeleteCar/@car.CarId" class="btn btn-delete-overlay" data-car-id="@car.CarId" data-car-name="@car.BrandName @car.Model @car.ModelYear" onclick="confirmDelete(this); return false;">Delete</a>
                                     <a href="/CarList/CarDetail/@car.CarId" class="btn btn-detail-overlay">Detail</a>
 
+                                    @* YENİ EKLEDİĞİMİZ BUTON *@
+                                    <a href="/AdminPricing/Index/@car.CarId" class="btn btn-prices-overlay">View Prices</a>
+
                                     @{
                                         bool isPublished = car.IsPublished;
                                         string buttonClass = isPublished ? "btn-available" : "btn-unavailable";
@@ -82,7 +86,7 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <div class="card-body">
                                 <h5 class="card-title car-brand-model">
                                     @car.BrandName
@@ -117,6 +121,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script src="~/Admin/vertical/assets/js/CarListScripts.js"></script>
 }
