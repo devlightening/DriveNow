@@ -51,6 +51,12 @@ namespace DriveNow.WebUI.Controllers
             return View(values);
         }
 
+        [HttpGet] 
+        public IActionResult CreateBrand()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateBrand([FromBody] CreateBrandDto createBrandDto)
         {
