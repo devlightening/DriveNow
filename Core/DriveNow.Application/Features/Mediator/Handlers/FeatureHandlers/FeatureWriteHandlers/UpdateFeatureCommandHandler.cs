@@ -21,6 +21,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.Featur
 
 
             feature.FeatureName = request.FeatureName;
+            feature.IconUrl = request.IconUrl;
 
 
             await _repository.UpdateAsync(feature);

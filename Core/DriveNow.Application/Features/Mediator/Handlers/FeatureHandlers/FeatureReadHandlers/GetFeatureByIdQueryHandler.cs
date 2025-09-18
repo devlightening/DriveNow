@@ -22,7 +22,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.Featur
             }
 
             
-            return new GetFeatureByIdQueryResult(feature.FeatureId, feature.FeatureName);
+            return new GetFeatureByIdQueryResult(feature.FeatureId, feature.FeatureName,feature.IconUrl);
         }
     }
 }

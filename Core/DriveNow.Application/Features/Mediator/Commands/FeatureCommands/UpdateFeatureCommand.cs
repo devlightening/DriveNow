@@ -11,6 +11,8 @@ namespace DriveNow.Application.Features.Mediator.Commands.FeatureCommands
     {
         public Guid FeatureId { get; set; }
         public string FeatureName { get; set; }
+        public string IconUrl { get; set; }
+
 
     }
 }

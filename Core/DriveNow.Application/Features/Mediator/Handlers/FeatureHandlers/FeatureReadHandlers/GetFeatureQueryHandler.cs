@@ -13,7 +13,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.Featur
         public async Task<List<GetFeatureQueryResult>> Handle(GetFeatureQuery request, CancellationToken cancellationToken)
         {
             var features =await _repository.GetAllAsync();
-            return features.Select(f => new GetFeatureQueryResult(f.FeatureId, f.FeatureName)).ToList();
+            return features.Select(f => new GetFeatureQueryResult(f.FeatureId, f.FeatureName, f.IconUrl)).ToList();
         }
     }
 }

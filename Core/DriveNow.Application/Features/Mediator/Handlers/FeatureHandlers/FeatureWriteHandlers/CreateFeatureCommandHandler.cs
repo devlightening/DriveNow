@@ -11,7 +11,8 @@ namespace DriveNow.Application.Features.Mediator.Handlers.FeatureHandlers.Featur
         {
             var feature = new Feature
             {
-                FeatureName = request.FeatureName
+                FeatureName = request.FeatureName,
+                IconUrl = request.IconUrl
             };
 
             await _repository.CreateAsync(feature);

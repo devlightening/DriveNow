@@ -1,0 +1,328 @@
+﻿@model List<ResultFeatureDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --card-bg: #ffffff;
+        --border-color: #e0e0e0;
+        --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.05);
+        --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.1);
+        --success-color: #2ecc71;
+        --danger-color: #e74c3c;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-custom {
+        max-width: 1200px;
+        margin: auto;
+        padding: 2rem;
+        padding-top: 6rem;
+    }
+
+    .page-header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin: 0;
+    }
+
+    .btn-add-feature {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        text-decoration: none;
+    }
+
+        .btn-add-feature:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .feature-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: var(--shadow-light);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+    .feature-icon-container {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 1rem;
+    }
+
+    .btn-update, .btn-delete {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-update {
+        background-color: #f39c12;
+        color: white;
+    }
+
+        .btn-update:hover {
+            background-color: #d88909;
+        }
+
+    .btn-delete {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+</style>
+
+<div class="container-custom">
+    <div class="page-header-container">
+        <h2 class="page-title">Vehicle Features</h2>
+        <button type="button" class="btn-add-feature" data-bs-toggle="modal" data-bs-target="#createFeatureModal">
+            Add New Feature
+        </button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="feature-grid">
+            @foreach (var feature in Model)
+            {
+                <div class="feature-card" data-feature-id="@feature.FeatureId" data-feature-name="@feature.FeatureName" data-icon-url="@feature.IconUrl">
+                    <div class="feature-header">
+                        <div class="feature-icon-container">
+                            <i class="@feature.IconUrl"></i>
+                        </div>
+                        <div class="feature-name">@feature.FeatureName</div>
+                    </div>
+                    <div class="card-actions">
+                        <button type="button" class="btn-update" data-bs-toggle="modal" data-bs-target="#updateFeatureModal"
+                                data-feature-id="@feature.FeatureId" data-feature-name="@feature.FeatureName" data-icon-url="@feature.IconUrl">
+                            Update
+                        </button>
+                        <button type="button" class="btn-delete" onclick="deleteFeature('@feature.FeatureId')">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center p-5">
+            <p>No features found. Please add a new feature.</p>
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="createFeatureModal" tabindex="-1" aria-labelledby="createFeatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createFeatureModalLabel">Create New Feature</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createFeatureForm">
+                    <div class="form-group mb-3">
+                        <label for="createFeatureNameInput">Feature Name</label>
+                        <input type="text" id="createFeatureNameInput" name="FeatureName" class="form-control" placeholder="e.g., Apple CarPlay, ABS, Airbag" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createIconUrlInput">Icon Class (e.g., fas fa-car)</label>
+                        <input type="text" id="createIconUrlInput" name="IconUrl" class="form-control" placeholder="e.g., fas fa-car" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveFeatureBtn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateFeatureModal" tabindex="-1" aria-labelledby="updateFeatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateFeatureModalLabel">Update Feature</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateFeatureForm">
+                    <input type="hidden" id="updateFeatureIdInput">
+                    <div class="form-group mb-3">
+                        <label for="updateFeatureNameInput">Feature Name</label>
+                        <input type="text" id="updateFeatureNameInput" name="FeatureName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateIconUrlInput">Icon Class (e.g., fas fa-car)</label>
+                        <input type="text" id="updateIconUrlInput" name="IconUrl" class="form-control" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveUpdateBtn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // "Add New Feature" modal'ı açmak için kullanılan buton
+            $('#saveFeatureBtn').click(function () {
+                var featureName = $('#createFeatureNameInput').val();
+                var iconUrl = $('#createIconUrlInput').val(); // Yeni IconUrl inputundan değeri al
+
+                if (!featureName || !iconUrl) {
+                    alert('Feature Name and Icon Class are required.');
+                    return;
+                }
+
+                var createFeatureDto = {
+                    FeatureName: featureName,
+                    IconUrl: iconUrl // DTO'ya IconUrl'yi ekle
+                };
+
+                $.ajax({
+                    url: '/AdminFeature/CreateFeature',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(createFeatureDto),
+                    success: function (data) {
+                        $('#createFeatureModal').modal('hide');
+                        alert("Feature successfully created!");
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error creating feature: " + xhr.responseText);
+                    }
+                });
+            });
+
+            // "Update Feature" modalı açıldığında input alanlarını doldurur
+            $('#updateFeatureModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var featureId = button.data('feature-id');
+                var featureName = button.data('feature-name');
+                var iconUrl = button.data('icon-url'); // Yeni IconUrl'yi al
+
+                var modal = $(this);
+                modal.find('#updateFeatureIdInput').val(featureId);
+                modal.find('#updateFeatureNameInput').val(featureName);
+                modal.find('#updateIconUrlInput').val(iconUrl); // Güncelleme modalına IconUrl'yi yerleştir
+            });
+
+            // "Update Feature" modalındaki "Save changes" butonu
+            $('#saveUpdateBtn').click(function () {
+                var featureId = $('#updateFeatureIdInput').val();
+                var featureName = $('#updateFeatureNameInput').val();
+                var iconUrl = $('#updateIconUrlInput').val(); // Güncellenen IconUrl'yi al
+
+                if (!featureName || !iconUrl) {
+                    alert('Feature Name and Icon Class are required.');
+                    return;
+                }
+
+                var updateFeatureDto = {
+                    FeatureId: featureId,
+                    FeatureName: featureName,
+                    IconUrl: iconUrl // DTO'ya IconUrl'yi ekle
+                };
+
+                $.ajax({
+                    url: '/AdminFeature/UpdateFeature',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(updateFeatureDto),
+                    success: function (data) {
+                        $('#updateFeatureModal').modal('hide');
+                        alert("Feature successfully updated!");
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error updating feature: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+
+         function deleteFeature(id) {
+            if (confirm("Are you sure you want to delete this feature?")) {
+                $.ajax({
+                    url: '/AdminFeature/DeleteFeature/' + id,
+                    type: 'DELETE',
+                    success: function (data) {
+                        alert("Feature successfully deleted!");
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error deleting feature: " + xhr.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+}

@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DriveNow.Domain.Entities
+namespace DriveNow.Dtos.FeatureDtos
 {
-    public class Feature
+    public class UpdateFeatureDto
     {
         public Guid FeatureId { get; set; }
-        public string FeatureName { get; set; }
+        public string  FeatureName { get; set; }
         public string IconUrl { get; set; }
-        public List<CarFeature> CarFeatures { get; set; }
-
 
     }
 }
