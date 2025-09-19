@@ -58,8 +58,9 @@ namespace DriveNow.WebAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateBanner([FromBody] UpdateBannerCommand command)
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBanner(Guid id, [FromBody] UpdateBannerCommand command)
         {
             if (command == null)
             {

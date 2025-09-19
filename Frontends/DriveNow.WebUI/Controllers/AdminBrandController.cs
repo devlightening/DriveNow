@@ -76,7 +76,7 @@ namespace DriveNow.WebUI.Controllers
             return StatusCode((int)responseMessage.StatusCode, new { success = false, message = "Error creating the Brand. Please try again." });
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> UpdateBrand([FromBody] UpdateBrandDto updateBrandDto)
         {
             var client = _httpClientFactory.CreateClient();

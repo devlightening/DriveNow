@@ -1,143 +1,208 @@
-﻿// wwwroot/Admin/vertical/assets/js/CarListScripts.js
+﻿// Bu fonksiyon, araçların "IsPublished" durumunu değiştirmek için bir AJAX çağrısı yapar.
+async function toggleAvailability(carId, currentStatus) {
+    const button = document.querySelector(`[data-car-id="${carId}"]`);
+    const carWrapper = document.querySelector(`[data-car-id="${carId}"]`).closest('.car-item-wrapper');
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Arama ve Filtreleme İşlevleri
-    const searchInput = document.getElementById('carSearchInput');
-    const carItemWrappers = document.querySelectorAll('.car-item-wrapper');
+    // Butonun durumunu "Güncelleniyor..." olarak değiştir ve tıklanmasını engelle
+    const originalText = button.textContent;
+    button.textContent = 'Updating...';
+    button.disabled = true;
 
-    if (searchInput && carItemWrappers.length > 0) {
-        searchInput.addEventListener('keyup', filterCars);
-        searchInput.addEventListener('input', function () {
-            if (searchInput.value.trim() === '') {
-                carItemWrappers.forEach(itemWrapper => {
-                    itemWrapper.classList.remove('d-none');
-                });
-            }
+    // Yeni durumun ne olacağını belirle
+    const newStatus = !currentStatus;
+
+    try {
+        // Sunucuya POST isteği gönder
+        const response = await fetch(`/AdminCar/ToggleAvailability?id=${carId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ isPublished: newStatus }),
         });
-    }
 
-    function filterCars() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        carItemWrappers.forEach(itemWrapper => {
-            const brandData = itemWrapper.dataset.brand ? itemWrapper.dataset.brand.toLowerCase() : '';
-            const modelData = itemWrapper.dataset.model ? itemWrapper.dataset.model.toLowerCase() : '';
-            const yearData = itemWrapper.dataset.year ? itemWrapper.dataset.year.toLowerCase() : '';
-            const typeData = itemWrapper.dataset.type ? itemWrapper.dataset.type.toLowerCase() : '';
-            const fuelTypeData = itemWrapper.dataset.fueltype ? itemWrapper.dataset.fueltype.toLowerCase() : '';
-            const transmissionData = itemWrapper.dataset.transmission ? itemWrapper.dataset.transmission.toLowerCase() : '';
+        if (response.ok) {
+            // Sunucudan başarılı yanıt gelirse UI'ı güncelle
+            const newStatusText = newStatus ? 'Available' : 'Unavailable';
+            const newClass = newStatus ? 'btn-available' : 'btn-unavailable';
 
-            const matchesSearchTerm =
-                brandData.includes(searchTerm) ||
-                modelData.includes(searchTerm) ||
-                yearData.includes(searchTerm) ||
-                typeData.includes(searchTerm) ||
-                fuelTypeData.includes(searchTerm) ||
-                transmissionData.includes(searchTerm);
+            // Butonun metnini, sınıfını ve data-attribute'unu güncelle
+            button.textContent = newStatusText;
+            button.className = `btn btn-availability-overlay ${newClass}`;
+            button.setAttribute('data-current-status', newStatus.toString());
 
-            if (matchesSearchTerm) {
-                itemWrapper.classList.remove('d-none');
+            // Ana kartın sınıfını güncelle
+            const carCard = carWrapper.querySelector('.car-card');
+            if (newStatus) {
+                carCard.classList.remove('unpublished');
+                carCard.classList.add('published');
             } else {
-                itemWrapper.classList.add('d-none');
+                carCard.classList.remove('published');
+                carCard.classList.add('unpublished');
             }
-        });
-    }
 
-    // Sayfa yüklendiğinde kartların başlangıçtaki durumlarını ayarla
-    carItemWrappers.forEach(itemWrapper => {
-        const isPublished = itemWrapper.getAttribute('data-published') === 'true';
-        const card = itemWrapper.querySelector('.car-card');
-        const availabilityButton = card.querySelector('.btn-availability-overlay');
+            // car-item-wrapper'daki data-published özniteliğini güncelle
+            carWrapper.setAttribute('data-published', newStatus.toString().toLowerCase());
 
-        if (isPublished) {
-            card.classList.add('published');
-            card.classList.remove('unpublished');
-            availabilityButton.classList.add('btn-available');
-            availabilityButton.classList.remove('btn-unavailable');
-            availabilityButton.textContent = 'Available';
         } else {
-            card.classList.add('unpublished');
-            card.classList.remove('published');
-            availabilityButton.classList.add('btn-unavailable');
-            availabilityButton.classList.remove('btn-available');
-            availabilityButton.textContent = 'Unavailable';
+            // Hata durumunda kullanıcıya bilgi ver
+            console.error('API isteği başarısız oldu:', response.statusText);
+            alert('Durum güncellenirken bir hata oluştu.');
+            button.textContent = originalText;
         }
-    });
-});
-
-// `confirmDelete` ve `toggleAvailability` fonksiyonları global scope'ta olmalıdır
-// çünkü HTML içindeki onclick attribute'leri tarafından çağrılıyorlar.
-
-function confirmDelete(button) {
-    var carName = $(button).data('car-name');
-    var carId = $(button).data('car-id');
-
-    if (confirm("'" + carName + "' Are you sure you want to delete the car?")) {
-        window.location.href = "/AdminCar/DeleteCar/" + carId;
+    } catch (error) {
+        console.error('API isteği sırasında bir hata oluştu:', error);
+        alert('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.');
+        button.textContent = originalText;
+    } finally {
+        // İşlem tamamlandıktan sonra butonu tekrar etkinleştir
+        button.disabled = false;
     }
 }
 
-function toggleAvailability(carId, isCurrentlyPublished) {
-    var newStatus = !isCurrentlyPublished;
-    var url = "https://localhost:7031/api/Cars/UpdatePublicationStatus";
+// Tarayıcının yerleşik confirm() uyarısı yerine özel bir modal pencere gösterir
+function confirmDelete(element) {
+    const carId = element.getAttribute('data-car-id');
+    const carName = element.getAttribute('data-car-name');
 
-    // Butonu bul ve geçici olarak 'clicked' sınıfını ekle
-    const clickedButton = document.querySelector(`.car-item-wrapper[data-car-id="${carId}"] .btn-availability-overlay`);
-    if (clickedButton) {
-        clickedButton.classList.add('clicked');
+    // Eğer modal daha önce oluşturulmadıysa oluştur
+    if (!document.getElementById('confirmationModal')) {
+        const modalHtml = `
+            <div id="confirmationModal" class="modal-backdrop">
+                <div class="modal-content-custom">
+                    <p class="modal-message">Are you sure you want to delete ${carName}?</p>
+                    <div class="modal-buttons">
+                        <button id="modal-cancel-btn" class="btn btn-secondary modal-btn-style">Cancel</button>
+                        <button id="modal-confirm-btn" class="btn btn-danger modal-btn-style">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .modal-backdrop {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1050;
+                }
+                .modal-content-custom {
+                    background-color: white;
+                    padding: 2rem;
+                    border-radius: 1rem;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                    max-width: 400px;
+                    text-align: center;
+                    font-family: 'Inter', sans-serif;
+                }
+                .modal-message {
+                    font-size: 1.2rem;
+                    color: #333;
+                    margin-bottom: 1.5rem;
+                }
+                .modal-buttons {
+                    display: flex;
+                    justify-content: space-around;
+                }
+                .modal-btn-style {
+                    font-weight: bold;
+                    transition: transform 0.2s ease-in-out;
+                    border-radius: 0.5rem;
+                }
+                .modal-btn-style:hover {
+                    transform: translateY(-2px);
+                }
+            </style>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
-    fetch(url, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ carId: carId, isPublished: newStatus }),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                updateButtonState(carId, newStatus); // Butonun kalıcı durumunu güncelle
-                console.log(data.message);
+    // Modalı göster
+    const modal = document.getElementById('confirmationModal');
+    modal.style.display = 'flex';
+    document.querySelector('.modal-message').textContent = `Are you sure you want to delete ${carName}?`;
+
+    // Buton eventlerini ayarla
+    document.getElementById('modal-confirm-btn').onclick = () => {
+        // Silme işlemi için yönlendirme yap
+        window.location.href = `/AdminCar/DeleteCar/${carId}`;
+        modal.style.display = 'none';
+    };
+
+    document.getElementById('modal-cancel-btn').onclick = () => {
+        modal.style.display = 'none';
+    };
+}
+
+// Arama işlemini ve araç sayısını güncelleyen fonksiyon
+function updateCarCount() {
+    const carItems = document.querySelectorAll('.car-item-wrapper');
+    const visibleCars = Array.from(carItems).filter(item => item.style.display !== 'none');
+    const carCountSpan = document.getElementById('totalCarCount');
+    if (carCountSpan) {
+        carCountSpan.textContent = visibleCars.length;
+    }
+}
+
+// Sayfa yüklendiğinde arama fonksiyonunu ve araç sayısını aktif et
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('carSearchInput');
+    const searchButton = document.getElementById('carSearchButton');
+
+    // Arama fonksiyonu
+    function filterCars() {
+        const searchText = searchInput.value.toLowerCase();
+        const carItems = document.querySelectorAll('.car-item-wrapper');
+        let found = false;
+
+        carItems.forEach(item => {
+            const brand = item.getAttribute('data-brand');
+            const model = item.getAttribute('data-model');
+            const year = item.getAttribute('data-year');
+            const fuelType = item.getAttribute('data-fueltype');
+            const transmission = item.getAttribute('data-transmission');
+
+            // Tüm data-* özniteliklerinde arama yap
+            if (brand.includes(searchText) ||
+                model.includes(searchText) ||
+                year.includes(searchText) ||
+                fuelType.includes(searchText) ||
+                transmission.includes(searchText)) {
+                item.style.display = '';
+                found = true;
             } else {
-                alert(data.message || "Failed to update car status.");
-            }
-        })
-        .catch(error => {
-            console.error('Fetch operation error:', error);
-            alert("An error occurred while updating availability.");
-        })
-        .finally(() => {
-            // İstek tamamlandığında (başarılı veya hatalı), 'clicked' sınıfını kaldır
-            if (clickedButton) {
-                clickedButton.classList.remove('clicked');
+                item.style.display = 'none';
             }
         });
-}
-function updateButtonState(carId, newStatus) {
-    const itemWrapper = document.querySelector(`.car-item-wrapper[data-car-id="${carId}"]`);
-    if (!itemWrapper) return;
 
-    const card = itemWrapper.querySelector('.car-card');
-    const availabilityButton = card.querySelector('.btn-availability-overlay');
+        // Araç sayısı güncelleniyor
+        updateCarCount();
 
-    if (newStatus) { // Eğer "Available" olacaksa
-        card.classList.add('published');
-        card.classList.remove('unpublished');
-        availabilityButton.classList.add('btn-available'); // Bu sınıfın CSS'te tanımlı olduğundan emin olun
-        availabilityButton.classList.remove('btn-unavailable');
-        availabilityButton.textContent = 'Available';
-    } else { // Eğer "Unavailable" olacaksa
-        card.classList.add('unpublished');
-        card.classList.remove('published');
-        availabilityButton.classList.add('btn-unavailable'); // Bu sınıfın CSS'te tanımlı olduğundan emin olun
-        availabilityButton.classList.remove('btn-available');
-        availabilityButton.textContent = 'Unavailable';
+        // Eğer araç bulunamazsa mesaj göster
+        const carListContainer = document.getElementById('carListContainer');
+        let noCarsMessage = document.getElementById('no-cars-found-alert');
+        if (!noCarsMessage) {
+            noCarsMessage = document.createElement('div');
+            noCarsMessage.id = 'no-cars-found-alert';
+            noCarsMessage.className = 'col-12 no-cars-found-message';
+            noCarsMessage.innerHTML = `<div class="alert alert-info text-center" role="alert">No cars found matching your search criteria.</div>`;
+            carListContainer.appendChild(noCarsMessage);
+        }
+
+        if (found) {
+            noCarsMessage.style.display = 'none';
+        } else {
+            noCarsMessage.style.display = 'block';
+        }
     }
 
-    itemWrapper.setAttribute('data-published', newStatus.toString().toLowerCase());
-}
+    // Başlangıçta araç sayısını güncelle
+    updateCarCount();
+
+    searchButton.addEventListener('click', filterCars);
+    searchInput.addEventListener('input', filterCars);
+});

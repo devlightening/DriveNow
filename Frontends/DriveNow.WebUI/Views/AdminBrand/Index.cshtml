@@ -273,8 +273,8 @@
             font-size: 1rem;
         }
 
-    /* Modal Styles (unchanged) */
-    .custom-modal-backdrop {
+    /* Modal Styles */
+    .modal-backdrop {
         position: fixed;
         top: 0;
         left: 0;
@@ -290,12 +290,12 @@
         transition: visibility 0.3s, opacity 0.3s;
     }
 
-        .custom-modal-backdrop.show {
+        .modal-backdrop.show {
             visibility: visible;
             opacity: 1;
         }
 
-    .custom-modal-content {
+    .modal-content {
         background: white;
         padding: 30px;
         border-radius: 12px;
@@ -307,40 +307,51 @@
         transition: transform 0.3s ease-out;
     }
 
-    .custom-modal-backdrop.show .custom-modal-content {
-        transform: scale(1);
-    }
-
-    .custom-modal-header {
-        margin-bottom: 20px;
-    }
-
-        .custom-modal-header i {
-            font-size: 3rem;
-            color: var(--danger-btn);
-            margin-bottom: 10px;
-        }
-
-        .custom-modal-header h4 {
+        .modal-content h4 {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--text-color);
-            margin: 0;
+            margin: 0 0 1rem;
         }
 
-    .custom-modal-body {
-        font-size: 1rem;
-        color: var(--secondary-color);
-        margin-bottom: 30px;
+    .modal-backdrop.show .modal-content {
+        transform: scale(1);
     }
 
-    .custom-modal-actions {
+    .modal-body {
+        font-size: 1rem;
+        color: var(--secondary-color);
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 1.5rem;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+    .modal-actions {
         display: flex;
         justify-content: center;
         gap: 15px;
     }
 
-        .custom-modal-actions .btn {
+        .modal-actions .btn {
             padding: 10px 25px;
             border: none;
             border-radius: 8px;
@@ -350,23 +361,29 @@
             transition: all 0.2s ease;
         }
 
-        .custom-modal-actions .cancel-btn {
-            background: #E5E7EB;
-            color: #6B7280;
+    .cancel-btn {
+        background: #E5E7EB;
+        color: #6B7280;
+    }
+
+        .cancel-btn:hover {
+            background: #D1D5DB;
         }
 
-            .custom-modal-actions .cancel-btn:hover {
-                background: #D1D5DB;
-            }
+    .delete-btn-modal {
+        background: var(--danger-btn);
+        color: white;
+    }
 
-        .custom-modal-actions .delete-btn {
-            background: var(--danger-btn);
-            color: white;
+    .save-btn {
+        background: var(--primary-color);
+        color: white;
+    }
+
+        .save-btn:hover {
+            background: #4C51BF;
+            transform: translateY(-2px);
         }
-
-            .custom-modal-actions .delete-btn:hover {
-                background: #C53030;
-            }
 
     /* Animations */
     @@keyframes fadeIn {
@@ -454,10 +471,11 @@
                         </div>
                         <div class="brand-name">@brand.BrandName</div>
                         <div class="brand-actions">
-                            <a href="@Url.Action("EditBrand", "AdminBrand", new { id = brand.BrandId })" class="action-btn edit-btn">
+                            <!-- Edit butonu artık bir modal açacak -->
+                            <button class="action-btn edit-btn" onclick="showEditModal('@brand.BrandId', '@brand.BrandName', '@brand.LogoUrl')">
                                 <i class="fas fa-edit"></i>
                                 Edit
-                            </a>
+                            </button>
                             <button class="action-btn delete-btn" onclick="showDeleteModal('@brand.BrandId', '@brand.BrandName')">
                                 <i class="fas fa-trash"></i>
                                 Delete
@@ -486,23 +504,94 @@
 </div>
 
 <!-- Custom Delete Confirmation Modal -->
-<div class="custom-modal-backdrop" id="deleteModalBackdrop">
-    <div class="custom-modal-content">
-        <div class="custom-modal-header">
-            <i class="fas fa-exclamation-triangle"></i>
+<div class="modal-backdrop" id="deleteModalBackdrop">
+    <div class="modal-content">
+        <div class="modal-header">
+            <i class="fas fa-exclamation-triangle" style="color: var(--danger-btn);"></i>
             <h4>Are you sure?</h4>
         </div>
-        <div class="custom-modal-body">
-            <p id="modalMessage">This action cannot be undone. Are you sure you want to delete the <strong id="brandNameInModal"></strong> brand?</p>
+        <div class="modal-body">
+            <p id="modalMessage">This action cannot be undone. Are you sure you want to delete the <strong id="brandNameInDeleteModal"></strong> brand?</p>
         </div>
-        <div class="custom-modal-actions">
+        <div class="modal-actions">
             <button class="btn cancel-btn" onclick="hideDeleteModal()">Cancel</button>
-            <button class="btn delete-btn" id="confirmDeleteBtn">Delete</button>
+            <button class="btn delete-btn-modal" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Edit Modal -->
+<div class="modal-backdrop" id="editModalBackdrop">
+    <div class="modal-content">
+        <div class="modal-header">
+            <i class="fas fa-edit" style="color: var(--warning-btn);"></i>
+            <h4>Edit Brand</h4>
+        </div>
+        <div class="modal-body">
+            <!-- BrandId artık gizli bir alandır -->
+            <input type="hidden" id="brandIdInEditModal" class="form-control" />
+
+            <div class="form-group">
+                <label for="brandNameInEditModal">Brand Name</label>
+                <input type="text" id="brandNameInEditModal" class="form-control" />
+            </div>
+
+            <p class="text-xs text-center text-gray-500 mb-2" style="font-size: 0.8rem; color: var(--secondary-color);">You can find brand logos at <a href="https://www.carlogos.org" target="_blank" style="color: var(--primary-color); text-decoration: underline;">carlogos.org</a></p>
+            <div class="form-group">
+                <label for="logoUrlInEditModal">Logo URL</label>
+                <input type="text" id="logoUrlInEditModal" class="form-control" />
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn cancel-btn" onclick="hideEditModal()">Cancel</button>
+            <button class="btn save-btn" id="saveEditBtn">Save Changes</button>
         </div>
     </div>
 </div>
 
 <script>
+    // Bir mesaj kutusu için basit bir işlev
+    function showCustomAlert(message, type = 'info') {
+        const alertElement = document.createElement('div');
+        alertElement.className = `alert alert-${type}`;
+        alertElement.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 2000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease-out forwards;
+        `;
+
+        switch (type) {
+            case 'success':
+                alertElement.style.backgroundColor = '#38A169';
+                alertElement.style.color = 'white';
+                break;
+            case 'warning':
+                alertElement.style.backgroundColor = '#F6AD55';
+                alertElement.style.color = '#fff';
+                break;
+            case 'danger':
+                alertElement.style.backgroundColor = '#E53E3E';
+                alertElement.style.color = 'white';
+                break;
+            default:
+                alertElement.style.backgroundColor = '#E2E8F0';
+                alertElement.style.color = '#2D3748';
+        }
+
+        alertElement.textContent = message;
+        document.body.prepend(alertElement);
+        setTimeout(() => {
+            alertElement.style.animation = 'slideOut 0.5s ease-in forwards';
+            setTimeout(() => alertElement.remove(), 500);
+        }, 3000);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const brandGrid = document.getElementById('brandGrid');
@@ -510,9 +599,18 @@
         const brandCount = document.getElementById('brandCount');
         const emptyState = document.getElementById('emptyState');
         const emptyStateMessage = document.getElementById('emptyStateMessage');
+
+        // Delete Modal Elements
         const deleteModalBackdrop = document.getElementById('deleteModalBackdrop');
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const brandNameInModal = document.getElementById('brandNameInModal');
+        const brandNameInDeleteModal = document.getElementById('brandNameInDeleteModal');
+
+        // Edit Modal Elements
+        const editModalBackdrop = document.getElementById('editModalBackdrop');
+        const saveEditBtn = document.getElementById('saveEditBtn');
+        const brandIdInEditModal = document.getElementById('brandIdInEditModal');
+        const brandNameInEditModal = document.getElementById('brandNameInEditModal');
+        const logoUrlInEditModal = document.getElementById('logoUrlInEditModal');
 
         if (searchInput && brandGrid) {
             searchInput.addEventListener('input', function() {
@@ -550,16 +648,22 @@
             card.style.transform = 'translateY(0)';
         });
 
-        // Hide modal on backdrop click
+        // Hide modals on backdrop click
         deleteModalBackdrop.addEventListener('click', function(e) {
             if (e.target === deleteModalBackdrop) {
                 hideDeleteModal();
             }
         });
 
-        // Modal functions
+        editModalBackdrop.addEventListener('click', function(e) {
+            if (e.target === editModalBackdrop) {
+                hideEditModal();
+            }
+        });
+
+        // --- DELETE MODAL FUNCTIONS ---
         window.showDeleteModal = function(brandId, brandName) {
-            brandNameInModal.textContent = brandName;
+            brandNameInDeleteModal.textContent = brandName;
             confirmDeleteBtn.setAttribute('data-brand-id', brandId);
             deleteModalBackdrop.classList.add('show');
         }
@@ -572,24 +676,73 @@
         confirmDeleteBtn.addEventListener('click', async function() {
             const brandId = this.getAttribute('data-brand-id');
             hideDeleteModal();
-
             try {
                 const response = await fetch('@Url.Action("DeleteBrand", "AdminBrand")', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ id: brandId }) // Use body for DELETE with JSON
+                    body: JSON.stringify({ id: brandId })
                 });
 
                 if (response.ok) {
-                    location.reload(); // Sayfayı yenileyerek listeyi günceller
+                    showCustomAlert('Marka başarıyla silindi.', 'success');
+                    setTimeout(() => location.reload(), 1500);
                 } else {
-                    alert('Error deleting the brand. Please try again.');
+                    const errorResult = await response.json();
+                    showCustomAlert(errorResult.message || 'Marka silinirken bir hata oluştu. Lütfen tekrar deneyin.', 'danger');
                 }
             } catch (error) {
-                console.error('Deletion error:', error);
-                alert('An unexpected error occurred during deletion.');
+                console.error('Silme hatası:', error);
+                showCustomAlert('Silme işlemi sırasında beklenmedik bir hata oluştu.', 'danger');
+            }
+        });
+
+        // --- EDIT MODAL FUNCTIONS ---
+        window.showEditModal = function(brandId, brandName, logoUrl) {
+            brandIdInEditModal.value = brandId;
+            brandNameInEditModal.value = brandName;
+            logoUrlInEditModal.value = logoUrl;
+            editModalBackdrop.classList.add('show');
+        }
+
+        window.hideEditModal = function() {
+            editModalBackdrop.classList.remove('show');
+        }
+
+        // Handle update on modal button click
+        saveEditBtn.addEventListener('click', async function() {
+            const brandId = brandIdInEditModal.value;
+            const newBrandName = brandNameInEditModal.value.trim();
+            const newLogoUrl = logoUrlInEditModal.value.trim();
+
+            if (!newBrandName) {
+                showCustomAlert('Marka adı boş bırakılamaz.', 'warning');
+                return;
+            }
+
+            hideEditModal();
+
+            try {
+                const response = await fetch('@Url.Action("UpdateBrand", "AdminBrand")', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ brandId: brandId, brandName: newBrandName, logoUrl: newLogoUrl })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showCustomAlert(result.message, 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showCustomAlert(result.message || 'Marka güncellenirken bir hata oluştu. Lütfen tekrar deneyin.', 'danger');
+                }
+            } catch (error) {
+                console.error('Güncelleme hatası:', error);
+                showCustomAlert('Güncelleme işlemi sırasında beklenmedik bir hata oluştu.', 'danger');
             }
         });
     });
