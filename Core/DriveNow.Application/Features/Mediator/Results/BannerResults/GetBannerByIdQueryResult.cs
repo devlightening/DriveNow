@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DriveNow.Application.Features.CQRS.Queries.BannerQueries
+namespace DriveNow.Application.Features.Mediator.Results.BannerResults
 {
-    public class GetBannerQuery
+    public class GetBannerByIdQueryResult
     {
         public Guid BannerId { get; set; }
         public string Title { get; set; }
@@ -14,7 +14,7 @@ namespace DriveNow.Application.Features.CQRS.Queries.BannerQueries
         public string VideoDescription { get; set; }
         public string VideoUrl { get; set; }
 
-        public GetBannerQuery(Guid bannerId, string title, string description, string videoDescription, string videoUrl)
+        public GetBannerByIdQueryResult(Guid bannerId, string title, string description, string videoDescription, string videoUrl)
         {
             BannerId = bannerId;
             Title = title;
@@ -22,10 +22,5 @@ namespace DriveNow.Application.Features.CQRS.Queries.BannerQueries
             VideoDescription = videoDescription;
             VideoUrl = videoUrl;
         }
-        public GetBannerQuery()
-        {
-        }
-
-
     }
 }

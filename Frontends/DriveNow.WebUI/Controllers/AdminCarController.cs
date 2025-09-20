@@ -130,7 +130,7 @@ namespace DriveNow.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewBrandViaAjax([FromBody] CreateBrandDto createBrandDto)
+        public async Task<IActionResult> AddNewBrandViaAjax(CreateBrandDto createBrandDto)
         {
             if (!ModelState.IsValid)
             {

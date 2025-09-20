@@ -1,12 +1,13 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DriveNow.Application.Features.CQRS.Commands.BannerCommands
+namespace DriveNow.Application.Features.Mediator.Commands.BannerCommands
 {
-    public class UpdateBannerCommand
+    public class UpdateBannerCommand : IRequest<Unit>
     {
         public Guid BannerId { get; set; }
         public string Title { get; set; }

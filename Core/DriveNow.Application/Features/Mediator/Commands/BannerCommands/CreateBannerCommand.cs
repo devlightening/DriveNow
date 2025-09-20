@@ -1,4 +1,7 @@
-﻿public class CreateBannerDto
+﻿using MediatR;
+using System.ComponentModel.DataAnnotations;
+
+public class CreateBannerCommand:IRequest<Unit>
 {
     public string Title { get; set; }
     public string Description { get; set; }

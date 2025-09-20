@@ -58,7 +58,7 @@ namespace DriveNow.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBrand([FromBody] CreateBrandDto createBrandDto)
+        public async Task<IActionResult> CreateBrand(CreateBrandDto createBrandDto)
         {
             var client = _httpClientFactory.CreateClient();
             var requestUrl = $"{_apiBaseUrl}/api/Brands";
@@ -77,7 +77,7 @@ namespace DriveNow.WebUI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateBrand([FromBody] UpdateBrandDto updateBrandDto)
+        public async Task<IActionResult> UpdateBrand(UpdateBrandDto updateBrandDto)
         {
             var client = _httpClientFactory.CreateClient();
             var requestUrl = $"{_apiBaseUrl}/api/Brands";

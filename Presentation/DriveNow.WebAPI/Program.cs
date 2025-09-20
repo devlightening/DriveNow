@@ -1,7 +1,6 @@
 using DriveNow.Application.Features.CQRS.Handlers.AboutHandlers.AboutReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.AboutHandlers.AboutWriteHandlers;
-using DriveNow.Application.Features.CQRS.Handlers.BannerHandlers.BannerReadHandlers;
-using DriveNow.Application.Features.CQRS.Handlers.BannerHandlers.BannerWriteHandlers;
+
 using DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandReadHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.BrandHandlers.BrandWriteHandlers;
 using DriveNow.Application.Features.CQRS.Handlers.CarHandlers.CarReadHandlers;
@@ -64,12 +63,7 @@ internal class Program
         builder.Services.AddScoped<RemoveAboutCommandHandler>();
         builder.Services.AddScoped<UpdateAboutCommandHandler>();
 
-        builder.Services.AddScoped<GetBannerQueryHandler>();
-        builder.Services.AddScoped<GetBannerByIdQueryHandler>();
-        builder.Services.AddScoped<CreateBannerCommandHandler>();
-        builder.Services.AddScoped<RemoveBannerCommandHandler>();
-        builder.Services.AddScoped<UpdateBannerCommandHandler>();
-
+    
         builder.Services.AddScoped<GetBrandQueryHandler>();
         builder.Services.AddScoped<GetBrandByIdQueryHandler>();
         builder.Services.AddScoped<CreateBrandCommandHandler>();

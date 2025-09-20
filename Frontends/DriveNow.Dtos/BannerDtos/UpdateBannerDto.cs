@@ -3,6 +3,11 @@ namespace DriveNow.Dtos.BannerDtos
 {
     public class UpdateBannerDto
     {
+        public UpdateBannerDto(Guid bannerId)
+        {
+            BannerId = bannerId;
+        }
+
         public Guid BannerId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

@@ -52,7 +52,7 @@ namespace DriveNow.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFeature([FromBody] CreateFeatureDto createFeatureDto)
+        public async Task<IActionResult> CreateFeature(CreateFeatureDto createFeatureDto)
         {
             var client = _httpClientFactory.CreateClient();
             var requestUrl = $"{_apiBaseUrl}/api/Features";
@@ -71,7 +71,7 @@ namespace DriveNow.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateFeature([FromBody] UpdateFeatureDto updateFeatureDto)
+        public async Task<IActionResult> UpdateFeature(UpdateFeatureDto updateFeatureDto)
         {
             var client = _httpClientFactory.CreateClient();
             var requestUrl = $"{_apiBaseUrl}/api/Features";

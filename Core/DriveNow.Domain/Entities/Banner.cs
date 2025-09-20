@@ -14,4 +14,5 @@ namespace DriveNow.Domain.Entities
         public string VideoDescription { get; set; }
         public string VideoUrl { get; set; }
     }
+
 }
