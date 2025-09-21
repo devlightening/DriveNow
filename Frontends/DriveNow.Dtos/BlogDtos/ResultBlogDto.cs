@@ -12,5 +12,7 @@ namespace DriveNow.Dtos.BlogDtos
         public string CoverImageUrl { get; set; }
         public DateTime CreatedDate { get; set; }
         public Guid CategoryId { get; set; }
+        public bool IsPublished { get; set; }
+
     }
 }

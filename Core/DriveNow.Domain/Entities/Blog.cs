@@ -13,6 +13,7 @@ namespace DriveNow.Domain.Entities
         public string CoverImageUrl { get; set; }
         public DateTime CreatedDate { get; set; }
         public Guid CategoryId { get; set; }
+        public bool IsPublished { get; set; }
         public Category Category { get; set; }
         public ICollection<CloudTagByBlog> CloudTagByBlogs { get; set; }
         public ICollection<BlogContent> BlogContents { get; set; }

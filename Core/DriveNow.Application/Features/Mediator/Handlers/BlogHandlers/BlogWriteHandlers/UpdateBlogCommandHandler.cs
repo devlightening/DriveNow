@@ -24,6 +24,7 @@ namespace DriveNow.Application.Features.Mediator.Handlers.BlogHandlers.BlogWrite
             Blog.CoverImageUrl = request.CoverImageUrl;
             Blog.Title = request.Title;
             Blog.CategoryId = request.CategoryId;
+            Blog.Description = request.Description;
             Blog.CreatedDate = request.CreatedDate;
 
 

@@ -93,5 +93,11 @@ namespace DriveNow.WebAPI.Controllers
             return Ok(values);
         }
 
+        [HttpPut("TogglePublish/{id}")]
+        public async Task<IActionResult> TogglePublish(Guid id)
+        {
+            var newState = await _mediator.Send(new ToggleBlogPublishCommand(id));
+            return Ok(new { isPublished = newState, message = "Publish status toggled." });
+        }
     }
 }

@@ -3,7 +3,6 @@ using DriveNow.Dtos.BlogDtos;
 using DriveNow.Dtos.CategoryDtos;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace DriveNow.WebUI.Areas.Admin.Controllers
 {
@@ -16,85 +15,56 @@ namespace DriveNow.WebUI.Areas.Admin.Controllers
         {
             var client = _httpClientFactory.CreateClient();
 
-            // Blogları al
-            List<ResultBlogDto> blogs = new();
-            var blogsResponse = await client.GetAsync($"{_apiBaseUrl}/api/Blogs/GetAllBlogsWithAuthorList");
-            if (blogsResponse.IsSuccessStatusCode)
+            // Blogs
+            var blogs = new List<ResultBlogDto>();
+            var blogsResp = await client.GetAsync($"{_apiBaseUrl}/api/Blogs/GetAllBlogsWithAuthorList");
+            if (blogsResp.IsSuccessStatusCode)
             {
-                var blogsJson = await blogsResponse.Content.ReadAsStringAsync();
-                blogs = JsonConvert.DeserializeObject<List<ResultBlogDto>>(blogsJson) ?? new List<ResultBlogDto>();
+                var json = await blogsResp.Content.ReadAsStringAsync();
+                blogs = JsonConvert.DeserializeObject<List<ResultBlogDto>>(json) ?? new();
             }
 
-            // Authorları al
-            List<ResultAuthorDto> authors = new();
-            var authorsResponse = await client.GetAsync($"{_apiBaseUrl}/api/Authors");
-            if (authorsResponse.IsSuccessStatusCode)
+            // Authors
+            var authors = new List<ResultAuthorDto>();
+            var authorsResp = await client.GetAsync($"{_apiBaseUrl}/api/Authors");
+            if (authorsResp.IsSuccessStatusCode)
             {
-                var authorsJson = await authorsResponse.Content.ReadAsStringAsync();
-                authors = JsonConvert.DeserializeObject<List<ResultAuthorDto>>(authorsJson) ?? new List<ResultAuthorDto>();
+                var json = await authorsResp.Content.ReadAsStringAsync();
+                authors = JsonConvert.DeserializeObject<List<ResultAuthorDto>>(json) ?? new();
             }
 
-            // Kategorileri al
-            List<ResultCategoryDto> categories = new();
-            var categoriesResponse = await client.GetAsync($"{_apiBaseUrl}/api/Categories");
-            if (categoriesResponse.IsSuccessStatusCode)
+            // Categories
+            var categories = new List<ResultCategoryDto>();
+            var categoriesResp = await client.GetAsync($"{_apiBaseUrl}/api/Categories");
+            if (categoriesResp.IsSuccessStatusCode)
             {
-                var categoriesJson = await categoriesResponse.Content.ReadAsStringAsync();
-                categories = JsonConvert.DeserializeObject<List<ResultCategoryDto>>(categoriesJson) ?? new List<ResultCategoryDto>();
+                var json = await categoriesResp.Content.ReadAsStringAsync();
+                categories = JsonConvert.DeserializeObject<List<ResultCategoryDto>>(json) ?? new();
             }
 
             ViewBag.Authors = authors;
             ViewBag.Categories = categories;
-
             return View(blogs);
         }
 
+        // Admin: publish/unpublish toggle
         [HttpPost]
-        public async Task<IActionResult> CreateBlog([FromBody] CreateBlogDto dto)
+        public async Task<IActionResult> TogglePublish(Guid id)
         {
+            if (id == Guid.Empty)
+                return BadRequest(new { success = false, message = "Invalid id." });
+
             var client = _httpClientFactory.CreateClient();
-            var requestUrl = $"{_apiBaseUrl}/api/Blogs";
 
-            var json = JsonConvert.SerializeObject(dto);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            // API'de TogglePublish endpoint'i olmalı (PUT/POST fark edebilir; sizde hangisiyse onu kullanın)
+            var url = $"{_apiBaseUrl}/api/Blogs/TogglePublish/{id}";
+            var resp = await client.PutAsync(url, content: null);
+            var body = await resp.Content.ReadAsStringAsync();
 
-            var response = await client.PostAsync(requestUrl, content);
+            if (resp.IsSuccessStatusCode)
+                return Json(new { success = true, message = "Publish status toggled." });
 
-            if (response.IsSuccessStatusCode)
-                return Json(new { success = true, message = "Blog created successfully." });
-
-            return StatusCode((int)response.StatusCode, new { success = false, message = "Error creating Blog." });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateBlog([FromBody] UpdateBlogDto dto)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var requestUrl = $"{_apiBaseUrl}/api/Blogs";
-
-            var json = JsonConvert.SerializeObject(dto);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PutAsync(requestUrl, content);
-
-            if (response.IsSuccessStatusCode)
-                return Json(new { success = true, message = "Blog updated successfully." });
-
-            return StatusCode((int)response.StatusCode, new { success = false, message = "Error updating Blog." });
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteBlog(Guid id)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var requestUrl = $"{_apiBaseUrl}/api/Blogs/{id}";
-
-            var response = await client.DeleteAsync(requestUrl);
-
-            if (response.IsSuccessStatusCode)
-                return Json(new { success = true, message = "Blog deleted successfully." });
-
-            return StatusCode((int)response.StatusCode, new { success = false, message = "Error deleting Blog." });
+            return StatusCode((int)resp.StatusCode, new { success = false, message = "Error toggling publish status.", detail = body });
         }
     }
 }

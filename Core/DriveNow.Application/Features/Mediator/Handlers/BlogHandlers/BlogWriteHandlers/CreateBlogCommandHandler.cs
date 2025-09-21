@@ -18,8 +18,10 @@ namespace DriveNow.Application.Features.Mediator.Handlers.BlogHandlers.BlogWrite
                 Title = request.Title,
                 CreatedDate = request.CreatedDate,
                 CoverImageUrl = request.CoverImageUrl,
+                Description = request.Description,
                 CategoryId = request.CategoryId,
-                Slug = slug
+                Slug = slug,
+                IsPublished = request.IsPublished ?? true
             };
 
             await _repository.CreateAsync(values);

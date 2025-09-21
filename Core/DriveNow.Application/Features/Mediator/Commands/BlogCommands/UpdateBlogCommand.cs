@@ -11,6 +11,7 @@ namespace DriveNow.Application.Features.Mediator.Commands.BlogCommands
     {
         public Guid BlogId { get; set; }
         public Guid AuthorId { get; set; }
+        public string Description { get; set; }
 
         public string Title { get; set; }
         public string CoverImageUrl { get; set; }

@@ -1,755 +1,540 @@
-﻿@model List<ResultBrandDto>
+﻿@model List<DriveNow.Dtos.BrandDtos.ResultBrandDto>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Brand Management";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
 <style>
     :root {
-        --primary-color: #5A67D8; /* Slightly darker purple for a modern feel */
-        --secondary-color: #6B7280;
-        --background-light: #F9FAFB;
-        --background-dark: #E5E7EB;
-        --text-color: #1F2937;
-        --card-bg: #FFFFFF;
-        --border-color: #E5E7EB;
-        --success-btn: #38A169;
-        --warning-btn: #F6AD55;
-        --danger-btn: #E53E3E;
-        --focus-ring: rgba(99, 102, 241, 0.4);
+        --body-bg: #F5F7FB;
+        --text: #111827;
+        --muted: #6B7280;
+        --border: #E5E7EB;
+        --card: #FFFFFF;
+        --primary: #6366F1; /* indigo-500 */
+        --primary-hover: #4F46E5;
+        --success: #10B981;
+        --warning: #F59E0B;
+        --danger: #EF4444;
+        --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
+        --shadow-md: 0 6px 18px rgba(0,0,0,.08);
+        --ring: 0 0 0 4px rgba(99,102,241,.15);
     }
 
     body {
-        font-family: 'Inter', sans-serif;
-        color: var(--text-color);
-        background-color: var(--background-light);
+        background: var(--body-bg);
+        color: var(--text);
     }
 
-    .brand-management-container {
-        min-height: 100vh;
-        padding: 6rem 1.5rem;
-        margin: -1rem;
-    }
-
-    .brand-container {
+    .page-wrap {
         max-width: 1200px;
         margin: 0 auto;
+        padding: 4.5rem 1.25rem;
     }
 
-    .brand-header {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-        .brand-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .brand-header p {
-            font-size: 1rem;
-            color: var(--secondary-color);
-        }
-
-    .brand-controls {
+    /* Header / Toolbar */
+    .header {
         display: flex;
+        align-items: center;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2.5rem;
-        background: var(--card-bg);
-        padding: 1.5rem;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .h-title {
+        font-weight: 800;
+        margin: 0
+    }
+
+    .subtle {
+        color: var(--muted);
+        font-size: .95rem
+    }
+
+    .toolbar {
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 1rem;
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border: 1px solid var(--border-color);
-    }
-
-    .btn {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        text-decoration: none;
-        display: inline-flex;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        gap: .75rem;
         align-items: center;
-        gap: 0.5rem;
-        min-width: 120px;
-        justify-content: center;
-    }
-
-    .add-brand-btn {
-        background: var(--primary-color);
-        color: white;
-    }
-
-        .add-brand-btn:hover {
-            background: #4C51BF;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(90, 103, 216, 0.4);
-        }
-
-    .search-box {
-        position: relative;
-        flex: 1;
-        max-width: 350px;
-        margin: 0 1.5rem;
-    }
-
-    .search-input {
-        width: 100%;
-        padding: 0.75rem 1.25rem 0.75rem 2.5rem;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        background: var(--background-light);
-        font-size: 0.95rem;
-        outline: none;
-        transition: all 0.2s ease;
-    }
-
-        .search-input:focus {
-            background: white;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--focus-ring);
-        }
-
-    .search-icon {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--secondary-color);
-        font-size: 0.9rem;
-    }
-
-    .brand-count {
-        color: var(--secondary-color);
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-
-    .brand-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2rem;
-        margin-bottom: 2.5rem;
-    }
-
-    .brand-card {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 2rem;
-        text-align: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border: 1px solid var(--border-color);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        animation: fadeIn 0.5s ease-out forwards;
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-        .brand-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-
-    .brand-logo {
-        width: 90px;
-        height: 90px;
-        margin: 0 auto 1.5rem;
-        background: var(--background-light);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid var(--border-color);
-        overflow: hidden;
-    }
-
-        .brand-logo img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-        }
-
-        .brand-logo i {
-            font-size: 2.5rem;
-            color: #9CA3AF;
-        }
-
-    .brand-name {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--text-color);
-        margin-bottom: 1.5rem;
-        word-break: break-word;
-    }
-
-    .brand-actions {
-        display: flex;
-        justify-content: center;
-        gap: 0.75rem;
         flex-wrap: wrap;
     }
 
-    .action-btn {
-        padding: 0.6rem 1rem;
+    .search {
+        position: relative;
+        flex: 1;
+        min-width: 260px;
+    }
+
+        .search input {
+            width: 100%;
+            background: #F9FAFB;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: .65rem .9rem .65rem 2.25rem;
+            outline: none;
+            transition: border .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+
+            .search input:focus {
+                background: #fff;
+                border-color: var(--primary);
+                box-shadow: var(--ring);
+            }
+
+        .search .icon {
+            position: absolute;
+            left: .75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+        }
+
+    /* Buttons */
+    .btn-primary-soft {
+        background: linear-gradient(180deg, var(--primary), var(--primary-hover));
+        color: #fff;
         border: none;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
+        border-radius: 10px;
+        padding: .65rem 1rem;
+        font-weight: 700;
+        box-shadow: 0 6px 16px rgba(79,70,229,.25);
+        transition: transform .12s ease, box-shadow .2s ease;
+    }
+
+        .btn-primary-soft:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(79,70,229,.28);
+        }
+
+    .btn-outline {
+        background: #fff;
+        border: 1px solid var(--border);
+        color: var(--text);
+        border-radius: 10px;
+        padding: .6rem .9rem;
+        font-weight: 700;
+    }
+
+    .btn-mini {
+        border: none;
+        border-radius: 10px;
+        padding: .48rem .7rem;
+        font-weight: 700;
+        color: #fff;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: .45rem;
+        box-shadow: var(--shadow-sm);
+        transition: transform .12s ease, filter .2s ease;
     }
 
-    .view-btn {
-        background: var(--success-btn);
-        color: white;
+        .btn-mini i {
+            opacity: .9
+        }
+
+    .btn-edit {
+        background: linear-gradient(180deg, #F59E0B, #F59E0B);
     }
 
-        .view-btn:hover {
-            background: #2F855A;
+        .btn-edit:hover {
+            filter: brightness(1.05);
             transform: translateY(-1px);
         }
 
-    .edit-btn {
-        background: var(--warning-btn);
-        color: white;
+    .btn-del {
+        background: linear-gradient(180deg, #EF4444, #EF4444);
     }
 
-        .edit-btn:hover {
-            background: #DD6B20;
+        .btn-del:hover {
+            filter: brightness(1.05);
             transform: translateY(-1px);
         }
 
-    .delete-btn {
-        background: var(--danger-btn);
-        color: white;
+    /* Cards */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+        gap: 14px;
+        margin-top: .75rem;
     }
 
-        .delete-btn:hover {
-            background: #C53030;
-            transform: translateY(-1px);
-        }
-
-    .empty-state {
-        text-align: center;
-        padding: 4rem 1.5rem;
-        background: var(--card-bg);
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border: 1px solid var(--border-color);
+    .card-brand {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+        padding: 1rem;
+        transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease;
     }
 
-        .empty-state i {
-            font-size: 4rem;
-            color: var(--border-color);
-            margin-bottom: 1.5rem;
-        }
-
-        .empty-state h3 {
-            color: var(--text-color);
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .empty-state p {
-            color: var(--secondary-color);
-            font-size: 1rem;
-        }
-
-    /* Modal Styles */
-    .modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0.3s, opacity 0.3s;
-    }
-
-        .modal-backdrop.show {
-            visibility: visible;
-            opacity: 1;
-        }
-
-    .modal-content {
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        max-width: 450px;
-        width: 90%;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        transform: scale(0.9);
-        transition: transform 0.3s ease-out;
-    }
-
-        .modal-content h4 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-color);
-            margin: 0 0 1rem;
-        }
-
-    .modal-backdrop.show .modal-content {
-        transform: scale(1);
-    }
-
-    .modal-body {
-        font-size: 1rem;
-        color: var(--secondary-color);
-        margin-bottom: 2rem;
-    }
-
-    .form-group {
-        text-align: left;
-        margin-bottom: 1.5rem;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-color);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
-
-    .modal-actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
-
-        .modal-actions .btn {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-    .cancel-btn {
-        background: #E5E7EB;
-        color: #6B7280;
-    }
-
-        .cancel-btn:hover {
-            background: #D1D5DB;
-        }
-
-    .delete-btn-modal {
-        background: var(--danger-btn);
-        color: white;
-    }
-
-    .save-btn {
-        background: var(--primary-color);
-        color: white;
-    }
-
-        .save-btn:hover {
-            background: #4C51BF;
+        .card-brand:hover {
             transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: #D9DADE;
         }
 
-    /* Animations */
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .logo-wrap {
+        width: 84px;
+        height: 84px;
+        border-radius: 10px;
+        background: #F3F4F6;
+        border: 1px solid var(--border);
+        display: grid;
+        place-items: center;
+        margin: 4px auto 12px;
+        overflow: hidden;
     }
 
-    /* Responsive adjustments */
-    @@media (max-width: 768px) {
-        .brand-controls {
-            flex-direction: column;
-            gap: 1rem;
+        .logo-wrap img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain
         }
 
-        .search-box {
-            max-width: 100%;
-            margin: 0;
+        .logo-wrap i {
+            font-size: 28px;
+            color: #9CA3AF
         }
 
-        .brand-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
+    .brand-name {
+        font-weight: 800;
+        text-align: center;
+        margin: .2rem 0 .7rem
+    }
 
-        .brand-header h1 {
-            font-size: 2rem;
-        }
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: .25rem .55rem;
+        background: #F3F4F6;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: .8rem;
+    }
 
-        .brand-management-container {
-            padding: 2rem 1rem;
-        }
+    .actions {
+        display: flex;
+        gap: .45rem;
+        justify-content: center;
+        margin-top: .6rem
+    }
+
+    .empty {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        padding: 2rem;
+        text-align: center;
+        color: var(--muted);
+        margin-top: .75rem;
+    }
+
+    /* Modals: fully opaque & crisp */
+    .modal-content {
+        background: #fff;
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid var(--border)
+    }
+
+    .modal-footer {
+        border-top: 1px solid var(--border)
+    }
+
+    .form-control, .form-control:focus {
+        background: #fff;
+        border: 1px solid var(--border);
+        color: var(--text);
+        box-shadow: none
+    }
+
+    .form-text {
+        color: var(--muted)
+    }
+
+    /* Tiny toast */
+    .toast-lite {
+        position: fixed;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3000;
+        display: none;
+        padding: .6rem 1rem;
+        font-weight: 700;
+        border-radius: 10px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+    }
+
+    .toast-ok {
+        border-color: #D1FAE5;
+        background: #ECFDF5;
+        color: #065F46
+    }
+
+    .toast-err {
+        border-color: #FECACA;
+        background: #FEF2F2;
+        color: #7F1D1D
     }
 </style>
 
-<div class="brand-management-container">
-    <div class="brand-container">
-        <!-- Header -->
-        <div class="brand-header">
-            <h1><i class="fas fa-tags"></i> Brand Management</h1>
-            <p>Manage automobile brands</p>
+<div class="page-wrap">
+    <div class="header">
+        <div>
+            <h3 class="h-title">Brand Management</h3>
+            <p class="subtle mb-0">Manage automobile brands from a single page.</p>
         </div>
+        <button class="btn-primary-soft" data-bs-toggle="modal" data-bs-target="#createBrandModal">
+            <i class="fas fa-plus me-1"></i> Add Brand
+        </button>
+    </div>
 
-        <!-- Controls -->
-        <div class="brand-controls">
-            <a href="@Url.Action("CreateBrand", "AdminBrand")" class="add-brand-btn btn">
-                <i class="fas fa-plus"></i>
-                Add Brand
-            </a>
-
-            <div class="search-box">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search for a brand..." id="searchInput">
-            </div>
-
-            <div class="brand-count">
-                <i class="fas fa-list"></i>
-                <span id="brandCount">@Model.Count</span> Brands
-            </div>
+    <div class="toolbar">
+        <div class="search">
+            <i class="fas fa-search icon"></i>
+            <input id="searchInput" placeholder="Search brand…" />
         </div>
+        <span class="subtle ms-auto">
+            <i class="fas fa-list me-1"></i>
+            <span id="brandCount">@(Model?.Count ?? 0)</span> brands
+        </span>
+    </div>
 
-        <!-- Brand Grid -->
-        @if (Model != null && Model.Any())
-        {
-            <div class="brand-grid" id="brandGrid">
-                @foreach (var brand in Model)
-                {
-                    <div class="brand-card" data-brand="@brand.BrandName.ToLower()">
-                        <div class="brand-logo">
-                            @if (!string.IsNullOrEmpty(brand.LogoUrl))
-                            {
-                                <img src="@brand.LogoUrl" alt="@brand.BrandName Logo" onerror="this.style.display='none'; this.parentElement.querySelector('i').style.display='block';">
-                                <i class="fas fa-car" style="display: none;"></i>
-                            }
-                            else
-                            {
-                                <i class="fas fa-car"></i>
-                            }
-                        </div>
-                        <div class="brand-name">@brand.BrandName</div>
-                        <div class="brand-actions">
-                            <!-- Edit butonu artık bir modal açacak -->
-                            <button class="action-btn edit-btn" onclick="showEditModal('@brand.BrandId', '@brand.BrandName', '@brand.LogoUrl')">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </button>
-                            <button class="action-btn delete-btn" onclick="showDeleteModal('@brand.BrandId', '@brand.BrandName')">
-                                <i class="fas fa-trash"></i>
-                                Delete
-                            </button>
-                        </div>
+    @if (Model != null && Model.Any())
+    {
+        <div class="grid" id="brandGrid">
+            @foreach (var b in Model)
+            {
+                <div class="card-brand" data-name="@b.BrandName.ToLower()">
+                    <div class="logo-wrap">
+                        @if (!string.IsNullOrWhiteSpace(b.LogoUrl))
+                        {
+                            <img src="@b.LogoUrl" alt="@b.BrandName logo"
+                                 onerror="this.remove();this.parentElement.querySelector('i')?.classList.remove('d-none')" />
+                            <i class="fas fa-car d-none"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-car"></i>
+                        }
                     </div>
-                }
-            </div>
-        }
-        else
-        {
-            <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <h3>No Brands Found</h3>
-                <p>Start by adding your first brand to the system.</p>
-            </div>
-        }
 
-        <!-- Dynamic Empty State (for search results) -->
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <i class="fas fa-search"></i>
-            <h3>No Brands Found</h3>
-            <p id="emptyStateMessage"></p>
+                    <div class="text-center">
+                        <div class="brand-name">@b.BrandName</div>
+                        <span class="chip"><i class="fas fa-hashtag"></i>@b.BrandId.ToString().Substring(0, 6)</span>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-mini btn-edit"
+                                data-bs-toggle="modal" data-bs-target="#updateBrandModal"
+                                data-id="@b.BrandId" data-name="@b.BrandName" data-logo="@b.LogoUrl">
+                            <i class="fas fa-pen"></i> Edit
+                        </button>
+                        <button class="btn-mini btn-del" onclick="askDelete('@b.BrandId','@b.BrandName')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            }
         </div>
-    </div>
-</div>
-
-<!-- Custom Delete Confirmation Modal -->
-<div class="modal-backdrop" id="deleteModalBackdrop">
-    <div class="modal-content">
-        <div class="modal-header">
-            <i class="fas fa-exclamation-triangle" style="color: var(--danger-btn);"></i>
-            <h4>Are you sure?</h4>
-        </div>
-        <div class="modal-body">
-            <p id="modalMessage">This action cannot be undone. Are you sure you want to delete the <strong id="brandNameInDeleteModal"></strong> brand?</p>
-        </div>
-        <div class="modal-actions">
-            <button class="btn cancel-btn" onclick="hideDeleteModal()">Cancel</button>
-            <button class="btn delete-btn-modal" id="confirmDeleteBtn">Delete</button>
-        </div>
-    </div>
-</div>
-
-<!-- Custom Edit Modal -->
-<div class="modal-backdrop" id="editModalBackdrop">
-    <div class="modal-content">
-        <div class="modal-header">
-            <i class="fas fa-edit" style="color: var(--warning-btn);"></i>
-            <h4>Edit Brand</h4>
-        </div>
-        <div class="modal-body">
-            <!-- BrandId artık gizli bir alandır -->
-            <input type="hidden" id="brandIdInEditModal" class="form-control" />
-
-            <div class="form-group">
-                <label for="brandNameInEditModal">Brand Name</label>
-                <input type="text" id="brandNameInEditModal" class="form-control" />
-            </div>
-
-            <p class="text-xs text-center text-gray-500 mb-2" style="font-size: 0.8rem; color: var(--secondary-color);">You can find brand logos at <a href="https://www.carlogos.org" target="_blank" style="color: var(--primary-color); text-decoration: underline;">carlogos.org</a></p>
-            <div class="form-group">
-                <label for="logoUrlInEditModal">Logo URL</label>
-                <input type="text" id="logoUrlInEditModal" class="form-control" />
-            </div>
-        </div>
-        <div class="modal-actions">
-            <button class="btn cancel-btn" onclick="hideEditModal()">Cancel</button>
-            <button class="btn save-btn" id="saveEditBtn">Save Changes</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Bir mesaj kutusu için basit bir işlev
-    function showCustomAlert(message, type = 'info') {
-        const alertElement = document.createElement('div');
-        alertElement.className = `alert alert-${type}`;
-        alertElement.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            z-index: 2000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            animation: slideIn 0.5s ease-out forwards;
-        `;
-
-        switch (type) {
-            case 'success':
-                alertElement.style.backgroundColor = '#38A169';
-                alertElement.style.color = 'white';
-                break;
-            case 'warning':
-                alertElement.style.backgroundColor = '#F6AD55';
-                alertElement.style.color = '#fff';
-                break;
-            case 'danger':
-                alertElement.style.backgroundColor = '#E53E3E';
-                alertElement.style.color = 'white';
-                break;
-            default:
-                alertElement.style.backgroundColor = '#E2E8F0';
-                alertElement.style.color = '#2D3748';
-        }
-
-        alertElement.textContent = message;
-        document.body.prepend(alertElement);
-        setTimeout(() => {
-            alertElement.style.animation = 'slideOut 0.5s ease-in forwards';
-            setTimeout(() => alertElement.remove(), 500);
-        }, 3000);
     }
+    else
+    {
+        <div class="empty">
+            <i class="fas fa-inbox fa-2x mb-2"></i>
+            <div class="fw-bold">No brands yet</div>
+            <div>Start by adding your first brand.</div>
+        </div>
+    }
+</div>
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const brandGrid = document.getElementById('brandGrid');
-        const brandCards = document.querySelectorAll('.brand-card');
-        const brandCount = document.getElementById('brandCount');
-        const emptyState = document.getElementById('emptyState');
-        const emptyStateMessage = document.getElementById('emptyStateMessage');
+<!-- Create Modal -->
+<div class="modal fade" id="createBrandModal" tabindex="-1" aria-labelledby="createBrandLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createBrandLabel"><i class="fas fa-plus me-2 text-primary"></i>Create Brand</h5>
+                <button class="btn btn-outline btn-sm" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="createBrandForm">
+                    <div class="mb-3">
+                        <label class="form-label">Brand Name <span class="text-danger">*</span></label>
+                        <input class="form-control" id="createBrandName" maxlength="80" required>
+                    </div>
+                    <div class="mb-1">
+                        <label class="form-label">Logo URL</label>
+                        <input class="form-control" id="createLogoUrl" placeholder="https://...">
+                    </div>
+                    <div class="form-text">Tip: Clean SVG/PNG logos look best.</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-bs-dismiss="modal">Close</button>
+                <button class="btn-primary-soft" id="saveCreateBtn"><i class="fas fa-check me-1"></i>Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Delete Modal Elements
-        const deleteModalBackdrop = document.getElementById('deleteModalBackdrop');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const brandNameInDeleteModal = document.getElementById('brandNameInDeleteModal');
+<!-- Update Modal -->
+<div class="modal fade" id="updateBrandModal" tabindex="-1" aria-labelledby="updateBrandLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateBrandLabel"><i class="fas fa-pen-to-square me-2 text-warning"></i>Update Brand</h5>
+                <button class="btn btn-outline btn-sm" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateBrandForm">
+                    <input type="hidden" id="updateBrandId" />
+                    <div class="mb-3">
+                        <label class="form-label">Brand Name <span class="text-danger">*</span></label>
+                        <input class="form-control" id="updateBrandName" maxlength="80" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Logo URL</label>
+                        <input class="form-control" id="updateLogoUrl" placeholder="https://...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-bs-dismiss="modal">Close</button>
+                <button class="btn-primary-soft" id="saveUpdateBtn"><i class="fas fa-floppy-disk me-1"></i>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Edit Modal Elements
-        const editModalBackdrop = document.getElementById('editModalBackdrop');
-        const saveEditBtn = document.getElementById('saveEditBtn');
-        const brandIdInEditModal = document.getElementById('brandIdInEditModal');
-        const brandNameInEditModal = document.getElementById('brandNameInEditModal');
-        const logoUrlInEditModal = document.getElementById('logoUrlInEditModal');
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteBrandModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="mb-2"><i class="fas fa-triangle-exclamation text-danger"></i></div>
+                <div class="fw-bold mb-2">Delete brand?</div>
+                <div id="deleteBrandText" class="text-muted mb-3"></div>
+                <div class="d-flex gap-2 justify-content-center">
+                    <button class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fas fa-trash me-1"></i>Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        if (searchInput && brandGrid) {
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase().trim();
-                let visibleCount = 0;
-
-                brandCards.forEach(card => {
-                    const brandName = card.getAttribute('data-brand');
-                    if (brandName && brandName.includes(searchTerm)) {
-                        card.style.display = 'flex';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                brandCount.textContent = visibleCount;
-
-                if (visibleCount === 0 && brandCards.length > 0) {
-                    brandGrid.style.display = 'none';
-                    emptyState.style.display = 'block';
-                    emptyStateMessage.textContent = `No brands matching your search criteria were found: "${searchTerm}"`;
-                } else {
-                    brandGrid.style.display = 'grid';
-                    emptyState.style.display = 'none';
-                }
-            });
-        }
-
-        // Add entrance animations with staggered delay
-        const cards = document.querySelectorAll('.brand-card');
-        cards.forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.05}s`;
-            card.style.opacity = 1;
-            card.style.transform = 'translateY(0)';
-        });
-
-        // Hide modals on backdrop click
-        deleteModalBackdrop.addEventListener('click', function(e) {
-            if (e.target === deleteModalBackdrop) {
-                hideDeleteModal();
-            }
-        });
-
-        editModalBackdrop.addEventListener('click', function(e) {
-            if (e.target === editModalBackdrop) {
-                hideEditModal();
-            }
-        });
-
-        // --- DELETE MODAL FUNCTIONS ---
-        window.showDeleteModal = function(brandId, brandName) {
-            brandNameInDeleteModal.textContent = brandName;
-            confirmDeleteBtn.setAttribute('data-brand-id', brandId);
-            deleteModalBackdrop.classList.add('show');
-        }
-
-        window.hideDeleteModal = function() {
-            deleteModalBackdrop.classList.remove('show');
-        }
-
-        // Handle deletion on modal button click
-        confirmDeleteBtn.addEventListener('click', async function() {
-            const brandId = this.getAttribute('data-brand-id');
-            hideDeleteModal();
-            try {
-                const response = await fetch('@Url.Action("DeleteBrand", "AdminBrand")', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: brandId })
-                });
-
-                if (response.ok) {
-                    showCustomAlert('Marka başarıyla silindi.', 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    const errorResult = await response.json();
-                    showCustomAlert(errorResult.message || 'Marka silinirken bir hata oluştu. Lütfen tekrar deneyin.', 'danger');
-                }
-            } catch (error) {
-                console.error('Silme hatası:', error);
-                showCustomAlert('Silme işlemi sırasında beklenmedik bir hata oluştu.', 'danger');
-            }
-        });
-
-        // --- EDIT MODAL FUNCTIONS ---
-        window.showEditModal = function(brandId, brandName, logoUrl) {
-            brandIdInEditModal.value = brandId;
-            brandNameInEditModal.value = brandName;
-            logoUrlInEditModal.value = logoUrl;
-            editModalBackdrop.classList.add('show');
-        }
-
-        window.hideEditModal = function() {
-            editModalBackdrop.classList.remove('show');
-        }
-
-        // Handle update on modal button click
-        saveEditBtn.addEventListener('click', async function() {
-            const brandId = brandIdInEditModal.value;
-            const newBrandName = brandNameInEditModal.value.trim();
-            const newLogoUrl = logoUrlInEditModal.value.trim();
-
-            if (!newBrandName) {
-                showCustomAlert('Marka adı boş bırakılamaz.', 'warning');
-                return;
-            }
-
-            hideEditModal();
-
-            try {
-                const response = await fetch('@Url.Action("UpdateBrand", "AdminBrand")', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ brandId: brandId, brandName: newBrandName, logoUrl: newLogoUrl })
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showCustomAlert(result.message, 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    showCustomAlert(result.message || 'Marka güncellenirken bir hata oluştu. Lütfen tekrar deneyin.', 'danger');
-                }
-            } catch (error) {
-                console.error('Güncelleme hatası:', error);
-                showCustomAlert('Güncelleme işlemi sırasında beklenmedik bir hata oluştu.', 'danger');
-            }
-        });
-    });
-</script>
+<div id="toastLite" class="toast-lite"></div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        console.log('Brand Index loaded');
+        // Tiny toast
+        function toast(msg, ok=true){
+          const el=document.getElementById('toastLite');
+          el.className='toast-lite ' + (ok ? 'toast-ok' : 'toast-err');
+          el.textContent=msg; el.style.display='block';
+          setTimeout(()=>{el.style.display='none'}, 2200);
+        }
+
+        // Search filter
+        $('#searchInput').on('input', function(){
+          const q=$(this).val().toString().toLowerCase().trim();
+          let shown=0;
+          $('#brandGrid .card-brand').each(function(){
+            const ok = !q || ($(this).data('name')||'').includes(q);
+            $(this).toggle(ok); if(ok) shown++;
+          });
+        });
+
+        // Fill UPDATE modal
+        const updateModal=document.getElementById('updateBrandModal');
+        updateModal?.addEventListener('show.bs.modal', function(ev){
+          const btn=ev.relatedTarget;
+          $('#updateBrandId').val(btn?.getAttribute('data-id')||'');
+          $('#updateBrandName').val(btn?.getAttribute('data-name')||'');
+          $('#updateLogoUrl').val(btn?.getAttribute('data-logo')||'');
+        });
+
+        // CREATE
+        $('#saveCreateBtn').on('click', function(){
+          const name=$('#createBrandName').val().trim();
+          const logo=$('#createLogoUrl').val().trim();
+          if(!name){ toast('Brand name is required', false); return; }
+
+          $.ajax({
+            url:'/Admin/AdminBrand/CreateBrand',
+            type:'POST',
+            contentType:'application/json',
+            data: JSON.stringify({ BrandName:name, LogoUrl:logo }),
+            success:function(){
+              $('#createBrandModal').modal('hide');
+              toast('Brand created');
+              setTimeout(()=>location.reload(),900);
+            },
+            error:function(xhr){ toast((xhr.responseJSON?.message)||'Create failed', false); }
+          });
+        });
+
+        // UPDATE
+        $('#saveUpdateBtn').on('click', function(){
+          const id=$('#updateBrandId').val();
+          const name=$('#updateBrandName').val().trim();
+          const logo=$('#updateLogoUrl').val().trim();
+          if(!id || !name){ toast('BrandId & name required', false); return; }
+
+          $.ajax({
+            url:'/Admin/AdminBrand/UpdateBrand',
+            type:'POST',
+            contentType:'application/json',
+            data: JSON.stringify({ BrandId:id, BrandName:name, LogoUrl:logo }),
+            success:function(){
+              $('#updateBrandModal').modal('hide');
+              toast('Brand updated');
+              setTimeout(()=>location.reload(),900);
+            },
+            error:function(xhr){ toast((xhr.responseJSON?.message)||'Update failed', false); }
+          });
+        });
+
+        // DELETE
+        let toDeleteId=null;
+        window.askDelete=function(id, name){
+          toDeleteId=id;
+          document.getElementById('deleteBrandText').innerHTML=`<small>This action cannot be undone.</small><br><b>${name}</b> will be removed.`;
+          new bootstrap.Modal(document.getElementById('deleteBrandModal')).show();
+        };
+        $('#confirmDeleteBtn').on('click', function(){
+          if(!toDeleteId) return;
+          $.ajax({
+            url:'/Admin/AdminBrand/DeleteBrand/' + toDeleteId,
+            type:'DELETE',
+            success:function(){
+              $('.modal').modal('hide');
+              toast('Brand deleted');
+              setTimeout(()=>location.reload(),900);
+            },
+            error:function(xhr){ toast((xhr.responseJSON?.message)||'Delete failed', false); }
+          });
+        });
     </script>
 }
