@@ -1,0 +1,553 @@
+﻿@using DriveNow.Dtos.PricingDtos
+@model List<ResultPricingDto>
+@{
+    ViewData["Title"] = "Pricing Management";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var total = Model?.Count ?? 0;
+}
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --white: #fff;
+            --radius: .9rem;
+            --radius-xl: 1.25rem;
+            --shadow: 0 10px 24px rgba(0,0,0,.10);
+            --shadow-lg: 0 20px 30px rgba(0,0,0,.12)
+        }
+
+        body {
+            font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            min-height: 100vh
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4.48rem
+        }
+
+        /* header */
+        .page-header {
+            background: rgba(255,255,255,.96);
+            backdrop-filter: blur(18px);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow)
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+            flex-wrap: wrap
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: .9rem
+        }
+
+        .header-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 1rem;
+            background: linear-gradient(135deg,var(--primary),var(--primary-dark));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .header-title h1 {
+            margin: 0;
+            font-size: 1.9rem;
+            font-weight: 900;
+            color: #111827
+        }
+
+        .stats-badge {
+            background: linear-gradient(135deg,var(--success),#059669);
+            color: #fff;
+            padding: .75rem 1rem;
+            border-radius: 1rem;
+            font-weight: 800
+        }
+
+        /* controls */
+        .controls {
+            background: #fff;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: .75rem;
+            box-shadow: var(--shadow)
+        }
+
+        .search {
+            position: relative
+        }
+
+            .search i {
+                position: absolute;
+                left: .85rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #9ca3af
+            }
+
+            .search input {
+                width: 100%;
+                padding: .8rem 1rem .8rem 2.6rem;
+                border: 2px solid var(--gray-200);
+                border-radius: var(--radius);
+                outline: none
+            }
+
+                .search input:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 4px rgba(99,102,241,.12)
+                }
+
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: .8rem 1.15rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0,0,0,.08);
+            transition: .15s
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg,var(--primary),var(--primary-dark));
+            color: #fff
+        }
+
+        .btn-secondary {
+            background: #111827;
+            color: #fff
+        }
+
+        .btn-ghost {
+            background: #fff;
+            color: #111827;
+            border: 2px solid var(--gray-200)
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg,var(--danger),#dc2626);
+            color: #fff
+        }
+
+        /* grid & cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(320px,1fr));
+            gap: 1.1rem;
+            margin-top: 1rem
+        }
+
+        .card {
+            background: rgba(255,255,255,.97);
+            border: 1px solid var(--gray-200);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: .2s
+        }
+
+            .card:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-lg)
+            }
+
+        .card-head {
+            background: linear-gradient(135deg,var(--primary),var(--primary-dark));
+            color: #fff;
+            padding: 1.25rem;
+            text-align: center
+        }
+
+            .card-head .icon {
+                width: 56px;
+                height: 56px;
+                border-radius: 999px;
+                background: rgba(255,255,255,.22);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto .6rem
+            }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 800
+        }
+
+        .card-id {
+            opacity: .9;
+            font-size: .85rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace
+        }
+
+        .card-body {
+            padding: 1.1rem
+        }
+
+        .features {
+            list-style: none;
+            margin: 0 0 1rem 0;
+            padding: 0
+        }
+
+            .features li {
+                display: flex;
+                gap: .6rem;
+                align-items: center;
+                padding: .35rem 0;
+                color: #4b5563
+            }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .6rem
+        }
+
+        /* ----- custom modal (no Bootstrap class names!) ----- */
+        .x-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.55);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999
+        }
+
+            .x-backdrop.show {
+                display: flex
+            }
+
+        .x-modal {
+            background: #fff;
+            border-radius: 1rem;
+            max-width: 520px;
+            width: 92%;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transform: scale(.96);
+            transition: transform .2s
+        }
+
+        .x-backdrop.show .x-modal {
+            transform: scale(1)
+        }
+
+        .x-modal-header {
+            background: linear-gradient(135deg,var(--primary),var(--primary-dark));
+            color: #fff;
+            padding: 1rem 1.25rem;
+            font-weight: 900
+        }
+
+        .x-modal-body {
+            padding: 1.25rem
+        }
+
+        .x-modal-actions {
+            padding: 0 1.25rem 1.25rem;
+            display: flex;
+            gap: .6rem;
+            justify-content: flex-end
+        }
+
+        .form-group {
+            margin-bottom: 1rem
+        }
+
+        .form-label {
+            font-weight: 700;
+            margin-bottom: .35rem;
+            display: block
+        }
+
+        .form-input {
+            width: 100%;
+            padding: .85rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: .8rem
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(99,102,241,.12)
+            }
+
+        /* toast */
+        .toast {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            background: #fff;
+            border-left: 4px solid var(--success);
+            padding: .9rem 1.1rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            gap: .6rem;
+            align-items: center;
+            transform: translateX(380px);
+            transition: transform .25s
+        }
+
+            .toast.show {
+                transform: translateX(0)
+            }
+
+            .toast.error {
+                border-left-color: var(--danger)
+            }
+    </style>
+</head>
+
+<div class="container">
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <div class="header-icon"><i class="fa-solid fa-tags"></i></div>
+                <h1>Pricing Management</h1>
+            </div>
+            <div class="stats-badge"><i class="fa-solid fa-chart-pie"></i> <span id="totalCount">@total</span> plans</div>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="toast error show" style="position:static;transform:none;margin-bottom:1rem">
+            <i class="fa-solid fa-circle-exclamation" style="color:var(--danger)"></i>
+            <div>@TempData["ErrorMessage"]</div>
+        </div>
+    }
+
+    <div class="controls">
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="txtSearch" placeholder="Search pricing plans by name…">
+        </div>
+        <button class="btn btn-ghost" id="btnClear"><i class="fa-solid fa-eraser"></i> Clear</button>
+        <button class="btn btn-primary" id="btnOpenCreate"><i class="fa-solid fa-plus"></i> Add Pricing</button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div id="grid" class="pricing-grid">
+            @foreach (var p in Model.OrderBy(x => x.PricingName))
+            {
+                <div class="card" data-id="@p.PricingId" data-name="@((p.PricingName ?? "").ToLower())">
+                    <div class="card-head">
+                        <div class="icon"><i class="fa-solid fa-tag"></i></div>
+                        <div class="card-title">@p.PricingName</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="features">
+                            <li><i class="fa-solid fa-check" style="color:var(--success)"></i> Flexible pricing structure</li>
+                            <li><i class="fa-solid fa-check" style="color:var(--success)"></i> Easy management</li>
+                            <li><i class="fa-solid fa-check" style="color:var(--success)"></i> Integration ready</li>
+                            <li><i class="fa-solid fa-check" style="color:var(--success)"></i> Scalable solution</li>
+                        </ul>
+                        <div class="actions">
+                            <button class="btn btn-secondary"
+                                    data-id="@p.PricingId"
+                                    data-name="@p.PricingName"
+                                    onclick="openEditFromCard(this)">
+                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                            </button>
+
+                            <button class="btn btn-danger"
+                                    data-id="@p.PricingId"
+                                    data-name="@p.PricingName"
+                                    onclick="openDeleteFromCard(this)">
+                                <i class="fa-regular fa-trash-can"></i> Delete
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div id="noResults" class="toast show" style="position:static;transform:none;display:none;gap:.4rem">
+            <i class="fa-regular fa-face-frown"></i><div>No matching items.</div>
+        </div>
+    }
+    else
+    {
+        <div class="card" style="padding:1.25rem;text-align:center">
+            <div style="font-size:2rem;color:#9ca3af;margin:.25rem 0"><i class="fa-regular fa-rectangle-list"></i></div>
+            <div style="color:#4b5563;margin-bottom:.75rem">No pricing plans yet.</div>
+            <button class="btn btn-primary" id="btnOpenCreateEmpty"><i class="fa-solid fa-plus"></i> Create first</button>
+        </div>
+    }
+</div>
+
+<!-- CREATE MODAL -->
+<div class="x-backdrop" id="createBackdrop" aria-hidden="true">
+    <div class="x-modal" role="dialog" aria-modal="true">
+        <div class="x-modal-header"><i class="fa-solid fa-plus"></i> Create Pricing</div>
+        <div class="x-modal-body">
+            <div class="form-group">
+                <label class="form-label" for="createName">Pricing Name</label>
+                <input id="createName" class="form-input" placeholder="e.g., Standard, Premium, Weekly…">
+            </div>
+        </div>
+        <div class="x-modal-actions">
+            <button class="btn btn-ghost" onclick="closeCreate()">Cancel</button>
+            <button class="btn btn-primary" id="btnCreateSave"><i class="fa-solid fa-check"></i> Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="x-backdrop" id="editBackdrop" aria-hidden="true">
+    <div class="x-modal" role="dialog" aria-modal="true">
+        <div class="x-modal-header"><i class="fa-regular fa-pen-to-square"></i> Edit Pricing</div>
+        <div class="x-modal-body">
+            <input type="hidden" id="editId">
+            <div class="form-group">
+                <label class="form-label" for="editName">Pricing Name</label>
+                <input id="editName" class="form-input" placeholder="Enter name…">
+            </div>
+        </div>
+        <div class="x-modal-actions">
+            <button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" id="btnEditSave"><i class="fa-solid fa-save"></i> Update</button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="x-backdrop" id="deleteBackdrop" aria-hidden="true">
+    <div class="x-modal" role="dialog" aria-modal="true">
+        <div class="x-modal-header" style="background:linear-gradient(135deg,var(--danger),#dc2626)"><i class="fa-solid fa-triangle-exclamation"></i> Delete Pricing</div>
+        <div class="x-modal-body" style="text-align:center">
+            <input type="hidden" id="delId">
+            <div>Delete <b id="delName"></b>?</div>
+            <div style="color:#6b7280;font-size:.92rem;margin-top:.25rem">This action cannot be undone.</div>
+        </div>
+        <div class="x-modal-actions">
+            <button class="btn btn-ghost" onclick="closeDelete()">Cancel</button>
+            <button class="btn btn-danger" id="btnDeleteConfirm"><i class="fa-solid fa-trash"></i> Delete</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // toast
+        function toast(msg,type='ok'){
+          const t=document.createElement('div'); t.className='toast'+(type==='error'?' error':'');
+          t.innerHTML=`<i class="fa-${type==='error'?'solid fa-circle-exclamation':'regular fa-circle-check'}"></i><div>${msg}</div>`;
+          document.body.appendChild(t); setTimeout(()=>t.classList.add('show'),30);
+          setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),250)},2200);
+        }
+
+        // filter
+        const grid=document.getElementById('grid');
+        const txtSearch=document.getElementById('txtSearch');
+        const btnClear=document.getElementById('btnClear');
+        const total=document.getElementById('totalCount');
+        const noResults=document.getElementById('noResults');
+        function applyFilter(){
+          if(!grid) return; const q=(txtSearch.value||'').toLowerCase().trim(); let n=0;
+          [...grid.children].forEach(c=>{ const nm=c.getAttribute('data-name')||''; const show=!q||nm.includes(q); c.style.display=show?'':'none'; if(show) n++; });
+          if(total) total.textContent=n; if(noResults) noResults.style.display = n? 'none':'block'; grid.style.display = n? 'grid':'none';
+        }
+        txtSearch?.addEventListener('input',applyFilter);
+        btnClear?.addEventListener('click',()=>{txtSearch.value='';applyFilter();});
+
+        // modals
+        const createBackdrop=document.getElementById('createBackdrop');
+        const editBackdrop=document.getElementById('editBackdrop');
+        const deleteBackdrop=document.getElementById('deleteBackdrop');
+
+        function openCreate(){ document.getElementById('createName').value=''; createBackdrop.classList.add('show'); }
+        function closeCreate(){ createBackdrop.classList.remove('show'); }
+        function openEdit(id,name){ document.getElementById('editId').value=id; document.getElementById('editName').value=name||''; editBackdrop.classList.add('show'); }
+        function closeEdit(){ editBackdrop.classList.remove('show'); }
+        function openDelete(id,name){ document.getElementById('delId').value=id; document.getElementById('delName').textContent=name||'(unnamed)'; deleteBackdrop.classList.add('show'); }
+        function closeDelete(){ deleteBackdrop.classList.remove('show'); }
+
+        // expose helpers for inline
+        window.openEditFromCard = (btn)=> openEdit(btn.dataset.id, btn.dataset.name);
+        window.openDeleteFromCard = (btn)=> openDelete(btn.dataset.id, btn.dataset.name);
+
+        // open buttons (avoid id/function name collisions)
+        document.getElementById('btnOpenCreate')?.addEventListener('click', openCreate);
+        document.getElementById('btnOpenCreateEmpty')?.addEventListener('click', openCreate);
+
+        // backdrop click & esc
+        [createBackdrop,editBackdrop,deleteBackdrop].forEach(b=> b?.addEventListener('click',e=>{ if(e.target===b) b.classList.remove('show'); }));
+        document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeCreate(); closeEdit(); closeDelete(); }});
+
+        // API calls
+        async function createPricing(){
+          const name=(document.getElementById('createName').value||'').trim();
+          if(!name){ toast('Please enter a name','error'); return; }
+          const btn=document.getElementById('btnCreateSave'); const old=btn.innerHTML; btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+          try{
+            const r=await fetch('/Admin/AdminPricing/CreatePricing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({PricingName:name})});
+            const j=await r.json(); if(r.ok && j.success){ toast('Created'); closeCreate(); setTimeout(()=>location.reload(),600); } else { toast(j.message||'Create failed','error'); }
+          }catch{ toast('Request error','error'); } finally{ btn.disabled=false; btn.innerHTML=old; }
+        }
+        async function updatePricing(){
+          const id=document.getElementById('editId').value; const name=(document.getElementById('editName').value||'').trim();
+          if(!name){ toast('Please enter a name','error'); return; }
+          const btn=document.getElementById('btnEditSave'); const old=btn.innerHTML; btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Updating…';
+          try{
+            const r=await fetch('/Admin/AdminPricing/UpdatePricing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({PricingId:id,PricingName:name})});
+            const j=await r.json(); if(r.ok && j.success){ toast('Updated'); closeEdit(); setTimeout(()=>location.reload(),600); } else { toast(j.message||'Update failed','error'); }
+          }catch{ toast('Request error','error'); } finally{ btn.disabled=false; btn.innerHTML=old; }
+        }
+        async function deletePricing(){
+          const id=document.getElementById('delId').value; const btn=document.getElementById('btnDeleteConfirm'); const old=btn.innerHTML; btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Deleting…';
+          try{
+            const r=await fetch('/Admin/AdminPricing/DeletePricing?id='+id,{method:'DELETE'}); const j=await r.json();
+            if(r.ok && j.success){ toast('Deleted'); closeDelete(); const card=document.querySelector(`.card[data-id="${id}"]`); card?.remove(); applyFilter(); }
+            else{ toast(j.message||'Delete failed','error'); }
+          }catch{ toast('Request error','error'); } finally{ btn.disabled=false; btn.innerHTML=old; }
+        }
+        document.getElementById('btnCreateSave')?.addEventListener('click', createPricing);
+        document.getElementById('btnEditSave')?.addEventListener('click', updatePricing);
+        document.getElementById('btnDeleteConfirm')?.addEventListener('click', deletePricing);
+
+        // enter keys
+        document.getElementById('createName')?.addEventListener('keydown',e=>{ if(e.key==='Enter') createPricing(); });
+        document.getElementById('editName')?.addEventListener('keydown',e=>{ if(e.key==='Enter') updatePricing(); });
+
+        // init
+        document.addEventListener('DOMContentLoaded', applyFilter);
+    </script>
+}
