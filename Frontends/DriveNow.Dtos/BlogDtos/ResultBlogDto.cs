@@ -13,6 +13,8 @@ namespace DriveNow.Dtos.BlogDtos
         public DateTime CreatedDate { get; set; }
         public Guid CategoryId { get; set; }
         public bool IsPublished { get; set; }
+        public Guid TagCloudId { get; set; }
+        public string TagCloudName { get; set; }
 
     }
 }

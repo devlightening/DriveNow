@@ -1,0 +1,400 @@
+﻿@using DriveNow.Dtos.FooterAddressDtos
+@model List<ResultFooterAddressDto>
+@{
+    ViewData["Title"] = "Footer Addresses";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var total = Model?.Count ?? 0;
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        :root{
+            --primary:#4A90E2; --primary-d:#3A81D1;
+            --success:#10b981; --danger:#ef4444;
+            --ink:#34495E; --muted:#7F8C8D;
+            --card:#fff; --border:#e5e7eb;
+            --shadow:0 4px 12px rgba(0,0,0,.08);
+            --shadow-h:0 8px 24px rgba(0,0,0,.12);
+        }
+        body{
+            background:
+              radial-gradient(900px 480px at 10% -10%, rgba(106,90,249,.06), transparent 60%),
+              radial-gradient(1100px 520px at 110% 0%, rgba(74,144,226,.06), transparent 60%),
+              linear-gradient(180deg,#f6f9ff 0%, #f2fbff 100%);
+        }
+        .container-custom{max-width:1200px;margin:auto;padding:4.5rem 1.5rem}
+        .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+        .page-title{font-weight:800;color:var(--ink);font-size:2rem;display:flex;gap:.6rem;align-items:center}
+        .stat{background:linear-gradient(135deg,var(--success),#0a9b73);color:#fff;border-radius:.9rem;padding:.6rem 1rem;font-weight:800;box-shadow:0 10px 22px rgba(16,185,129,.25)}
+        .controls{display:grid;grid-template-columns:1fr auto auto;gap:.75rem;margin:1rem 0 1.25rem}
+        .search{position:relative}
+        .search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9db0bf}
+        #q{width:100%;padding:.82rem 1rem .82rem 2.5rem;border:1px solid var(--border);border-radius:12px;background:#fff}
+        #q:focus{outline:none;border-color:#cdd6ff;box-shadow:0 0 0 4px rgba(108,92,231,.12)}
+        .btn-clear{background:#eef2ff;border:1px solid #dfe6ff;color:#4152d0;border-radius:10px;padding:.6rem 1rem;font-weight:700}
+        .btn-add{background:linear-gradient(135deg,var(--primary),#6c5ce7);color:#fff;border:none;border-radius:12px;padding:.7rem 1.2rem;font-weight:800;box-shadow:0 12px 24px rgba(106,90,249,.18)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.1rem}
+        .cardx{position:relative;background:var(--card);border-radius:16px;padding:1rem;box-shadow:var(--shadow);transition:.18s;border:1px solid #eef2f4;overflow:hidden}
+        .cardx::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:linear-gradient(180deg,#4A90E2,#6c5ce7)}
+        .cardx:hover{transform:translateY(-4px);box-shadow:var(--shadow-h)}
+        .rowline{display:flex;gap:.6rem;align-items:flex-start;color:#526171;margin:.15rem 0}
+        .rowline i{width:20px;text-align:center;color:#93a4b3}
+        .addr{font-weight:800;color:#2c3e50}
+        .desc{margin:.55rem 0 0;background:linear-gradient(180deg,#fbfdff 0%,#f7faff 100%);border:1px dashed #e3e9f7;border-radius:12px;padding:.7rem .85rem;color:#526171}
+        .chip{background:#f2f5ff;border:1px solid #e6ecff;color:#274690;border-radius:999px;padding:.25rem .6rem;font-size:.75rem;font-weight:800}
+        .foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #eef2f4;margin-top:.8rem;padding-top:.8rem}
+        .btn-del{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;padding:.5rem 1rem}
+        .btn-edit{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;border:none;border-radius:10px;padding:.5rem 1rem}
+        .empty{border:1px solid #eef2f4;border-radius:14px;padding:2rem;text-align:center;color:#6b7a81;background:#fff}
+        .modal-content{border-radius:14px}
+        .lbl{font-weight:800;color:#374151;margin-bottom:.4rem}
+        .inp,.txt{width:100%;border:2px solid #e5e7eb;border-radius:10px;padding:.75rem .9rem}
+        .txt{min-height:110px;resize:vertical}
+    </style>
+</head>
+
+<div class="container-custom">
+    <div class="page-header">
+        <div class="page-title"><i class="fa-solid fa-location-dot"></i> Footer Addresses</div>
+        <div class="stat"><i class="fa-solid fa-database me-1"></i><span id="count">@total</span> records</div>
+    </div>
+
+    <div class="controls">
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="q" placeholder="Search by address, description, phone or email…" />
+        </div>
+        <button class="btn-clear" id="btnClear"><i class="fa-solid fa-eraser"></i> Clear</button>
+
+        <!-- MODAL'I ATTRİBUTE İLE AÇ -->
+        <button class="btn-add"
+                data-bs-toggle="modal"
+                data-bs-target="#createModal">
+            <i class="fa-solid fa-plus"></i> New Address
+        </button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="grid" id="grid">
+            @foreach (var item in Model)
+            {
+                <div class="cardx"
+                     data-id="@item.FooterAddressId"
+                     data-address="@item.Address"
+                     data-email="@item.Email"
+                     data-phone="@item.PhoneNumber"
+                     data-desc="@item.Description">
+                    <div class="rowline addr"><i class="fa-solid fa-map-pin"></i> @item.Address</div>
+                    <div class="rowline"><i class="fa-regular fa-envelope"></i> <a href="mailto:@item.Email">@item.Email</a></div>
+                    <div class="rowline"><i class="fa-solid fa-phone"></i> <a href="tel:@item.PhoneNumber">@item.PhoneNumber</a></div>
+                    @if (!string.IsNullOrWhiteSpace(item.Description))
+                    {
+                        <div class="desc">@item.Description</div>
+                    }
+                    <div class="foot">
+                        <span class="chip"><i class="fa-solid fa-location-dot me-1"></i>Footer</span>
+                        <div class="d-flex gap-2">
+                            <!-- EDIT MODALINI DA ATTRİBUTE İLE AÇ; VERİYİ JS DOLDURACAK -->
+                            <button class="btn-edit btnEdit"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal"
+                                    data-id="@item.FooterAddressId"
+                                    data-address="@item.Address"
+                                    data-email="@item.Email"
+                                    data-phone="@item.PhoneNumber"
+                                    data-desc="@item.Description">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+
+                            <button class="btn-del btnDel"
+                                    data-id="@item.FooterAddressId"
+                                    data-who="@item.Address"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="empty" class="empty" style="display:none;">
+            <i class="fa-regular fa-face-frown fa-2x"></i>
+            <div class="mt-2">No matching addresses found.</div>
+        </div>
+    }
+    else
+    {
+        <div class="empty">
+            <i class="fa-regular fa-map fa-2x"></i>
+            <div class="mt-2">No footer addresses yet.</div>
+            <button class="btn-add mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createModal">
+                <i class="fa-solid fa-plus"></i> Create First Address
+            </button>
+        </div>
+    }
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="fa-solid fa-plus me-2"></i>New Footer Address</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3"><label class="lbl" for="cAddress">Address</label><input id="cAddress" class="inp" /></div>
+        <div class="mb-3"><label class="lbl" for="cEmail">Email</label><input id="cEmail" class="inp" /></div>
+        <div class="mb-3"><label class="lbl" for="cPhone">Phone</label><input id="cPhone" class="inp" /></div>
+        <div class="mb-1"><label class="lbl" for="cDesc">Description</label><textarea id="cDesc" class="txt"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" id="btnSaveCreate"><i class="fa-solid fa-save me-1"></i>Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-white" style="background:linear-gradient(135deg,#f59e0b,#f97316);">
+        <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Footer Address</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="eId" />
+        <div class="mb-3"><label class="lbl" for="eAddress">Address</label><input id="eAddress" class="inp" /></div>
+        <div class="mb-3"><label class="lbl" for="eEmail">Email</label><input id="eEmail" class="inp" /></div>
+        <div class="mb-3"><label class="lbl" for="ePhone">Phone</label><input id="ePhone" class="inp" /></div>
+        <div class="mb-1"><label class="lbl" for="eDesc">Description</label><textarea id="eDesc" class="txt"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-warning text-white" id="btnSaveEdit"><i class="fa-solid fa-floppy-disk me-1"></i>Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-white" style="background:linear-gradient(135deg,#ef4444,#dc2626);">
+        <h5 class="modal-title"><i class="fa-solid fa-triangle-exclamation me-2"></i>Delete Address</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="delId" />
+        <p class="mb-1 fw-bold text-center">Are you sure?</p>
+        <p class="text-muted text-center">This will remove <b id="delWho"></b> permanently.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" id="btnConfirmDelete"><i class="fa-solid fa-trash me-1"></i>Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+          // ---------- helpers ----------
+          const $ = sel => document.querySelector(sel);
+          const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+          const grid = $('#grid');
+          const empty = $('#empty');
+          const q = $('#q');
+          const btnClear = $('#btnClear');
+          const count = $('#count');
+
+          // Edit modal fields
+          const eId = $('#eId');
+          const eAddress = $('#eAddress');
+          const eEmail = $('#eEmail');
+          const ePhone = $('#ePhone');
+          const eDesc = $('#eDesc');
+
+          // Delete modal fields
+          const delId = $('#delId');
+          const delWho = $('#delWho');
+
+          const btnSaveCreate = $('#btnSaveCreate');
+          const btnSaveEdit = $('#btnSaveEdit');
+          const btnConfirmDelete = $('#btnConfirmDelete');
+
+          // Modal helpers
+          const getModal = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id));
+
+          // Fetch JSON helper (detaylı hata yakalama)
+          async function postJson(url, payload, method='POST') {
+            const res = await fetch(url, {
+              method,
+              headers: { 'Content-Type':'application/json' },
+              body: payload != null ? JSON.stringify(payload) : null
+            });
+            // Bazı action'lar text dönebilir; önce text al, sonra JSON'a çevirmeyi dene
+            const raw = await res.text();
+            let data = null;
+            try { data = raw ? JSON.parse(raw) : null; } catch { /* ignore */ }
+            return { ok: res.ok, status: res.status, data, raw };
+          }
+
+          // ---------- filtering ----------
+          function applyFilter(){
+            if(!grid) return;
+            const query=(q?.value||'').trim().toLowerCase();
+            let visible=0;
+
+            $$('#grid > .cardx').forEach(card=>{
+              const a=(card.getAttribute('data-address')||'').toLowerCase();
+              const d=(card.getAttribute('data-desc')||'').toLowerCase();
+              const p=(card.getAttribute('data-phone')||'').toLowerCase();
+              const e=(card.getAttribute('data-email')||'').toLowerCase();
+
+              const show=!query || a.includes(query)||d.includes(query)||p.includes(query)||e.includes(query);
+              card.style.display = show ? '' : 'none';
+              if(show) visible++;
+            });
+
+            if(count) count.textContent = visible;
+            if(empty) empty.style.display = visible ? 'none':'block';
+            if(grid) grid.style.display = visible ? 'grid' : 'none';
+          }
+
+          q?.addEventListener('input', applyFilter);
+          btnClear?.addEventListener('click', ()=>{ q.value=''; applyFilter(); });
+          applyFilter();
+
+          // ---------- event delegation: edit/delete butonları ----------
+          document.addEventListener('click', (e) => {
+            // Edit data doldurma
+            const editBtn = e.target.closest('.btnEdit');
+            if(editBtn){
+              eId.value       = editBtn.dataset.id || '';
+              eAddress.value  = editBtn.dataset.address || '';
+              eEmail.value    = editBtn.dataset.email || '';
+              ePhone.value    = editBtn.dataset.phone || '';
+              eDesc.value     = editBtn.dataset.desc || '';
+            }
+
+            // Delete confirm hazırlığı
+            const delBtn = e.target.closest('.btnDel');
+            if(delBtn){
+              delId.value = delBtn.dataset.id || '';
+              delWho.textContent = delBtn.dataset.who || 'this address';
+            }
+          });
+
+          // ---------- CREATE ----------
+          btnSaveCreate?.addEventListener('click', async ()=>{
+            const payload = {
+              Address: ($('#cAddress')?.value||'').trim(),
+              Email: ($('#cEmail')?.value||'').trim(),
+              PhoneNumber: ($('#cPhone')?.value||'').trim(),
+              Description: ($('#cDesc')?.value||'').trim()
+            };
+            if(!payload.Address){ alert('Address is required'); return; }
+
+            const btn = btnSaveCreate; const txt = btn.innerHTML;
+            try{
+              btn.disabled = true;
+              btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Saving...';
+
+              const {ok, data, raw} = await postJson('/Admin/AdminFooterAddress/CreateFooterAddress', payload, 'POST');
+
+              if(ok && data?.success){
+                getModal('createModal').hide();
+                setTimeout(()=>location.reload(), 350);
+              }else{
+                alert((data?.message || 'Create failed') + (data?.details ? '\n\n' + data.details : raw ? '\n\n' + raw : ''));
+              }
+            }catch(err){
+              alert('Request failed: ' + err.message);
+            }finally{
+              btn.disabled=false; btn.innerHTML = txt;
+            }
+          });
+
+          // ---------- UPDATE ----------
+               btnSaveEdit?.addEventListener('click', async ()=>{
+          const payload = {
+            FooterAddressId: eId.value,
+            Address: eAddress.value.trim(),
+            Email: eEmail.value.trim(),
+            PhoneNumber: ePhone.value.trim(),   // UI DTO'nda PhoneNumber kalsın
+            Description: eDesc.value.trim()
+          };
+          if (!payload.Address) { alert('Address is required'); return; }
+
+          const btn = btnSaveEdit; const txt = btn.innerHTML;
+          try {
+            btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Updating...';
+
+            const res = await fetch('/Admin/AdminFooterAddress/UpdateFooterAddress', {
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body: JSON.stringify(payload)
+            });
+
+            const text = await res.text(); // ham body
+            let data;
+            try { data = JSON.parse(text); } catch { data = { message: text }; }
+
+            if (res.ok && data?.success) {
+              bootstrap.Modal.getInstance(document.getElementById('editModal'))?.hide();
+              setTimeout(()=>location.reload(), 350);
+            } else {
+              alert(`Error updating FooterAddress.\nStatus: ${res.status}\nBody: ${text}`);
+            }
+          } catch (err) {
+            alert('Request failed: ' + (err?.message || err));
+          } finally {
+            btn.disabled = false; btn.innerHTML = txt;
+          }
+        });
+
+
+          // ---------- DELETE ----------
+          btnConfirmDelete?.addEventListener('click', async ()=>{
+            const id = delId.value; if(!id) return;
+            const btn = btnConfirmDelete; const txt = btn.innerHTML;
+
+            try{
+              btn.disabled = true;
+              btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Deleting...';
+
+              const res = await fetch(`/Admin/AdminFooterAddress/DeleteFooterAddress?id=${encodeURIComponent(id)}`, { method:'DELETE' });
+              const raw = await res.text(); let data=null; try{ data = raw? JSON.parse(raw):null; }catch{}
+
+              if(res.ok && data?.success){
+                const card = document.querySelector(`.cardx[data-id="${CSS.escape(id)}"]`);
+                if(card){ card.style.transform='translateX(30px)'; card.style.opacity='.3'; setTimeout(()=>{ card.remove(); applyFilter(); }, 220); }
+                getModal('deleteModal').hide();
+              }else{
+                alert((data?.message || 'Delete failed') + (data?.details ? '\n\n' + data.details : raw ? '\n\n' + raw : ''));
+              }
+            }catch(err){
+              alert('Request failed: ' + err.message);
+            }finally{
+              btn.disabled=false; btn.innerHTML = txt;
+            }
+          });
+
+        });
+    </script>
+}

@@ -1,0 +1,533 @@
+﻿@using DriveNow.Dtos.ServiceDtos
+@model List<ResultServiceDto>
+@{
+    ViewData["Title"] = "Services";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var total = Model?.Count ?? 0;
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --primary-d: #3A81D1;
+            --success: #10B981;
+            --danger: #EF4444;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --border: #e5e7eb;
+            --bg: #f8fafc;
+            --card: #fff;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 75px 16px
+        }
+
+        /* header */
+        .head {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,.06)
+        }
+
+            .head h2 {
+                margin: 0;
+                display: flex;
+                gap: .6rem;
+                align-items: center;
+                font-weight: 800
+            }
+
+        .stat {
+            background: linear-gradient(135deg,var(--success),#08916a);
+            color: #fff;
+            border-radius: 12px;
+            padding: .45rem .8rem;
+            font-weight: 800;
+            display: flex;
+            gap: .45rem;
+            align-items: center
+        }
+
+        /* controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: .8rem;
+            margin: 14px 0 18px
+        }
+
+        .search {
+            position: relative
+        }
+
+            .search i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #9aa4b2
+            }
+
+        #q {
+            width: 100%;
+            padding: .8rem 1rem .8rem 2.6rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff
+        }
+
+        .btn-clear {
+            background: #eef2ff;
+            border: 1px solid #dfe3ff;
+            color: #4453d1;
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 700
+        }
+
+        .btn-primaryx {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 800
+        }
+
+        /* grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(320px,1fr));
+            gap: 1rem
+        }
+
+        .cardx {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: .15s;
+            box-shadow: 0 6px 16px rgba(0,0,0,.05)
+        }
+
+            .cardx:hover {
+                transform: translateY(-3px)
+            }
+
+        .body {
+            padding: 14px
+        }
+
+        .top {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start
+        }
+
+        .icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #eef2ff;
+            border: 2px solid #e0e7ff;
+            flex: 0 0 64px;
+            position: relative;
+            overflow: hidden
+        }
+
+            .icon-wrap img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block
+            }
+
+        .icon-fallback {
+            position: absolute;
+            inset: 0;
+            display: none;
+            place-items: center;
+            font-weight: 900;
+            color: #3b82f6;
+            background: #e8efff
+        }
+
+        .icon-fa {
+            font-size: 26px;
+            color: #3b82f6
+        }
+
+        .title {
+            font-weight: 800;
+            font-size: 1.06rem
+        }
+
+        .desc {
+            color: var(--muted);
+            margin-top: .35rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden
+        }
+
+        .actions {
+            display: flex;
+            gap: .5rem;
+            margin-top: .8rem
+        }
+
+        .btn-ghost {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--ink);
+            border-radius: 10px;
+            padding: .45rem .9rem;
+            font-weight: 700
+        }
+
+        .btn-dangerx {
+            background: linear-gradient(135deg,var(--danger),#dc2626);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            padding: .45rem .9rem;
+            font-weight: 800
+        }
+
+        .empty {
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: var(--muted)
+        }
+
+        /* modals */
+        .modal-content {
+            border-radius: 16px;
+            border: 1px solid var(--border)
+        }
+
+        .modal-hd {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            color: #fff;
+            font-weight: 800;
+            padding: 12px 16px;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px
+        }
+
+        .lbl {
+            font-weight: 700;
+            margin: .35rem 0
+        }
+
+        .inp, .txt {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .75rem 1rem;
+            background: #fff
+        }
+
+        .txt {
+            min-height: 120px;
+            resize: vertical
+        }
+
+        .img-preview {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e0e7ff;
+            margin-top: .5rem
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 800
+        }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 700
+        }
+    </style>
+</head>
+
+<div class="wrap">
+    <div class="head">
+        <h2><i class="fa-solid fa-screwdriver-wrench text-primary"></i> Services</h2>
+        <div class="stat"><i class="fa-solid fa-database"></i> <span id="count">@total</span> records</div>
+    </div>
+
+    <div class="controls">
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="q" placeholder="Search by title or description…" />
+        </div>
+        <button class="btn btn-clear" id="btnClear"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+        <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>New Service</button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div id="grid" class="grid">
+            @foreach (var s in Model.OrderBy(x => x.Title))
+            {
+                var icon = s.IconUrl ?? "";
+                var isUrl = icon.StartsWith("http") || icon.StartsWith("data:") || icon.StartsWith("~/");
+                var isFa = icon.Contains("fa-"); // "fa-solid fa-car" vb.
+                var initial = (s.Title ?? "?").Trim().Length > 0 ? (s.Title.Trim()[0].ToString().ToUpper()) : "?";
+
+                <div class="cardx" data-id="@s.ServiceId" data-title="@((s.Title ?? "").ToLower())" data-desc="@((s.Description ?? "").ToLower())">
+                    <div class="body">
+                        <div class="top">
+                            <div class="icon-wrap">
+                                @if (isUrl)
+                                {
+                                    <img src="@icon" alt="icon" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+                                    <div class="icon-fallback">@initial</div>
+                                }
+                                else if (isFa)
+                                {
+                                    <i class="icon-fa @icon"></i>
+                                }
+                                else
+                                {
+                                    <div class="icon-fallback" style="display:grid">@initial</div>
+                                }
+                            </div>
+                            <div>
+                                <div class="title">@s.Title</div>
+                                <div class="desc">@s.Description</div>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn btn-ghost btnEdit"
+                                    data-bs-toggle="modal" data-bs-target="#editModal"
+                                    data-id="@s.ServiceId"
+                                    data-title="@s.Title"
+                                    data-desc='@Html.Raw((s.Description ?? "").Replace("'", "&#39;"))'
+                                    data-icon="@s.IconUrl">
+                                <i class="fa-regular fa-pen-to-square me-1"></i>Edit
+                            </button>
+                            <button class="btn btn-dangerx btnDel"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="@s.ServiceId"
+                                    data-title="@s.Title">
+                                <i class="fa-regular fa-trash-can me-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="empty" class="empty" style="display:none">
+            <i class="fa-regular fa-face-frown fa-2x mb-2"></i>
+            <div>No matching services found.</div>
+        </div>
+    }
+    else
+    {
+        <div class="empty">
+            <i class="fa-solid fa-screwdriver-wrench fa-2x mb-2"></i>
+            <div>No services yet. Add the first one.</div>
+            <div class="mt-3">
+                <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>Create First</button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-hd"><i class="fa-solid fa-plus me-2"></i> New Service</div>
+            <div class="modal-body">
+                <label class="lbl" for="cTitle">Title</label>
+                <input id="cTitle" class="inp" placeholder="e.g., 24/7 Support" />
+
+                <label class="lbl mt-3" for="cIcon">Icon (URL or FA class)</label>
+                <input id="cIcon" class="inp" placeholder="https://...  |  fa-solid fa-car" />
+                <img id="cPreview" class="img-preview" src="https://via.placeholder.com/88?text=ICON" />
+
+                <label class="lbl mt-3" for="cDesc">Description</label>
+                <textarea id="cDesc" class="txt" placeholder="Short description…"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveCreate"><i class="fa-solid fa-floppy-disk me-1"></i>Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+                <i class="fa-solid fa-pen-to-square me-2"></i> Edit Service
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="eId" />
+                <label class="lbl" for="eTitle">Title</label>
+                <input id="eTitle" class="inp" />
+                <label class="lbl mt-3" for="eIcon">Icon (URL or FA class)</label>
+                <input id="eIcon" class="inp" />
+                <img id="ePreview" class="img-preview" src="https://via.placeholder.com/88?text=ICON" />
+                <label class="lbl mt-3" for="eDesc">Description</label>
+                <textarea id="eDesc" class="txt"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveEdit"><i class="fa-solid fa-floppy-disk me-1"></i>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> Delete
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="delId" />
+                <p class="mb-0">Delete <b id="delTitle"></b> ?</p>
+                <small class="text-danger">This action cannot be undone.</small>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-dangerx" id="btnConfirmDelete"><i class="fa-regular fa-trash-can me-1"></i>Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function(){
+          const grid=document.getElementById('grid'), empty=document.getElementById('empty');
+          const q=document.getElementById('q'), btnClear=document.getElementById('btnClear'), count=document.getElementById('count');
+
+          const cIcon=document.getElementById('cIcon'), cPreview=document.getElementById('cPreview');
+          const eIcon=document.getElementById('eIcon'), ePreview=document.getElementById('ePreview');
+
+          const eId=document.getElementById('eId'), eTitle=document.getElementById('eTitle'), eDesc=document.getElementById('eDesc');
+          const delId=document.getElementById('delId'), delTitle=document.getElementById('delTitle');
+
+          const btnSaveCreate=document.getElementById('btnSaveCreate');
+          const btnSaveEdit=document.getElementById('btnSaveEdit');
+          const btnConfirmDelete=document.getElementById('btnConfirmDelete');
+
+          function applyFilter(){
+            if(!grid) return; const qv=(q?.value||'').trim().toLowerCase(); let vis=0;
+            [...grid.children].forEach(c=>{
+              const t=c.getAttribute('data-title')||'', d=c.getAttribute('data-desc')||'';
+              const show=!qv||t.includes(qv)||d.includes(qv); c.style.display=show?'':'none'; if(show) vis++;
+            });
+            if(count) count.textContent=vis; if(empty) empty.style.display=vis?'none':'block'; if(grid) grid.style.display=vis?'grid':'none';
+          }
+          q?.addEventListener('input', applyFilter);
+          btnClear?.addEventListener('click', ()=>{ q.value=''; applyFilter(); });
+          document.addEventListener('DOMContentLoaded', applyFilter);
+
+          // live preview (only when looks like URL)
+          cIcon?.addEventListener('input', ()=>{ const v=cIcon.value.trim(); if(/^https?:|^data:|^~\//i.test(v)) cPreview.src=v; });
+          eIcon?.addEventListener('input', ()=>{ const v=eIcon.value.trim(); if(/^https?:|^data:|^~\//i.test(v)) ePreview.src=v; });
+
+          // fill edit/delete
+          document.addEventListener('click', (ev)=>{
+            const eb=ev.target.closest('.btnEdit');
+            if(eb){
+              eId.value=eb.dataset.id; eTitle.value=eb.dataset.title||''; eDesc.value=eb.dataset.desc||''; eIcon.value=eb.dataset.icon||'';
+              const v=eIcon.value.trim(); ePreview.src=(/^https?:|^data:|^~\//i.test(v))?v:'https://via.placeholder.com/88?text=ICON';
+            }
+            const db=ev.target.closest('.btnDel');
+            if(db){ delId.value=db.dataset.id; delTitle.textContent=db.dataset.title||'this service'; }
+          });
+
+          // CREATE
+          btnSaveCreate?.addEventListener('click', async ()=>{
+            const title=(document.getElementById('cTitle').value||'').trim();
+            const icon=(document.getElementById('cIcon').value||'').trim();
+            const desc=(document.getElementById('cDesc').value||'').trim();
+            if(!title){ alert('Please enter a title'); return; }
+            const btn=btnSaveCreate, txt=btn.innerHTML;
+            try{
+              btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin me-1"></i>Saving...';
+              const res=await fetch('/Admin/AdminService/CreateService',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({Title:title,Description:desc,IconUrl:icon})});
+              const data=await res.json().catch(()=>({}));
+              if(res.ok && data.success){ bootstrap.Modal.getInstance(document.getElementById('createModal'))?.hide(); setTimeout(()=>location.reload(),350); }
+              else{ alert(data.message||'Create failed'); }
+            }catch{ alert('Request failed'); } finally{ btn.disabled=false; btn.innerHTML=txt; }
+          });
+
+          // UPDATE
+          btnSaveEdit?.addEventListener('click', async ()=>{
+            const id=eId.value, title=(eTitle.value||'').trim(), icon=(eIcon.value||'').trim(), desc=(eDesc.value||'').trim();
+            if(!title){ alert('Please enter a title'); return; }
+            const btn=btnSaveEdit, txt=btn.innerHTML;
+            try{
+              btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin me-1"></i>Updating...';
+              const res=await fetch('/Admin/AdminService/UpdateService',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ServiceId:id,Title:title,Description:desc,IconUrl:icon})});
+              const data=await res.json().catch(()=>({}));
+              if(res.ok && data.success){ bootstrap.Modal.getInstance(document.getElementById('editModal'))?.hide(); setTimeout(()=>location.reload(),350); }
+              else{ alert(data.message||'Update failed'); }
+            }catch{ alert('Request failed'); } finally{ btn.disabled=false; btn.innerHTML=txt; }
+          });
+
+          // DELETE
+          btnConfirmDelete?.addEventListener('click', async ()=>{
+            const id=delId.value; if(!id) return;
+            const btn=btnConfirmDelete, txt=btn.innerHTML;
+            try{
+              btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin me-1"></i>Deleting...';
+              const res=await fetch(`/Admin/AdminService/DeleteService?id=${encodeURIComponent(id)}`,{method:'DELETE'});
+              const data=await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal'))?.hide();
+                const card=document.querySelector(`.cardx[data-id="${CSS.escape(id)}"]`); if(card){ card.style.opacity='.4'; setTimeout(()=>{ card.remove(); applyFilter(); },180); }
+              } else { alert(data.message||'Delete failed'); }
+            }catch{ alert('Request failed'); } finally{ btn.disabled=false; btn.innerHTML=txt; }
+          });
+        })();
+    </script>
+}

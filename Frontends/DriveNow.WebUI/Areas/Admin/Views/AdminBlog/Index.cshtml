@@ -1,21 +1,28 @@
 ﻿@model List<DriveNow.Dtos.BlogDtos.ResultBlogDto>
 @using DriveNow.Dtos.AuthorDtos
 @using DriveNow.Dtos.CategoryDtos
+@using DriveNow.Dtos.TagCloudDtos
 @{
     ViewData["Title"] = "Blog Management";
     Layout = "~/Views/AdminLayout/Index.cshtml";
+
     var authors = ViewBag.Authors as List<ResultAuthorDto> ?? new();
     var categories = ViewBag.Categories as List<ResultCategoryDto> ?? new();
-}
 
+    // Filtre dropdown'u için tüm tagcloudlar (sadece filtrede kullanılacak, kartta görünmeyecek)
+    var allTags = ViewBag.AllTags as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+
+    // Kartlara veri saklamak için: blogId -> tagId list (filtre çalışsın diye)
+    var blogToTags = ViewBag.BlogToTags as Dictionary<Guid, List<ResultTagCloudDto>>
+                     ?? new Dictionary<Guid, List<ResultTagCloudDto>>();
+}
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #4A90E2;
-            --primary-dark: #3A81D1;
-            --warning: #F39C12;
+            --primary-d: #3A81D1;
             --text: #334155;
             --muted: #748089;
             --bg: #F8F9F9;
@@ -27,24 +34,24 @@
 
         body {
             background: var(--bg);
-            font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+            font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial
         }
 
         .wrap {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 4.5rem 1.5rem;
+            padding: 4.5rem 1.5rem
         }
 
         .header {
-            background: linear-gradient(135deg,var(--primary),var(--primary-dark));
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
             color: #fff;
             border-radius: 18px;
             padding: 1rem 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow)
         }
 
             .header h2 {
@@ -60,27 +67,16 @@
             opacity: .95
         }
 
-        .alert-note {
-            margin: 1rem 0 1.5rem;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--warning);
-            border-radius: 14px;
-            padding: 1rem 1.25rem;
-            box-shadow: var(--shadow-sm);
-            color: #475569
-        }
-
         .controls {
             display: grid;
-            grid-template-columns: 1fr 240px 240px 160px;
+            grid-template-columns: 1fr 240px 240px 240px 140px;
             gap: .75rem;
             background: #fff;
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 1rem;
             box-shadow: var(--shadow-sm);
-            margin: 1rem 0 1.5rem
+            margin: 1rem 0 1.5rem;
         }
 
         .search {
@@ -120,18 +116,13 @@
             border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
-            padding: .72rem 1rem;
-            transition: .15s
+            padding: .72rem 1rem
         }
-
-            .btn-clear:hover {
-                filter: brightness(.97)
-            }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill,minmax(340px,1fr));
-            gap: 1.25rem
+            grid-template-columns: repeat(auto-fill,minmax(320px,1fr));
+            gap: 1.1rem
         }
 
         .card {
@@ -150,10 +141,10 @@
                 box-shadow: var(--shadow)
             }
 
-        /* MEDIA + overlay buttons */
+        /* MEDIA + hover overlay buttons (GİZLİ, HOVER’DA ÇIKAR) */
         .media {
             position: relative;
-            height: 220px;
+            height: 200px;
             overflow: hidden
         }
 
@@ -170,32 +161,19 @@
             transform: scale(1.04)
         }
 
+        /* yumuşak kararma */
         .media::after {
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom,rgba(0,0,0,.22),rgba(0,0,0,.05) 45%,rgba(0,0,0,.45));
+            background: linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.05) 45%, rgba(0,0,0,.55));
             opacity: 0;
-            transition: opacity .25s;
+            transition: opacity .25s ease;
             pointer-events: none;
-            z-index: 1
+            z-index: 1;
         }
 
-        .media::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 100px;
-            background: linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0));
-            opacity: 0;
-            transition: opacity .25s;
-            pointer-events: none;
-            z-index: 1
-        }
-
-        .card:hover .media::after, .card:hover .media::before {
+        .card:hover .media::after {
             opacity: 1
         }
 
@@ -203,15 +181,16 @@
             position: absolute;
             left: 12px;
             right: 12px;
-            bottom: 14px;
+            bottom: 12px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            gap: .6rem;
+            gap: .55rem;
             opacity: 0;
             transform: translateY(8px);
-            transition: opacity .25s,transform .25s;
-            z-index: 4;
-            pointer-events: none
+            transition: opacity .25s ease, transform .25s ease;
+            z-index: 2;
+            pointer-events: none;
         }
 
         .card:hover .overlay-actions {
@@ -223,7 +202,7 @@
         .obtn {
             border: none;
             border-radius: 999px;
-            padding: .55rem 1rem;
+            padding: .52rem .95rem;
             font-weight: 800;
             display: inline-flex;
             gap: .45rem;
@@ -239,24 +218,27 @@
             }
 
         .obtn-dark {
-            background: rgba(17,24,39,.95)
+            background: #111827
         }
 
         .obtn-comments {
             background: #2563eb
         }
-        /* <<< NEW: Comments button (mavi) */
+
+        .obtn-tags {
+            background: #06b6d4
+        }
+
         .obtn-toggle.publish {
             background: #059669
         }
-        /* yeşil */
+
         .obtn-toggle.unpublish {
             background: #dc2626
         }
-        /* kırmızı */
 
         .body {
-            padding: 1rem 1rem .5rem
+            padding: 1rem
         }
 
         .title {
@@ -271,39 +253,25 @@
             color: #6b7280;
             font-size: .88rem;
             display: flex;
-            gap: .5rem;
-            flex-wrap: wrap;
-            align-items: center
+            gap: .35rem;
+            flex-wrap: wrap
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
             gap: .35rem;
-            padding: .28rem .55rem;
+            padding: .25rem .55rem;
             border-radius: 999px;
             font-weight: 800;
-            font-size: .72rem
+            font-size: .72rem;
+            border: 1px solid #e6eaf2;
+            background: #f8fafc
         }
-
-            .badge.author {
-                background: #ecfeff;
-                color: #0e7490
-            }
-
-            .badge.cat {
-                background: #eef2ff;
-                color: #4338ca
-            }
-
-            .badge.date {
-                background: #f1f5f9;
-                color: #0f172a
-            }
 
         .desc {
             color: #6b7280;
-            margin: .65rem 0 .2rem;
+            margin: .55rem 0 0;
             font-size: .95rem;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -319,15 +287,6 @@
             padding: 3rem 1rem;
             color: #64748b
         }
-
-        @@media(max - width:980px) {
-            .controls
-
-        {
-            grid-template-columns: 1fr 1fr
-        }
-
-        }
     </style>
 </head>
 
@@ -335,12 +294,6 @@
     <div class="header">
         <h2><i class="fa-solid fa-newspaper"></i> Blog Management</h2>
         <div class="count"><i class="fa-regular fa-list-alt me-1"></i> <span id="resultsCount">@(Model?.Count ?? 0)</span> blogs</div>
-    </div>
-
-    <div class="alert-note">
-        <strong>Heads-up:</strong> Creating and editing posts are actions for <em>authors</em> only.
-        As an admin, you can <strong>publish / unpublish</strong> posts and view their <strong>comments</strong>.
-        Authors should sign in to manage their own posts.
     </div>
 
     <div class="controls">
@@ -362,6 +315,13 @@
                 <option value="@c.CategoryId">@c.CategoryName</option>
             }
         </select>
+        <select id="tagFilter">
+            <option value="">All TagClouds</option>
+            @foreach (var t in allTags)
+            {
+                <option value="@t.TagCloudId">@t.TagCloudName</option>
+            }
+        </select>
         <button class="btn-clear" id="clearFiltersBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
     </div>
 
@@ -374,29 +334,30 @@
                 var toggleClass = isPub ? "unpublish" : "publish";
                 var toggleText = isPub ? "Unpublish" : "Publish";
 
+                var tags = blogToTags.TryGetValue(b.BlogId, out var list) ? list : new List<ResultTagCloudDto>();
+                var tagIds = string.Join(",", tags.Select(t => t.TagCloudId));
+
                 <div class="card"
                      data-id="@b.BlogId"
                      data-title="@(b.Title ?? "").ToLower()"
                      data-description="@(b.Description ?? "").ToLower()"
                      data-author-id="@b.AuthorId"
                      data-category-id="@b.CategoryId"
-                     data-created="@b.CreatedDate.ToString("o")">
-
+                     data-tag-ids="@tagIds">
                     <div class="media">
                         <img class="cover" src="@b.CoverImageUrl" alt="@b.Title" onerror="this.style.display='none'" />
-
                         <div class="overlay-actions">
-                            <!-- NEW: Comments button -> AdminComment/Index?blogId=...&q=Title -->
                             <a class="obtn obtn-comments"
-                               href="/Admin/AdminComment/Index?blogId=@b.BlogId&q=@System.Net.WebUtility.UrlEncode(b.Title ?? "")"
-                               title="View comments for this blog">
+                               href="/Admin/AdminComment/Index?blogId=@b.BlogId&q=@System.Net.WebUtility.UrlEncode(b.Title ?? "")">
                                 <i class="fa-regular fa-comments"></i> Comments
                             </a>
-
-                            <a class="obtn obtn-dark" href="/Blog/BlogDetail/@b.BlogId" target="_blank" title="Open blog">
+                            <a class="obtn obtn-tags"
+                               href="/Admin/AdminTagCloud/Index?blogId=@b.BlogId">
+                                <i class="fa-solid fa-tags"></i> TagClouds
+                            </a>
+                            <a class="obtn obtn-dark" href="/Blog/BlogDetail/@b.BlogId" target="_blank">
                                 <i class="fa-solid fa-up-right-from-square"></i> Open
                             </a>
-
                             <button class="obtn obtn-toggle @toggleClass"
                                     type="button"
                                     data-published="@isPub.ToString().ToLower()"
@@ -409,9 +370,9 @@
                     <div class="body">
                         <div class="title">@b.Title</div>
                         <div class="meta">
-                            <span class="badge author"><i class="fa-solid fa-user-pen"></i> @b.AuthorName</span>
-                            <span class="badge cat"><i class="fa-solid fa-folder-open"></i> @b.CategoryName</span>
-                            <span class="badge date"><i class="fa-regular fa-calendar"></i> @b.CreatedDate.ToString("dd.MM.yyyy")</span>
+                            <span class="badge"><i class="fa-solid fa-user-pen"></i> @b.AuthorName</span>
+                            <span class="badge"><i class="fa-solid fa-folder-open"></i> @b.CategoryName</span>
+                            <span class="badge"><i class="fa-regular fa-calendar"></i> @b.CreatedDate.ToString("dd.MM.yyyy")</span>
                         </div>
                         @if (!string.IsNullOrWhiteSpace(b.Description))
                         {
@@ -436,7 +397,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         function toast(msg,type='info'){
           const el=document.createElement('div');
@@ -451,45 +411,55 @@
         const searchInput=document.getElementById('searchInput');
         const authorFilter=document.getElementById('authorFilter');
         const categoryFilter=document.getElementById('categoryFilter');
+        const tagFilter=document.getElementById('tagFilter');
         const clearFiltersBtn=document.getElementById('clearFiltersBtn');
         const noResults=document.getElementById('noResults');
         const resultsCount=document.getElementById('resultsCount');
 
         function applyFilters(){
           if(!grid) return;
-          const cards=[...grid.children];
           const q=(searchInput?.value||'').trim().toLowerCase();
           const aId=authorFilter?.value||'';
           const cId=categoryFilter?.value||'';
+          const tId=tagFilter?.value||'';
           let visible=0;
 
-          cards.forEach(card=>{
-            const t=(card.getAttribute('data-title')||'');
-            const d=(card.getAttribute('data-description')||'');
-            const ca=(card.getAttribute('data-author-id')||'');
-            const cc=(card.getAttribute('data-category-id')||'');
+          [...grid.children].forEach(card=>{
+            const t = card.getAttribute('data-title')||'';
+            const d = card.getAttribute('data-description')||'';
+            const ca= card.getAttribute('data-author-id')||'';
+            const cc= card.getAttribute('data-category-id')||'';
+            const tagIds=(card.getAttribute('data-tag-ids')||'').split(',').filter(Boolean);
 
-            const okText=!q||t.includes(q)||d.includes(q);
-            const okAuthor=!aId||ca===aId;
-            const okCat=!cId||cc===cId;
-            const show=okText&&okAuthor&&okCat;
+            const okText   = !q || t.includes(q) || d.includes(q);
+            const okAuthor = !aId || ca===aId;
+            const okCat    = !cId || cc===cId;
+            const okTag    = !tId || tagIds.includes(tId);
 
-            card.style.display=show?'':'none';
+            const show = okText && okAuthor && okCat && okTag;
+            card.style.display = show ? '' : 'none';
             if(show) visible++;
           });
 
           if(resultsCount) resultsCount.textContent=visible;
-          if(noResults) noResults.style.display=visible?'none':'block';
-          grid.style.display=visible?'grid':'none';
+          if(noResults) noResults.style.display = visible ? 'none' : 'block';
+          if(grid) grid.style.display = visible ? 'grid' : 'none';
         }
 
         searchInput?.addEventListener('input',applyFilters);
         authorFilter?.addEventListener('change',applyFilters);
         categoryFilter?.addEventListener('change',applyFilters);
-        clearFiltersBtn?.addEventListener('click',()=>{ if(searchInput) searchInput.value=''; if(authorFilter) authorFilter.value=''; if(categoryFilter) categoryFilter.value=''; applyFilters(); });
+        tagFilter?.addEventListener('change',applyFilters);
+        clearFiltersBtn?.addEventListener('click',()=>{
+          if(searchInput) searchInput.value='';
+          if(authorFilter) authorFilter.value='';
+          if(categoryFilter) categoryFilter.value='';
+          if(tagFilter) tagFilter.value='';
+          applyFilters();
+        });
         document.addEventListener('DOMContentLoaded',applyFilters);
 
-        // Publish toggle (UI anında güncellenir)
+        // Publish toggle
         async function togglePublish(id,btn){
           try{
             btn?.setAttribute('disabled','disabled');
@@ -498,15 +468,9 @@
               const wasPublished = (btn.dataset.published === 'true');
               const nowPublished = !wasPublished;
               btn.dataset.published = String(nowPublished);
-
               btn.classList.remove('publish','unpublish');
-              if(nowPublished){
-                btn.classList.add('unpublish'); // artık unpublish => kırmızı
-                btn.innerHTML = '<i class="fa-solid fa-power-off"></i> Unpublish';
-              }else{
-                btn.classList.add('publish');   // artık publish => yeşil
-                btn.innerHTML = '<i class="fa-solid fa-power-off"></i> Publish';
-              }
+              btn.classList.add(nowPublished ? 'unpublish' : 'publish');
+              btn.innerHTML = '<i class="fa-solid fa-power-off"></i> ' + (nowPublished? 'Unpublish' : 'Publish');
               toast('Publish status updated.','success');
             }else{
               let msg='Something went wrong.'; try{ const j=await res.json(); msg=j.detail||j.message||msg }catch{}

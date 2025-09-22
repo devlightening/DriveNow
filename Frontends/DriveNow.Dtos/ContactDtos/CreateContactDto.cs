@@ -6,9 +6,7 @@
         public string ContactEmail { get; set; }
         public string ContactPhone { get; set; }
         public string ContactSubject { get; set; }
-
         public string ContactMessage { get; set; }
-
         public DateTime SendDate { get; set; }
     }
 }

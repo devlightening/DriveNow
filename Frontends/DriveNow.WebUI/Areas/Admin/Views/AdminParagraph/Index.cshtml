@@ -1,0 +1,588 @@
+﻿@using DriveNow.Dtos.ParagraphDtos
+@model List<ResultParagraphDto>
+@{
+    ViewData["Title"] = "Legends";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var total = Model?.Count ?? 0;
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #0f1220;
+            --panel: #171a2b;
+            --card: #1c2140;
+            --ink: #e7e9ff;
+            --muted: #a7aed6;
+            --gold: #f2c94c;
+            --violet: #6c63ff;
+            --violet-d: #5a54ee;
+            --danger: #ef4444;
+            --green: #10b981;
+            --border: rgba(255,255,255,.08);
+            --shadow: 0 10px 30px rgba(0,0,0,.35);
+            --r: 18px;
+        }
+
+        body {
+            background: radial-gradient(1200px 600px at -10% -10%, rgba(108,99,255,.18), transparent 60%), radial-gradient(900px 500px at 120% 0%, rgba(242,201,76,.12), transparent 60%), var(--bg);
+            color: var(--ink);
+            font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4.5rem 1.2rem;
+        }
+        /* header */
+        .head {
+            background: linear-gradient(135deg,rgba(108,99,255,.15),rgba(242,201,76,.10)),var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 1.1rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+            .head h2 {
+                margin: 0;
+                display: flex;
+                gap: .65rem;
+                align-items: center;
+                font-weight: 800
+            }
+
+        .stat {
+            background: linear-gradient(135deg,#2ea67d,#10b981);
+            color: #0a1416;
+            border-radius: 12px;
+            padding: .55rem .9rem;
+            font-weight: 900;
+            display: flex;
+            gap: .45rem;
+            align-items: center
+        }
+        /* controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: .8rem;
+            margin: 1rem 0 1.5rem
+        }
+
+        .search {
+            position: relative
+        }
+
+            .search i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8f96c6
+            }
+
+        #q {
+            width: 100%;
+            padding: .85rem 1rem .85rem 2.6rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #131630;
+            color: var(--ink)
+        }
+
+        .btn-clear {
+            background: #20264a;
+            border: 1px solid var(--border);
+            color: #c6cbff;
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 800
+        }
+
+        .btn-primaryx {
+            background: linear-gradient(135deg,var(--violet),var(--violet-d));
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 900
+        }
+        /* grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(320px,1fr));
+            gap: 1.1rem
+        }
+
+        .cardx {
+            background: linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.00)),var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: .18s
+        }
+
+            .cardx:hover {
+                transform: translateY(-4px)
+            }
+
+        .cover {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+            filter: saturate(1.02) contrast(1.02)
+        }
+
+        .body {
+            padding: 1rem
+        }
+
+        .legend-name {
+            font-weight: 900;
+            font-size: 1.05rem;
+            letter-spacing: .2px
+        }
+
+        .legend-date {
+            color: var(--gold);
+            font-weight: 800;
+            font-size: .9rem
+        }
+
+        .desc {
+            color: var(--muted);
+            margin-top: .45rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden
+        }
+
+        .actions {
+            display: flex;
+            gap: .5rem;
+            margin-top: .85rem
+        }
+
+        .btn-ghost {
+            background: #20264a;
+            border: 1px solid var(--border);
+            color: #e9ecff;
+            border-radius: 10px;
+            padding: .45rem .9rem;
+            font-weight: 800
+        }
+
+        .btn-dangerx {
+            background: linear-gradient(135deg,var(--danger),#dc2626);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            padding: .45rem .9rem;
+            font-weight: 800
+        }
+
+        .empty {
+            border: 1px solid var(--border);
+            background: #161936;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            color: #c2c7ff
+        }
+        /* modal */
+        .modal-content {
+            background: #11142b;
+            color: var(--ink);
+            border: 1px solid var(--border);
+            border-radius: 18px
+        }
+
+        .modal-hd {
+            background: linear-gradient(135deg,var(--violet),var(--violet-d));
+            color: #fff;
+            font-weight: 900;
+            padding: 1rem 1.2rem
+        }
+
+        .lbl {
+            font-weight: 800;
+            color: #dfe2ff;
+            margin: .25rem 0
+        }
+
+        .inp, .txt, .date {
+            width: 100%;
+            background: #0f1330;
+            color: #e7e9ff;
+            border: 2px solid #262b58;
+            border-radius: 12px;
+            padding: .8rem 1rem
+        }
+
+        .txt {
+            min-height: 120px;
+            resize: vertical
+        }
+
+        .img-preview {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid #262b58;
+            margin-top: .6rem
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg,var(--violet),var(--violet-d));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 900
+        }
+
+        .btn-cancel {
+            background: #20264a;
+            border: 1px solid var(--border);
+            color: #e6e8ff;
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 900
+        }
+        /* toast */
+        .toastx {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            background: #11142b;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--green);
+            color: #e7e9ff;
+            padding: .85rem 1rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            z-index: 9999;
+            transform: translateX(420px);
+            transition: .35s
+        }
+
+            .toastx.err {
+                border-left-color: var(--danger)
+            }
+
+            .toastx.show {
+                transform: translateX(0)
+            }
+    </style>
+</head>
+
+<div class="wrap">
+    <div class="head">
+        <h2><i class="fa-solid fa-feather-pointed"></i> Legends</h2>
+        <div class="stat"><i class="fa-solid fa-database"></i> <span id="count">@total</span> records</div>
+    </div>
+
+    <div class="controls">
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="q" placeholder="Search by name, year, description…" />
+        </div>
+        <button class="btn btn-clear" id="btnClear"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+        <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>New Legend</button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div id="grid" class="grid">
+            @foreach (var p in Model.OrderByDescending(x => x.LegendDate))
+            {
+                <div class="cardx"
+                     data-id="@p.ParagraphId"
+                     data-name="@((p.LegendName ?? "").ToLower())"
+                     data-desc="@((p.Description ?? "").ToLower())"
+                     data-year="@p.LegendDate.ToString("yyyy")">
+                    <img class="cover" src="@p.CoverImageUrl" alt="@p.LegendName" onerror="this.src='https://images.unsplash.com/photo-1549888834-3ec93abae044?q=80&w=1200&auto=format&fit=crop';" />
+                    <div class="body">
+                        <div class="legend-name">@p.LegendName</div>
+                        <div class="legend-date"><i class="fa-regular fa-calendar me-1"></i>@p.LegendDate.ToString("dd.MM.yyyy")</div>
+                        <div class="desc">@p.Description</div>
+                        <div class="actions">
+                            <button class="btn btn-ghost btnEdit"
+                                    data-bs-toggle="modal" data-bs-target="#editModal"
+                                    data-id="@p.ParagraphId"
+                                    data-name="@p.LegendName"
+                                    data-desc='@Html.Raw((p.Description ?? "").Replace("'", "&#39;"))'
+                                    data-img="@p.CoverImageUrl"
+                                    data-date="@p.LegendDate.ToString("yyyy-MM-dd")">
+                                <i class="fa-regular fa-pen-to-square me-1"></i>Edit
+                            </button>
+                            <button class="btn btn-dangerx btnDel"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="@p.ParagraphId"
+                                    data-name="@p.LegendName">
+                                <i class="fa-regular fa-trash-can me-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="empty" class="empty" style="display:none">
+            <i class="fa-regular fa-star-half-stroke fa-2x mb-2"></i>
+            <div>No matching legends found.</div>
+        </div>
+    }
+    else
+    {
+        <div class="empty">
+            <i class="fa-regular fa-star-half-stroke fa-2x mb-2"></i>
+            <div>No legends yet. Add the first tribute.</div>
+            <div class="mt-3">
+                <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>Create First</button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-hd"><i class="fa-solid fa-plus me-2"></i> New Legend</div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="lbl" for="cName">Name</label>
+                        <input id="cName" class="inp" placeholder="e.g., John Carter" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="lbl" for="cDate">Date</label>
+                        <input id="cDate" type="date" class="date" />
+                    </div>
+                    <div class="col-md-12">
+                        <label class="lbl" for="cImg">Cover Image URL</label>
+                        <input id="cImg" class="inp" placeholder="https://..." />
+                        <img id="cPreview" class="img-preview" src="https://images.unsplash.com/photo-1549888834-3ec93abae044?q=80&w=1200&auto=format&fit=crop" />
+                    </div>
+                    <div class="col-md-12">
+                        <label class="lbl" for="cDesc">Description</label>
+                        <textarea id="cDesc" class="txt" placeholder="Short memorial text…"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveCreate"><i class="fa-solid fa-floppy-disk me-1"></i>Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fa-solid fa-pen-to-square me-2"></i> Edit Legend</div>
+            <div class="modal-body">
+                <input type="hidden" id="eId" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="lbl" for="eName">Name</label>
+                        <input id="eName" class="inp" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="lbl" for="eDate">Date</label>
+                        <input id="eDate" type="date" class="date" />
+                    </div>
+                    <div class="col-md-12">
+                        <label class="lbl" for="eImg">Cover Image URL</label>
+                        <input id="eImg" class="inp" />
+                        <img id="ePreview" class="img-preview" src="" />
+                    </div>
+                    <div class="col-md-12">
+                        <label class="lbl" for="eDesc">Description</label>
+                        <textarea id="eDesc" class="txt"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveEdit"><i class="fa-solid fa-floppy-disk me-1"></i>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,var(--danger),#dc2626)"><i class="fa-solid fa-triangle-exclamation me-2"></i> Delete</div>
+            <div class="modal-body">
+                <input type="hidden" id="delId" />
+                <p class="mb-0">Delete <b id="delName"></b> ?</p>
+                <small class="text-warning">This tribute will be removed permanently.</small>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-dangerx" id="btnConfirmDelete"><i class="fa-regular fa-trash-can me-1"></i>Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function(){
+          const grid = document.getElementById('grid');
+          const empty = document.getElementById('empty');
+          const q = document.getElementById('q');
+          const btnClear = document.getElementById('btnClear');
+          const count = document.getElementById('count');
+
+          const cImg = document.getElementById('cImg'), cPreview = document.getElementById('cPreview');
+          const eImg = document.getElementById('eImg'), ePreview = document.getElementById('ePreview');
+
+          const eId = document.getElementById('eId');
+          const eName = document.getElementById('eName');
+          const eDate = document.getElementById('eDate');
+          const eDesc = document.getElementById('eDesc');
+
+          const delId = document.getElementById('delId');
+          const delName = document.getElementById('delName');
+
+          const btnSaveCreate = document.getElementById('btnSaveCreate');
+          const btnSaveEdit = document.getElementById('btnSaveEdit');
+          const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+          function toast(msg, ok=true){
+            const el = document.createElement('div');
+            el.className = 'toastx'+(ok?'':' err');
+            el.textContent = msg;
+            document.body.appendChild(el);
+            requestAnimationFrame(()=>el.classList.add('show'));
+            setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),300); }, 2600);
+          }
+
+          function applyFilter(){
+            if(!grid) return;
+            const query = (q?.value || '').trim().toLowerCase();
+            let vis=0;
+            [...grid.children].forEach(card=>{
+              const name = card.getAttribute('data-name')||'';
+              const desc = card.getAttribute('data-desc')||'';
+              const year = card.getAttribute('data-year')||'';
+              const show = !query || name.includes(query) || desc.includes(query) || year.includes(query);
+              card.style.display = show ? '' : 'none';
+              if(show) vis++;
+            });
+            if(count) count.textContent = vis;
+            if(empty) empty.style.display = vis ? 'none':'block';
+            if(grid) grid.style.display = vis ? 'grid':'none';
+          }
+          q?.addEventListener('input', applyFilter);
+          btnClear?.addEventListener('click', ()=>{ q.value=''; applyFilter(); });
+          document.addEventListener('DOMContentLoaded', applyFilter);
+
+          // Live preview for image urls
+          cImg?.addEventListener('input', ()=>{ cPreview.src = cImg.value || cPreview.src; });
+          eImg?.addEventListener('input', ()=>{ ePreview.src = eImg.value || ePreview.src; });
+
+          // Fill modals
+          document.addEventListener('click', (e)=>{
+            const eb = e.target.closest('.btnEdit');
+            if(eb){
+              eId.value = eb.dataset.id;
+              eName.value = eb.dataset.name || '';
+              eDate.value = eb.dataset.date || '';
+              eImg.value = eb.dataset.img || '';
+              ePreview.src = eb.dataset.img || 'https://images.unsplash.com/photo-1549888834-3ec93abae044?q=80&w=1200&auto=format&fit=crop';
+              eDesc.value = eb.dataset.desc || '';
+            }
+            const db = e.target.closest('.btnDel');
+            if(db){
+              delId.value = db.dataset.id;
+              delName.textContent = db.dataset.name || 'this legend';
+            }
+          });
+
+          // CREATE
+          btnSaveCreate?.addEventListener('click', async ()=>{
+            const name = (document.getElementById('cName').value || '').trim();
+            const date = document.getElementById('cDate').value;
+            const img  = (document.getElementById('cImg').value || '').trim();
+            const desc = (document.getElementById('cDesc').value || '').trim();
+            if(!name){ toast('Please enter a name', false); return; }
+            const btn = btnSaveCreate, txt = btn.innerHTML;
+            try{
+              btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Saving...';
+              const res = await fetch('/Admin/AdminParagraph/CreateParagraph',{
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ LegendName:name, Description:desc, CoverImageUrl:img, LegendDate:date || null })
+              });
+              const data = await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('createModal'))?.hide();
+                setTimeout(()=>location.reload(), 400);
+              }else{ toast(data.message || 'Create failed', false); }
+            }catch{ toast('Request failed', false); }
+            finally{ btn.disabled=false; btn.innerHTML = txt; }
+          });
+
+          // UPDATE
+          btnSaveEdit?.addEventListener('click', async ()=>{
+            const id   = eId.value;
+            const name = (eName.value || '').trim();
+            const date = eDate.value;
+            const img  = (eImg.value || '').trim();
+            const desc = (eDesc.value || '').trim();
+            if(!name){ toast('Please enter a name', false); return; }
+            const btn = btnSaveEdit, txt = btn.innerHTML;
+            try{
+              btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Updating...';
+              const res = await fetch('/Admin/AdminParagraph/UpdateParagraph',{
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ ParagraphId:id, LegendName:name, Description:desc, CoverImageUrl:img, LegendDate:date || null })
+              });
+              const data = await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('editModal'))?.hide();
+                setTimeout(()=>location.reload(), 400);
+              }else{ toast(data.message || 'Update failed', false); }
+            }catch{ toast('Request failed', false); }
+            finally{ btn.disabled=false; btn.innerHTML = txt; }
+          });
+
+          // DELETE
+          btnConfirmDelete?.addEventListener('click', async ()=>{
+            const id = delId.value; if(!id) return;
+            const btn = btnConfirmDelete, txt = btn.innerHTML;
+            try{
+              btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Deleting...';
+              const res = await fetch(`/Admin/AdminParagraph/DeleteParagraph?id=${encodeURIComponent(id)}`, { method:'DELETE' });
+              const data = await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal'))?.hide();
+                const card = document.querySelector(`.cardx[data-id="${CSS.escape(id)}"]`);
+                if(card){ card.style.transform='translateX(30px)'; card.style.opacity='.35'; setTimeout(()=>{ card.remove(); applyFilter(); }, 220); }
+                toast('Deleted');
+              }else{ toast(data.message || 'Delete failed', false); }
+            }catch{ toast('Request failed', false); }
+            finally{ btn.disabled=false; btn.innerHTML = txt; }
+          });
+
+        })();
+    </script>
+}

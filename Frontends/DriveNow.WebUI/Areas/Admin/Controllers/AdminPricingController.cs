@@ -133,7 +133,6 @@ namespace DriveNow.WebUI.Areas.Admin.Controllers
             }
         }
 
-        // Helper method for getting single pricing (if needed)
         [HttpGet]
         public async Task<IActionResult> GetPricing(Guid id)
         {

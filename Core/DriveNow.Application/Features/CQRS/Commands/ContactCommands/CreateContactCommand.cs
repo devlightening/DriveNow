@@ -9,16 +9,6 @@
         public string ContactMessage { get; set; }
         public DateTime SendDate { get; set; }
 
-        public CreateContactCommand(string contactName, string contactEmail, string contactPhone, string contactSubject, string contactMessage, DateTime sendDate)
-        {
-            ContactName = contactName;
-            ContactEmail = contactEmail;
-            ContactPhone = contactPhone;
-            ContactSubject = contactSubject;
-            ContactMessage = contactMessage;
-            SendDate = sendDate;
-        }
 
-        public CreateContactCommand() { }
     }
 }

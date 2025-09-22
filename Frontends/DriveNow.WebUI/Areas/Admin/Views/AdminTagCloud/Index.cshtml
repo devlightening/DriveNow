@@ -1,0 +1,529 @@
+﻿@using DriveNow.Dtos.TagCloudDtos
+@model List<ResultTagCloudDto>
+@{
+    ViewData["Title"] = "TagClouds";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+
+    // Controller'dan gelen map: Dictionary<string, string> (BlogId -> Title)
+    var blogMap = ViewBag.BlogMap as Dictionary<string, string> ?? new Dictionary<string, string>();
+    var total = Model?.Count ?? 0;
+    var initialBlogId = (string)(ViewBag.InitialBlogId ?? "");
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --primary-d: #3A81D1;
+            --success: #10B981;
+            --danger: #EF4444;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --border: #e5e7eb;
+            --bg: #f8fafc;
+            --card: #fff;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 16px
+        }
+
+        .head {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,.06)
+        }
+
+            .head h2 {
+                margin: 0;
+                display: flex;
+                gap: .6rem;
+                align-items: center;
+                font-weight: 800
+            }
+
+        .stat {
+            background: linear-gradient(135deg,var(--success),#08916a);
+            color: #fff;
+            border-radius: 12px;
+            padding: .45rem .8rem;
+            font-weight: 800;
+            display: flex;
+            gap: .45rem;
+            align-items: center
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 260px auto auto;
+            gap: .75rem;
+            margin: 14px 0 18px
+        }
+
+        .search {
+            position: relative
+        }
+
+            .search i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #9aa4b2
+            }
+
+        #q {
+            width: 100%;
+            padding: .8rem 1rem .8rem 2.6rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff
+        }
+
+        #blogFilter {
+            padding: .8rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff
+        }
+
+        .btn-clear {
+            background: #eef2ff;
+            border: 1px solid #dfe3ff;
+            color: #4453d1;
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 700
+        }
+
+        .btn-primaryx {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 800
+        }
+
+        /* grid of small cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(230px,1fr));
+            gap: .85rem
+        }
+
+        .cardx {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 12px;
+            box-shadow: 0 6px 16px rgba(0,0,0,.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            transition: .18s;
+        }
+
+            .cardx:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 26px rgba(0,0,0,.08)
+            }
+
+        .tag-name {
+            font-weight: 900;
+            display: flex;
+            gap: .4rem;
+            align-items: center
+        }
+
+        .tag-meta {
+            color: var(--muted);
+            font-size: .9rem;
+            display: flex;
+            gap: .4rem;
+            margin-top: .15rem
+        }
+
+        .pill {
+            background: #eef2ff;
+            color: #3949ab;
+            border: 1px solid #e3e8ff;
+            border-radius: 999px;
+            padding: .12rem .5rem;
+            font-size: .74rem;
+            font-weight: 800
+        }
+
+        .actions {
+            display: flex;
+            gap: .45rem
+        }
+
+        .btn-ghost {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--ink);
+            border-radius: 10px;
+            padding: .38rem .7rem;
+            font-weight: 700
+        }
+
+        .btn-dangerx {
+            background: linear-gradient(135deg,var(--danger),#dc2626);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            padding: .38rem .7rem;
+            font-weight: 800
+        }
+
+        .empty {
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: var(--muted)
+        }
+
+        .modal-content {
+            border-radius: 16px;
+            border: 1px solid var(--border)
+        }
+
+        .modal-hd {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            color: #fff;
+            font-weight: 800;
+            padding: 12px 16px;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px
+        }
+
+        .lbl {
+            font-weight: 700;
+            margin: .35rem 0
+        }
+
+        .inp, .sel {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .75rem 1rem;
+            background: #fff
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 800
+        }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 700
+        }
+    </style>
+</head>
+
+<div class="wrap">
+    <div class="head">
+        <h2><i class="fa-solid fa-tags text-primary"></i> TagClouds</h2>
+        <div class="stat"><i class="fa-solid fa-database"></i> <span id="count">@total</span> records</div>
+    </div>
+
+    <div class="controls">
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="q" placeholder="Search tag or blog…" />
+        </div>
+        <select id="blogFilter">
+            <option value="">All Blogs</option>
+            @foreach (var kv in blogMap.OrderBy(x => x.Value))
+            {
+                <option value="@kv.Key">@kv.Value</option>
+            }
+        </select>
+        <button class="btn btn-clear" id="btnClear"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+        <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>New Tag</button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div id="list" class="grid">
+            @foreach (var t in Model.OrderBy(x =>
+            {
+                var key = x.BlogId.ToString();
+                return blogMap.TryGetValue(key ?? "", out var title) ? title : "";
+            }).ThenBy(x => x.TagCloudName))
+            {
+                var keyStr = t.BlogId.ToString();
+                var blogTitle = (keyStr != null && blogMap.TryGetValue(keyStr, out var bt)) ? bt : "Unknown blog";
+                <div class="cardx"
+                     data-id="@t.TagCloudId"
+                     data-name="@((t.TagCloudName ?? "").ToLower())"
+                     data-blogid="@keyStr"
+                     data-blogtitle="@blogTitle.ToLower()">
+                    <div class="flex-grow-1">
+                        <div class="tag-name"><i class="fa-solid fa-hashtag text-primary"></i> @t.TagCloudName</div>
+                        <div class="tag-meta">
+                            <span class="pill" title="Blog"><i class="fa-solid fa-book-open"></i> @blogTitle</span>
+                            <!-- id UI’da gösterilmiyor -->
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-ghost btnEdit"
+                                data-bs-toggle="modal" data-bs-target="#editModal"
+                                data-id="@t.TagCloudId"
+                                data-name="@t.TagCloudName"
+                                data-blogid="@keyStr">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-dangerx btnDel"
+                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                data-id="@t.TagCloudId"
+                                data-name="@t.TagCloudName">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="empty" class="empty" style="display:none">
+            <i class="fa-regular fa-face-frown fa-2x mb-2"></i>
+            <div>No matching tags found.</div>
+        </div>
+    }
+    else
+    {
+        <div class="empty">
+            <i class="fa-solid fa-tags fa-2x mb-2"></i>
+            <div>No tags yet. Add the first one.</div>
+            <div class="mt-3">
+                <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>Create First</button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-hd"><i class="fa-solid fa-plus me-2"></i> New Tag</div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="lbl" for="cName">Tag Name</label>
+                    <input id="cName" class="inp" placeholder="e.g., electric, suv, family…" />
+                </div>
+                <div>
+                    <label class="lbl" for="cBlog">Blog</label>
+                    <select id="cBlog" class="sel">
+                        @foreach (var kv in blogMap.OrderBy(x => x.Value))
+                        {
+                            <option value="@kv.Key">@kv.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveCreate"><i class="fa-solid fa-floppy-disk me-1"></i>Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fa-solid fa-pen-to-square me-2"></i> Edit Tag</div>
+            <div class="modal-body">
+                <input type="hidden" id="eId" />
+                <div class="mb-3">
+                    <label class="lbl" for="eName">Tag Name</label>
+                    <input id="eName" class="inp" />
+                </div>
+                <div>
+                    <label class="lbl" for="eBlog">Blog</label>
+                    <select id="eBlog" class="sel">
+                        @foreach (var kv in blogMap.OrderBy(x => x.Value))
+                        {
+                            <option value="@kv.Key">@kv.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveEdit"><i class="fa-solid fa-floppy-disk me-1"></i>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><i class="fa-solid fa-triangle-exclamation me-2"></i> Delete</div>
+            <div class="modal-body">
+                <input type="hidden" id="delId" />
+                <p class="mb-0">Delete <b id="delName"></b> ?</p>
+                <small class="text-danger">This action cannot be undone.</small>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-dangerx" id="btnConfirmDelete"><i class="fa-regular fa-trash-can me-1"></i>Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function(){
+          const list=document.getElementById('list'), empty=document.getElementById('empty');
+          const q=document.getElementById('q'), blogFilter=document.getElementById('blogFilter');
+          const btnClear=document.getElementById('btnClear'), count=document.getElementById('count');
+
+          const eId=document.getElementById('eId'), eName=document.getElementById('eName'), eBlog=document.getElementById('eBlog');
+          const delId=document.getElementById('delId'), delName=document.getElementById('delName');
+
+          const btnSaveCreate=document.getElementById('btnSaveCreate');
+          const btnSaveEdit=document.getElementById('btnSaveEdit');
+          const btnConfirmDelete=document.getElementById('btnConfirmDelete');
+
+          function applyFilter(){
+            if(!list) return;
+            const qv=(q?.value||'').trim().toLowerCase();
+            const b=(blogFilter?.value||'').toLowerCase();
+            let vis=0;
+            [...list.children].forEach(row=>{
+              const name=row.getAttribute('data-name')||'';
+              const blogid=(row.getAttribute('data-blogid')||'').toLowerCase();
+              const blogt=row.getAttribute('data-blogtitle')||'';
+              const textOk=!qv || name.includes(qv) || blogt.includes(qv);
+              const blogOk=!b || blogid===b;
+              const show=textOk && blogOk;
+              row.style.display = show ? '' : 'none';
+              if(show) vis++;
+            });
+            if(count) count.textContent=vis;
+            if(empty) empty.style.display= vis? 'none':'block';
+            if(list) list.style.display = vis? 'grid':'none';
+          }
+
+          q?.addEventListener('input', applyFilter);
+          blogFilter?.addEventListener('change', applyFilter);
+          btnClear?.addEventListener('click', ()=>{ q.value=''; blogFilter.value=''; applyFilter(); });
+
+          // URL'den gelen başlangıç blogId'si
+          const initialBlogId = '@initialBlogId';
+          if (blogFilter && initialBlogId) {
+            blogFilter.value = initialBlogId;
+          }
+          document.addEventListener('DOMContentLoaded', applyFilter);
+
+          // Edit/Delete dolum
+          document.addEventListener('click', (ev)=>{
+            const eb=ev.target.closest('.btnEdit');
+            if(eb){
+              eId.value=eb.dataset.id;
+              eName.value=eb.dataset.name||'';
+              if(eBlog){ eBlog.value=eb.dataset.blogid||''; }
+            }
+            const db=ev.target.closest('.btnDel');
+            if(db){
+              delId.value=db.dataset.id;
+              delName.textContent=db.dataset.name||'this tag';
+            }
+          });
+
+          // CREATE
+          btnSaveCreate?.addEventListener('click', async ()=>{
+            const name=(document.getElementById('cName').value||'').trim();
+            const blogId=(document.getElementById('cBlog').value||'').trim();
+            if(!name){ alert('Please enter tag name'); return; }
+            if(!blogId){ alert('Please select a blog'); return; }
+            const btn=btnSaveCreate, txt=btn.innerHTML;
+            try{
+              btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin me-1"></i>Saving...';
+              const res=await fetch('/Admin/AdminTagCloud/CreateTagCloud',{
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({TagCloudName:name,BlogId:blogId})
+              });
+              const data=await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('createModal'))?.hide();
+                setTimeout(()=>location.reload(),350);
+              }else{ alert(data.message||'Create failed'); }
+            }catch{ alert('Request failed'); }
+            finally{ btn.disabled=false; btn.innerHTML=txt; }
+          });
+
+          // UPDATE (Controller PUT /api/TagClouds/{id} çağırıyor)
+          btnSaveEdit?.addEventListener('click', async ()=>{
+            const id=eId.value, name=(eName.value||'').trim(), blogId=(eBlog.value||'').trim();
+            if(!name){ alert('Please enter tag name'); return; }
+            if(!blogId){ alert('Please select a blog'); return; }
+            const btn=btnSaveEdit, txt=btn.innerHTML;
+            try{
+              btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin me-1"></i>Updating...';
+              const res=await fetch('/Admin/AdminTagCloud/UpdateTagCloud',{
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({TagCloudId:id,TagCloudName:name,BlogId:blogId})
+              });
+              const data=await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('editModal'))?.hide();
+                setTimeout(()=>location.reload(),350);
+              }else{ alert(data.message||'Update failed'); }
+            }catch{ alert('Request failed'); }
+            finally{ btn.disabled=false; btn.innerHTML=txt; }
+          });
+
+          // DELETE
+          btnConfirmDelete?.addEventListener('click', async ()=>{
+            const id=delId.value; if(!id) return;
+            const btn=btnConfirmDelete, txt=btn.innerHTML;
+            try{
+              btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin me-1"></i>Deleting...';
+              const res=await fetch(`/Admin/AdminTagCloud/DeleteTagCloud?id=${encodeURIComponent(id)}`,{method:'DELETE'});
+              const data=await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal'))?.hide();
+                const row=document.querySelector(`.cardx[data-id="${CSS.escape(id)}"]`);
+                if(row){ row.style.opacity='.4'; setTimeout(()=>{ row.remove(); applyFilter(); },180); }
+              }else{ alert(data.message||'Delete failed'); }
+            }catch{ alert('Request failed'); }
+            finally{ btn.disabled=false; btn.innerHTML=txt; }
+          });
+        })();
+    </script>
+}

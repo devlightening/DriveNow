@@ -1,0 +1,470 @@
+﻿@using DriveNow.Dtos.LocationDtos
+@model List<ResultLocationDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var total = Model?.Count ?? 0;
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --primary-d: #3A81D1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --card: #fff;
+            --border: #e5e7eb;
+            --shadow: 0 6px 18px rgba(0,0,0,.08);
+            --shadow-lg: 0 16px 30px rgba(0,0,0,.12);
+            --r: 16px;
+            --r-xl: 20px;
+        }
+
+        body {
+            font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+            background: #f6f8fb;
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4.5rem 1.5rem;
+        }
+
+        /* header */
+        .page-hd {
+            background: linear-gradient(135deg,rgba(74,144,226,.12),rgba(58,129,209,.12)), #fff;
+            border: 1px solid #e6eeff;
+            border-radius: 22px;
+            padding: 1.1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
+
+            .page-hd h2 {
+                margin: 0;
+                font-weight: 800;
+                color: var(--ink);
+                display: flex;
+                gap: .6rem;
+                align-items: center
+            }
+
+        .stat-badge {
+            background: linear-gradient(135deg,var(--success),#079a70);
+            color: #fff;
+            border-radius: 12px;
+            padding: .55rem .9rem;
+            font-weight: 800;
+            display: flex;
+            gap: .45rem;
+            align-items: center;
+            box-shadow: 0 8px 18px rgba(16,185,129,.25)
+        }
+
+        /* controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: .75rem;
+            margin: 1rem 0 1.5rem
+        }
+
+        .search-wrap {
+            position: relative
+        }
+
+            .search-wrap i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #9aa7b3
+            }
+
+        #q {
+            width: 100%;
+            padding: .8rem 1rem .8rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff
+        }
+
+        .btn-clear {
+            background: #eef2ff;
+            border: 1px solid #dfe6ff;
+            color: #4152d0;
+            border-radius: 10px;
+            padding: .6rem 1rem;
+            font-weight: 700
+        }
+
+        .btn-primaryx {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: .7rem 1.1rem;
+            font-weight: 700
+        }
+
+        /* grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+            gap: 1.1rem
+        }
+
+        .cardx {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            transition: .18s
+        }
+
+            .cardx:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-lg)
+            }
+
+        .card-title {
+            font-weight: 900;
+            color: var(--ink);
+            font-size: 1.05rem;
+            margin-bottom: .35rem;
+            display: flex;
+            gap: .5rem;
+            align-items: center
+        }
+
+        .actions {
+            display: flex;
+            gap: .5rem;
+            margin-top: .85rem
+        }
+
+        .btn-ghost {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--ink);
+            border-radius: 10px;
+            padding: .45rem .9rem;
+            font-weight: 700
+        }
+
+        .btn-dangerx {
+            background: linear-gradient(135deg,var(--danger),#dc2626);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: .45rem .9rem;
+            font-weight: 700
+        }
+
+        .empty {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #fff;
+            padding: 2rem;
+            text-align: center;
+            color: #6b7a81;
+            margin-top: 1rem
+        }
+
+        /* modal */
+        .modal-content {
+            border-radius: 16px
+        }
+
+        .modal-hd {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            color: #fff;
+            font-weight: 900;
+            padding: 1rem 1.2rem;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px
+        }
+
+        .lbl {
+            font-weight: 800;
+            color: #334155;
+            margin-bottom: .35rem
+        }
+
+        .inp {
+            width: 100%;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: .8rem 1rem;
+            font-size: 1rem
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg,var(--primary),var(--primary-d));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 800
+        }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            font-weight: 800
+        }
+    </style>
+</head>
+
+<div class="wrap">
+    <div class="page-hd">
+        <h2><i class="fa-solid fa-location-dot"></i> Locations</h2>
+        <div class="stat-badge"><i class="fa-solid fa-database"></i> <span id="count">@total</span> records</div>
+    </div>
+
+    <div class="controls">
+        <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="q" placeholder="Search by location name..." />
+        </div>
+        <button class="btn btn-clear" id="btnClear"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+        <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>New Location</button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div id="grid" class="grid">
+            @foreach (var loc in Model.OrderBy(x => x.LocationName))
+            {
+                <div class="cardx"
+                     data-id="@loc.LocationId"
+                     data-name="@((loc.LocationName ?? "").ToLower())">
+                    <div class="card-title">
+                        <span class="badge rounded-pill text-bg-primary" style="--bs-bg-opacity:.12;color:#1d4ed8;background:#e6efff;border:1px solid #dbe8ff">LOC</span>
+                        @loc.LocationName
+                    </div>                 
+                    <div class="actions">
+                        <button class="btn btn-ghost btnEdit"
+                                data-bs-toggle="modal" data-bs-target="#editModal"
+                                data-id="@loc.LocationId"
+                                data-name="@loc.LocationName">
+                            <i class="fa-regular fa-pen-to-square me-1"></i>Edit
+                        </button>
+                        <button class="btn btn-dangerx btnDel"
+                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                data-id="@loc.LocationId"
+                                data-name="@loc.LocationName">
+                            <i class="fa-regular fa-trash-can me-1"></i>Delete
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="empty" class="empty" style="display:none">
+            <i class="fa-regular fa-face-frown fa-2x mb-2"></i>
+            <div>No matching locations found.</div>
+        </div>
+    }
+    else
+    {
+        <div class="empty">
+            <i class="fa-solid fa-location-crosshairs fa-2x mb-2"></i>
+            <div>No locations yet.</div>
+            <div class="mt-3">
+                <button class="btn btn-primaryx" data-bs-toggle="modal" data-bs-target="#createModal"><i class="fa-solid fa-plus me-1"></i>Create First Location</button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-hd"><i class="fa-solid fa-plus me-2"></i>New Location</div>
+            <div class="modal-body">
+                <label class="lbl" for="cName">Location Name</label>
+                <input id="cName" class="inp" placeholder="e.g., Chicago, Berlin, Airport Office..." />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveCreate"><i class="fa-solid fa-floppy-disk me-1"></i>Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Location</div>
+            <div class="modal-body">
+                <input type="hidden" id="eId" />
+                <label class="lbl" for="eName">Location Name</label>
+                <input id="eName" class="inp" placeholder="Location name..." />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-save" id="btnSaveEdit"><i class="fa-solid fa-floppy-disk me-1"></i>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-hd" style="background:linear-gradient(135deg,var(--danger),#dc2626)"><i class="fa-solid fa-triangle-exclamation me-2"></i>Delete</div>
+            <div class="modal-body">
+                <input type="hidden" id="delId" />
+                <p class="mb-0">Delete <b id="delName"></b> ?</p>
+                <small class="text-muted">This action cannot be undone.</small>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-dangerx" id="btnConfirmDelete"><i class="fa-regular fa-trash-can me-1"></i>Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const grid = document.getElementById('grid');
+          const empty = document.getElementById('empty');
+          const q = document.getElementById('q');
+          const btnClear = document.getElementById('btnClear');
+          const count = document.getElementById('count');
+
+          const eId = document.getElementById('eId');
+          const eName = document.getElementById('eName');
+          const delId = document.getElementById('delId');
+          const delName = document.getElementById('delName');
+
+          const btnSaveCreate = document.getElementById('btnSaveCreate');
+          const btnSaveEdit = document.getElementById('btnSaveEdit');
+          const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+          // filter
+          function applyFilter(){
+            if(!grid) return;
+            const query = (q?.value || '').trim().toLowerCase();
+            let vis = 0;
+            [...grid.children].forEach(card=>{
+              const name = card.getAttribute('data-name') || '';
+              const show = !query || name.includes(query);
+              card.style.display = show ? '' : 'none';
+              if(show) vis++;
+            });
+            if(count) count.textContent = vis;
+            if(empty) empty.style.display = vis ? 'none':'block';
+            if(grid) grid.style.display = vis ? 'grid':'none';
+          }
+          q?.addEventListener('input', applyFilter);
+          btnClear?.addEventListener('click', ()=>{ q.value=''; applyFilter(); });
+          applyFilter();
+
+          // open modals with data
+          document.addEventListener('click', (e)=>{
+            const eb = e.target.closest('.btnEdit');
+            if(eb){
+              eId.value = eb.dataset.id;
+              eName.value = eb.dataset.name || '';
+            }
+            const db = e.target.closest('.btnDel');
+            if(db){
+              delId.value = db.dataset.id;
+              delName.textContent = db.dataset.name || 'this location';
+            }
+          });
+
+          // toast helper
+          function toast(msg, ok=true){
+            alert(msg); // basit; istersen burada kendi toast’ını kullan
+          }
+
+          // CREATE
+          btnSaveCreate?.addEventListener('click', async ()=>{
+            const name = (document.getElementById('cName').value || '').trim();
+            if(!name){ toast('Please enter a location name', false); return; }
+            const btn = btnSaveCreate, txt = btn.innerHTML;
+            try{
+              btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Saving...';
+              const res = await fetch('/Admin/AdminLocation/CreateLocation', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ LocationName: name })
+              });
+              const data = await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('createModal'))?.hide();
+                setTimeout(()=>location.reload(), 400);
+              }else{
+                toast(data.message || 'Create failed', false);
+              }
+            }catch{ toast('Request failed', false); }
+            finally{ btn.disabled=false; btn.innerHTML = txt; }
+          });
+
+          // UPDATE
+          btnSaveEdit?.addEventListener('click', async ()=>{
+            const id = eId.value;
+            const name = (eName.value || '').trim();
+            if(!name){ toast('Please enter a location name', false); return; }
+            const btn = btnSaveEdit, txt = btn.innerHTML;
+            try{
+              btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Updating...';
+              const res = await fetch('/Admin/AdminLocation/UpdateLocation', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ LocationId: id, LocationName: name })
+              });
+              const data = await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('editModal'))?.hide();
+                setTimeout(()=>location.reload(), 400);
+              }else{
+                toast(data.message || 'Update failed', false);
+              }
+            }catch{ toast('Request failed', false); }
+            finally{ btn.disabled=false; btn.innerHTML = txt; }
+          });
+
+          // DELETE
+          btnConfirmDelete?.addEventListener('click', async ()=>{
+            const id = delId.value; if(!id) return;
+            const btn = btnConfirmDelete, txt = btn.innerHTML;
+            try{
+              btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Deleting...';
+              const res = await fetch(`/Admin/AdminLocation/DeleteLocation?id=${encodeURIComponent(id)}`, { method:'DELETE' });
+              const data = await res.json().catch(()=>({}));
+              if(res.ok && data.success){
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal'))?.hide();
+                const card = document.querySelector(`.cardx[data-id="${CSS.escape(id)}"]`);
+                if(card){ card.style.transform='translateX(30px)'; card.style.opacity='.35'; setTimeout(()=>{ card.remove(); applyFilter(); }, 220); }
+              }else{
+                toast(data.message || 'Delete failed', false);
+              }
+            }catch{ toast('Request failed', false); }
+            finally{ btn.disabled=false; btn.innerHTML = txt; }
+          });
+
+        });
+    </script>
+}
